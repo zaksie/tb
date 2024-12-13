@@ -1,0 +1,10 @@
+<div class="level-main-division-container">
+    <mat-card class="mat-elevation-z0 outline card-class" [style]="{'background':background}">
+        <mat-card-title>{{mainDivision}} {{level}}</mat-card-title>
+        <mat-list>
+            <mat-list-item *ngFor="let troop of troops" class="list-item">
+                <app-squad [troop]="troop"></app-squad>
+            </mat-list-item>
+        </mat-list>
+    </mat-card>
+</div>

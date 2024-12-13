@@ -1,0 +1,36 @@
+.app-container {
+  margin: 32px;
+}
+
+@media only screen and (max-width: 600px) {
+  .app-container {
+    margin: 0;
+  }
+}
+
+button {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  background-position: center center;
+}
+
+.space-filler {
+  width: 20%;
+  min-width: 24px;
+}
+
+.buttons {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  width: 60%;
+
+  .center {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

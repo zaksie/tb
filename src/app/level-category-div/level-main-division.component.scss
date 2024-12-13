@@ -1,0 +1,15 @@
+.level-main-division-container {
+  margin: 24px;
+}
+
+.card-class {
+  padding: 24px;
+}
+.list-item {
+  height: auto !important;
+}
+@media only screen and (max-width: 600px) {
+  .level-main-division-container {
+    margin: 0;
+  }
+}

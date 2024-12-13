@@ -1,0 +1,59 @@
+<div class="cp-clan-run-container">
+    <form (ngSubmit)="onSubmit()" #heroForm="ngForm" class="in-column">
+        <mat-form-field appearance="outline">
+            <mat-label>Flying troop type</mat-label>
+            <mat-select (selectionChange)="onSelectionChange($event)" required>
+                <mat-option *ngFor="let troop of flyingTroopTypes"
+                            [value]="troop">{{troop.name}}</mat-option>
+            </mat-select>
+
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Defender health bonus</mat-label>
+            <input matInput type="number" name="healthBonus" [(ngModel)]="healthBonus" required>
+            <span matTextSuffix>%</span>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Revival cost reduction</mat-label>
+            <input matInput type="number" name="revivalCostReduction" [(ngModel)]="revivalCostReduction" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>No. of participants</mat-label>
+            <input matInput type="number" name="participantNumber" [(ngModel)]="participantNumber" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Average attacker strength bonus</mat-label>
+            <input matInput type="number" name="avgAttackerBonus" [(ngModel)]="avgAttackerBonus" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>CP target per capita</mat-label>
+            <input matInput type="number" name="cpManual" [(ngModel)]="cp" min="0" [max]="maxCp" required>
+            <span matTextSuffix>k</span>
+        </mat-form-field>
+
+        <mat-slider min="0" [max]="maxCp" step="1" discrete [displayWith]="formatLabel">
+            <input matSliderThumb [(ngModel)]="cp" name="cp">
+        </mat-slider>
+
+        <button mat-stroked-button type="submit" [disabled]="!heroForm.form.valid">Calculate</button>
+
+    </form>
+    <ng-container *ngIf="result">
+        <div class="results">
+            <ul>
+                <li>Bird count per run: {{result.targetBirdCount | number: '1.0-0'}}</li>
+                <li>Cost per bird: {{selectedTroopType.cost}}k</li>
+                <li>Total birds to build: {{result.targetBirdCount1 | number: '1.0-0'}}</li>
+                <li>Total birds to revive: {{result.targetBirdCount2 | number: '1.0-0'}}</li>
+                <li>Total cost after 9 runs: {{result.cost | number: '1.0-0'}}k</li>
+                <li>Total CP/player after 9 runs: {{result.cpPerPlayer | number: '1.0-0'}}k</li>
+            </ul>
+        <mat-list>
+            <mat-list-item *ngFor="let squad of result.squads">
+                <span matListItemTitle>{{squad.name}}</span>
+                <span matListItemLine>{{squad.count | number: '1.0-0'}}</span>
+            </mat-list-item>
+        </mat-list>
+        </div>
+    </ng-container>
+</div>

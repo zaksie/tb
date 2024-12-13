@@ -1,0 +1,42 @@
+<div>
+    <h4>Choose profile or create a new one</h4>
+    <mat-form-field>
+        <mat-label>Profile</mat-label>
+        <mat-select (selectionChange)="onSelectionChange($event)">
+            <mat-option *ngFor="let profile of profiles | keyvalue"
+                        [value]="profile.key">{{profile.value.name}}</mat-option>
+        </mat-select>
+
+    </mat-form-field>
+    <button mat-icon-button (click)="addNewProfile()" color="primary">
+        <mat-icon>add</mat-icon>
+    </button>
+    <form (ngSubmit)="onSubmit()" #heroForm="ngForm">
+        <mat-form-field appearance="outline">
+            <mat-label>Profile name</mat-label>
+            <input matInput type="text" name="selectedProfile"
+                   [(ngModel)]="profiles[selectedProfile].name">
+        </mat-form-field>
+        <br/>
+        <ng-container *ngIf="selectedProfile">
+            <ng-container *ngFor="let bonusProfile of profiles[selectedProfile].bonuses">
+                <mat-form-field appearance="outline">
+                    <mat-label>{{bonusProfile.name}} health bonus</mat-label>
+                    <input matInput type="number" [name]="bonusProfile.name + 'H'"
+                           [(ngModel)]="bonusProfile.healthBonus">
+                </mat-form-field>
+<!--                <mat-form-field appearance="outline">-->
+<!--                    <mat-label>{{bonusProfile.name}} strength bonus</mat-label>-->
+<!--                    <input matInput type="number" [name]="bonusProfile.name + 'S'"-->
+<!--                           [(ngModel)]="bonusProfile.strengthBonus">-->
+<!--                </mat-form-field>-->
+                <br/>
+            </ng-container>
+        </ng-container>
+
+        <button mat-stroked-button type="submit" [disabled]="!heroForm.form.valid" matStepperNext>Next</button>
+        <button mat-flat-button type="button"
+                (click)="profiles[selectedProfile].bonuses = getNewModel(); heroForm.reset()">Clear
+        </button>
+    </form>
+</div>

@@ -1,0 +1,72 @@
+<div class="app-container">
+  <mat-stepper orientation="vertical" #stepper>
+    <!--        <mat-step>-->
+    <!--            <app-target></app-target>-->
+    <!--        </mat-step>-->
+    <mat-step>
+      <ng-template matStepLabel>Fill out the bonuses for the different troop types</ng-template>
+      <p>This will reflect the overall bonuses from everything from captain to research to equipment, gems,
+        enchantments and talent points</p>
+      <!--            <app-bonuses></app-bonuses>-->
+      <div>
+        <mat-form-field style="width: 100%;">
+          <mat-label>Bonuses</mat-label>
+          <textarea matInput [(ngModel)]="bonusesString"
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="1"
+                    cdkAutosizeMaxRows="60">></textarea>
+        </mat-form-field>
+      </div>
+      <div>
+        <button mat-button matStepperNext (click)="saveConfig()">Next</button>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Pick just one squad and enter the value for the squad size</ng-template>
+      <div class="in-column">
+        <mat-radio-group aria-label="Type of attack" [(ngModel)]="attackType">
+          <mat-radio-button value="epic">Epic</mat-radio-button>
+        </mat-radio-group>
+        <mat-form-field appearance="outline">
+          <mat-label>Leadership</mat-label>
+          <input matInput type="number" name="leadership"
+                 [(ngModel)]="leadership">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Dominance</mat-label>
+          <input matInput type="number" name="dominance"
+                 [(ngModel)]="dominance">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Guardsmen level</mat-label>
+          <mat-select [(value)]="selectedLevels" multiple>
+
+            <span>Guardsmen</span><mat-divider [inset]="true"></mat-divider>
+            <mat-option *ngFor="let level of troopLevelGuardsmen" [value]="level">{{level}}</mat-option>
+            <span>Specialists</span><mat-divider [inset]="true"></mat-divider>
+            <mat-option *ngFor="let level of troopLevelSpecialists" [value]="level">{{level}}</mat-option>
+            <mat-divider fxFlex="1 0"></mat-divider>
+            <span>Monsters</span>
+            <mat-divider fxFlex="1 0"></mat-divider>
+            <mat-option *ngFor="let level of troopLevelMonsters" [value]="level">{{level}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!--                <mat-form-field appearance="outline">-->
+        <!--                    <mat-label>Specialist level</mat-label>-->
+        <!--                    <mat-select [formControl]="mercForm" multiple>-->
+        <!--                        <mat-option [value]="merc" *ngFor="let merc of mercenaryList">{{merc.name}}</mat-option>-->
+        <!--                    </mat-select>-->
+        <!--                </mat-form-field>-->
+      </div>
+      <button mat-stroked-button (click)="calculateStacks()">Calculate stacks</button>
+      <h1 *ngIf="totalDamage">Total damage: {{totalDamage | number: '1.0-0'}}</h1>
+      <mat-list>
+        <mat-list-item *ngFor="let tier of tiersDict | keyvalue">
+          <span matListItemTitle>{{tier.key}}</span>
+          <span matListItemLine *ngFor="let squad of prettify(tier.value)">{{squad}}</span>
+        </mat-list-item>
+      </mat-list>
+    </mat-step>
+  </mat-stepper>
+
+</div>

@@ -1,0 +1,17 @@
+<form (ngSubmit)="onSubmit()" #heroForm="ngForm">
+        <mat-form-field appearance="outline">
+            <mat-label>Target categories: </mat-label>
+            <mat-select [(ngModel)]="model.troop.types">
+                <mat-option *ngFor="let tt of TroopType" [value]="tt">{{tt}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Health: </mat-label>
+            <input matInput type="number" [name]="model.name + 'S'"
+                   [(ngModel)]="model.troop.health">
+        </mat-form-field>
+        <br/>
+
+    <button mat-stroked-button type="submit" [disabled]="!heroForm.form.valid" matStepperNext>OK</button>
+</form>
+

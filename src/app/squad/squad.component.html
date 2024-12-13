@@ -1,0 +1,14 @@
+<div class="sqaud-container">
+    <span matListItemTitle>{{troop.troop.name}}</span>
+    <span matListItemLine>{{troop.troop.allTypes}}</span>
+    <div class="one-row">
+        <mat-checkbox [(ngModel)]="troop.selected"></mat-checkbox>
+            <input type="number"
+                   [(ngModel)]="sliderValue" size="64">
+        <span class="spacer"> </span>
+        <mat-slider min="0" max="500000">
+            <input matSliderThumb [(ngModel)]="sliderValue">
+        </mat-slider>
+    </div>
+
+</div>

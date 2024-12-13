@@ -1,0 +1,21 @@
+.sqaud-container {
+  //flex: 1 1 360px;
+  margin: 12px;
+}
+.squad-card {
+  padding: 12px;
+
+}
+.one-row {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  .spacer {
+    width: 12px;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .sqaud-container {
+    margin: 0;
+  }
+}

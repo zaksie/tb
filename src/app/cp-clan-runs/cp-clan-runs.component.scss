@@ -1,0 +1,15 @@
+.cp-clan-run-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+  margin: 36px;
+  .in-column {
+    flex-flow: column;
+    display: flex;
+    max-width: 500px;
+  }
+  .results {
+
+  }
+}

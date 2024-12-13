@@ -1,0 +1,143 @@
+import {secondaryDivisions, TroopType} from "./troop-type";
+import {ConscriptionType} from "./conscription-type";
+import {Bonus} from "./bonus.model";
+
+export class Troop {
+  healthBonus: number = 0;
+  strengthBonus: number = 0;
+  featureBonus: number = 0;
+  _doubleStrength: boolean = false;
+  get doubleStrength(): boolean {
+    return this._doubleStrength
+  }
+
+  set doubleStrength(value: boolean) {
+    if (this.types.includes(TroopType.Specialist))
+      this._doubleStrength = value
+  }
+
+  constructor(public name: string,
+              public types: TroopType[],
+              public strength: number,
+              public health: number,
+              public conscriptionType: ConscriptionType,
+              public level: number,
+              public bonuses: Bonus[] = [],
+              public conscriptionWeight: number = 1,
+              public cost: number = 0
+  ) {
+  }
+
+  get totalStrength(): number {
+    return this.strength * (this.strengthBonus / 100 + 1) * (this.doubleStrength ? 2 : 1)
+  }
+
+  get weightedTotalStrength(): number{
+    return this.strength * ((this.strengthBonus + this.featureBonus) / 100 + 1) * (this.doubleStrength ? 2 : 1)/ this.conscriptionWeight
+  }
+
+  get totalHealth(): number {
+    return this.health * (this.healthBonus / 100 + 1)
+  }
+
+  get allTypes(): string {
+    return this.types.map(x => TroopType[x]).join(', ')
+  }
+
+  get id(): string {
+    return [this.name, this.allTypes, this.level, ConscriptionType[this.conscriptionType]].join(' | ')
+  }
+
+  get levelId(): string {
+    if (this.types.includes(TroopType.Guardsman))
+      return 'G' + this.level
+    else if (this.types.includes(TroopType.Specialist))
+      return 'S' + this.level
+    else if (this.types.includes(TroopType.Monster))
+      return 'M' + this.level
+    else if (this.types.includes(TroopType.EngineerCorps))
+      return 'E' + this.level
+
+    else return 'N/A'
+  }
+
+  resetBonuses() {
+    this.healthBonus = 0
+    this.strengthBonus = 0
+  }
+}
+
+const newTroop = () => {
+  return new Troop('', [], 0, 0, ConscriptionType.Authority, 0, [], 0)
+}
+
+export interface TroopBonusData {
+  health: { [key: string]: number }
+  strength: { [key: string]: number }
+}
+export interface TroopBonusDataBasic {
+  health: number
+  strength: number
+}
+
+export interface BonusesObject {
+  epic: TroopBonusDataBasic
+  all_army: TroopBonusDataBasic
+  [key:string]: TroopBonusDataBasic;
+}
+
+export class Squad {
+  private bonuses!: BonusesObject;
+
+  constructor(public troop: Troop = newTroop(), public selected: boolean = false, public leadershipCount = 0) {
+  }
+
+  get name() {
+    return this.troop.name
+  }
+
+  get count() {
+    return Math.floor(this.leadershipCount / this.troop.conscriptionWeight)
+  }
+
+  get totalHealth(): number {
+    return this.troop.totalHealth * this.count
+  }
+
+  get totalStrength(): number {
+    return this.troop.totalStrength * this.count
+  }
+
+  get strikeIndex(): number {
+    return this.totalStrength * this.totalHealth
+  }
+
+
+  setBonuses(bonuses: BonusesObject) {
+    if (!bonuses) return
+    this.bonuses = bonuses
+    this.troop.resetBonuses()
+    this.troop.types.forEach(x => {
+      const name: string = TroopType[x].toLowerCase()
+      if (name in bonuses) {
+        this.troop.healthBonus += +bonuses[name].health
+        this.troop.strengthBonus += +bonuses[name].strength
+        this.troop.strengthBonus += bonuses.epic.strength || 0
+        const featureBonus = this.troop.bonuses.filter(b => secondaryDivisions.includes(b.against))
+          .map(b => b.bonus)
+          .reduce((x, acc) => acc += x)
+          / 4
+        console.log(`for troop of type ${this.troop.name} total feature bonus is: ${featureBonus}`)
+        this.troop.featureBonus = featureBonus
+
+      }
+      if (name === 'beast') {
+        this.troop.healthBonus += 100
+        this.troop.strengthBonus += 100
+      }
+    })
+
+    console.log(this.troop.strengthBonus)
+  }
+}
+
