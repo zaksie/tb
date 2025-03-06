@@ -82,7 +82,7 @@ export interface TroopBonusDataBasic {
 
 export interface BonusesObject {
   epic: TroopBonusDataBasic
-  all_army: TroopBonusDataBasic
+  army: TroopBonusDataBasic
   [key:string]: TroopBonusDataBasic;
 }
 
@@ -117,19 +117,22 @@ export class Squad {
     if (!bonuses) return
     this.bonuses = bonuses
     this.troop.resetBonuses()
+
+    this.troop.strengthBonus += bonuses.epic?.strength || 0
+    this.troop.healthBonus += bonuses.army?.health || 0
+    this.troop.strengthBonus += bonuses.army?.strength || 0
+
+    const featureBonus = this.troop.bonuses.filter(b => secondaryDivisions.includes(b.against))
+        .map(b => b.bonus)
+        .reduce((x, acc) => acc += x)
+      / 4
+    console.log(`for troop of type ${this.troop.name} total feature bonus is: ${featureBonus}`)
+    this.troop.featureBonus = featureBonus
     this.troop.types.forEach(x => {
       const name: string = TroopType[x].toLowerCase()
       if (name in bonuses) {
-        this.troop.healthBonus += +bonuses[name].health
-        this.troop.strengthBonus += +bonuses[name].strength
-        this.troop.strengthBonus += bonuses.epic.strength || 0
-        const featureBonus = this.troop.bonuses.filter(b => secondaryDivisions.includes(b.against))
-          .map(b => b.bonus)
-          .reduce((x, acc) => acc += x)
-          / 4
-        console.log(`for troop of type ${this.troop.name} total feature bonus is: ${featureBonus}`)
-        this.troop.featureBonus = featureBonus
-
+        this.troop.healthBonus += +bonuses[name].health || 0
+        this.troop.strengthBonus += +bonuses[name].strength || 0
       }
       if (name === 'beast') {
         this.troop.healthBonus += 100

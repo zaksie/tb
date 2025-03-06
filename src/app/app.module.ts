@@ -31,6 +31,10 @@ import {RedirectGuard} from "./services/redirect-guard.service";
 import {MatRadioModule} from "@angular/material/radio";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {FlexLayoutModule} from "@angular/flex-layout";
+import { ChestCounterComponent } from './chest-counter/chest-counter.component';
+import { LandingPageComponent } from './landing-page/landing-page.component';
+import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatTableModule} from "@angular/material/table";
 
 @NgModule({
   declarations: [
@@ -43,6 +47,8 @@ import {FlexLayoutModule} from "@angular/flex-layout";
     RomanPipe,
     StackerComponent,
     CpClanRunsComponent,
+    ChestCounterComponent,
+    LandingPageComponent,
   ],
   imports: [
     FlexLayoutModule,
@@ -64,7 +70,9 @@ import {FlexLayoutModule} from "@angular/flex-layout";
     MatSelectModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatRadioModule
+    MatRadioModule,
+    MatSidenavModule,
+    MatTableModule
   ],
   providers: [RedirectGuard],
   bootstrap: [AppComponent]

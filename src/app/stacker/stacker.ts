@@ -3,14 +3,6 @@ import {getTier} from "../troops.data";
 import {groupBy} from "lodash";
 import {secondaryDivisions, TroopType} from "../models/troop-type";
 
-function transformBonuses(bonusesObj: BonusesObject): void {
-  if (+bonusesObj.all_army.health > 0 && +bonusesObj.all_army.strength > 0){
-      bonusesObj['guardsman'].health = bonusesObj.all_army.health
-      bonusesObj['specialist'].health = bonusesObj.all_army.health
-      bonusesObj['guardsman'].strength = bonusesObj.all_army.strength
-      bonusesObj['specialist'].strength = bonusesObj.all_army.strength
-  }
-}
 
 export function calculateStack(selectedLevels: string[], bonusesObj: BonusesObject, size: number, cappingSquad: Squad | undefined = undefined){
   const totalTroopSquads = selectedLevels.length * 4
@@ -20,7 +12,6 @@ export function calculateStack(selectedLevels: string[], bonusesObj: BonusesObje
     const tier = getTier(level).map(x => new Squad(x, true, effLeadership))
     squads.push(...tier)
   })
-  transformBonuses(bonusesObj)
   squads.forEach(x => x.setBonuses(bonusesObj))
   squads.sort((a, b) => b.troop.weightedTotalStrength - a.troop.weightedTotalStrength)
   console.log('Ordered by strength: \n' + squads.map(s => s.troop.id).join('\n'))
@@ -60,7 +51,7 @@ export function calculateStack(selectedLevels: string[], bonusesObj: BonusesObje
   }
 
   console.log(`[${iteration}] successes: ${successes}`)
-  console.log(squads.map(s => (s.troop.name + ':').padEnd(25, ' ') + [s.totalHealth, Math.round(s.troop.healthBonus), Math.round(s.troop.strengthBonus)].join(', ')).join("\n"))
+  console.log(squads.map(s => (s.troop.name + ':').padEnd(25, ' ') + [s.totalHealth, Math.round(s.troop.healthBonus*10)/10, Math.round(s.troop.strengthBonus*10)/10].join(', ')).join("\n"))
   return squads
 }
 
@@ -72,11 +63,10 @@ function normalizeResults(squads: Squad[], cappingSquad: Squad){
 export const bonusesStringDefault: string =
   `epic:
     strength: 0
-# Fill this
-all_army:
+army:
   health: 0
   strength: 0
-# OR these two
+# use any name as appears in the unit description in the game (guardsman, flying, etc.)
 guardsman:
   health: 0
   strength: 0

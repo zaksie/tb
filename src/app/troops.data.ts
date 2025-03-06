@@ -2,8 +2,8 @@ import {Squad, Troop} from "./models/troop.model";
 import {TroopType, TroopType as tt} from "./models/troop-type";
 import {ConscriptionType as ct} from "./models/conscription-type";
 import {Bonus} from "./models/bonus.model";
-export const COOKIE_BONUSES = 'TBStackBonuses.v10'
-export const COOKIE_TROOP_CONFIG = 'TBStackTroopConfig.v2'
+export const COOKIE_BONUSES = 'TBStackBonuses.v11'
+export const COOKIE_TROOP_CONFIG = 'TBStackTroopConfig.v3'
 
 export enum TroopColors {
     white = 1,
