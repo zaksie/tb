@@ -10,6 +10,6 @@ import {Router} from "@angular/router";
 export class AppComponent {
     title = 'tb';
     constructor(public router: Router) {
-        this.router.navigate(['/stacker']).then();
+        // this.router.navigate(['/stacker']).then();
     }
 }
