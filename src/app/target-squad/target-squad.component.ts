@@ -3,9 +3,10 @@ import {Squad} from "../models/troop.model";
 import {TroopType} from "../models/troop-type";
 
 @Component({
-  selector: 'app-target-squad',
-  templateUrl: './target-squad.component.html',
-  styleUrls: ['./target-squad.component.scss']
+    selector: 'app-target-squad',
+    templateUrl: './target-squad.component.html',
+    styleUrls: ['./target-squad.component.scss'],
+    standalone: false
 })
 export class TargetSquadComponent {
     @Output() created: EventEmitter<Squad> = new EventEmitter<Squad>()

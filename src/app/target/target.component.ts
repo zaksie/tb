@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import {Squad, Troop} from "../models/troop.model";
 
 @Component({
-  selector: 'app-target',
-  templateUrl: './target.component.html',
-  styleUrls: ['./target.component.scss']
+    selector: 'app-target',
+    templateUrl: './target.component.html',
+    styleUrls: ['./target.component.scss'],
+    standalone: false
 })
 export class TargetComponent {
     squads: Squad[] = []

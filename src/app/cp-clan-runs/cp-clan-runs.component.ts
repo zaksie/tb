@@ -26,7 +26,8 @@ export interface CPRunResult {
 @Component({
     selector: 'app-cp-clan-runs',
     templateUrl: './cp-clan-runs.component.html',
-    styleUrls: ['./cp-clan-runs.component.scss']
+    styleUrls: ['./cp-clan-runs.component.scss'],
+    standalone: false
 })
 export class CpClanRunsComponent {
     costPer1k: number = 0;

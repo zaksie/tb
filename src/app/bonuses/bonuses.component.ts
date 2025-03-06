@@ -20,7 +20,8 @@ type Profiles = { [key: string]: BonusProfile }
 @Component({
     selector: 'app-bonuses',
     templateUrl: './bonuses.component.html',
-    styleUrls: ['./bonuses.component.scss']
+    styleUrls: ['./bonuses.component.scss'],
+    standalone: false
 })
 export class BonusesComponent implements AfterViewInit {
     selectedProfile!: string

@@ -9,7 +9,8 @@ import {SET_TROOP_COUNT, setTroopCount} from "../store/state.actions";
 @Component({
     selector: 'app-squad',
     templateUrl: './squad.component.html',
-    styleUrls: ['./squad.component.scss']
+    styleUrls: ['./squad.component.scss'],
+    standalone: false
 })
 export class SquadComponent implements AfterViewInit {
     @Input() troop!: Squad

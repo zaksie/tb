@@ -9,9 +9,10 @@ import {bonusesStringDefault, calculateStack} from "./stacker";
 const YAML = require('yaml')
 
 @Component({
-  selector: 'app-stacker',
-  templateUrl: './stacker.component.html',
-  styleUrls: ['./stacker.component.scss']
+    selector: 'app-stacker',
+    templateUrl: './stacker.component.html',
+    styleUrls: ['./stacker.component.scss'],
+    standalone: false
 })
 export class StackerComponent {
   protected readonly troops: Squad[] = troops.map(t => new Squad(t, true));

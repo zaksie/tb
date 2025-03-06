@@ -4,9 +4,10 @@ import {Troop, Squad} from "../models/troop.model";
 import {TroopColors} from "../troops.data";
 
 @Component({
-  selector: 'level-main-division',
-  templateUrl: './level-main-division.component.html',
-  styleUrls: ['./level-main-division.component.scss']
+    selector: 'level-main-division',
+    templateUrl: './level-main-division.component.html',
+    styleUrls: ['./level-main-division.component.scss'],
+    standalone: false
 })
 export class LevelMainDivisionComponent implements OnInit{
     @Input() troops!: Squad[];
