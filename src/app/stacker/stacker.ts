@@ -60,17 +60,8 @@ function normalizeResults(squads: Squad[], cappingSquad: Squad){
   squads.forEach(s => s.leadershipCount /= ratio)
 }
 
-export const bonusesStringDefault: string =
-  `epic:
-    strength: 0
-army:
-  health: 0
-  strength: 0
-# use any name as appears in the unit description in the game (guardsman, flying, etc.)
-guardsman:
-  health: 0
-  strength: 0
-specialist:
-  health: 0
-  strength: 0
-`
+export enum SetupType {
+  FULLY_BALANCED,
+  GUARDSMAN_SPECIALIST_BALANCED,
+  NON_BALANCED
+}

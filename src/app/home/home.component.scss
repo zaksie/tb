@@ -1,0 +1,12 @@
+.settings-container{
+  padding: 32px;
+  width: 350px;
+  .in-a-column{
+    display: flex;
+    flex-flow: column nowrap;
+
+  }
+  .submit-button{
+    float:right
+  }
+}

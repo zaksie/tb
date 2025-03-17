@@ -1,22 +1,103 @@
+:host {
+
+}
+
 .landing-page {
-  width: 100%;
-  height: 100%;
-  /* Position the element to relative so that the ::before pseudo-element
-    will be positioned relative to this container */
-  position: relative;
+  display: flex;
+  flex-flow: column;
 
-  /* Set the background image */
-  background-image: url('/assets/background.jpg');
-  background-size: cover; // this will make the image covers the entire container
-  background-repeat: no-repeat;
+  .feature-container {
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-evenly;
+    .feature {
+      margin: 12px;
+    }
+  }
 
-  ::before {
-    content: ""; // necessary for the pseudo-element to work
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.7); // the dark overlay, you can adjust the opacity
+  .section1-container {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    margin-bottom: 200px;
+    background: rgba(16, 20, 20, 0.5);
+    padding: 32px;
+
+    .contact-us {
+      width: 400px;
+
+      .contact-us-bg {
+        background: linear-gradient(to bottom, rgba(25, 28, 28, 0) 0%, rgba(25, 28, 28, 0.5) 30%, rgba(25, 28, 28, 1) 100%),
+        url('/assets/contact-us.png');
+        background-size: cover;
+        height: 80px;
+        margin-bottom: 32px;
+      }
+    }
+
+    .section1 {
+      display: flex;
+      flex-flow: column;
+      align-items: center;
+      justify-content: center;
+      width: 80%;
+
+      .logo-img {
+        height: 180px;
+      }
+
+      .login-title {
+        font-family: 'Cardinal', sans-serif;
+        font-size: xxx-large;
+      }
+
+      .login-actions {
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
+        align-items: center;
+
+        button {
+          margin-bottom: 12px
+        }
+      }
+
+    }
+
+    .section2 {
+      display: flex;
+      flex-flow: column;
+      align-items: center;
+      justify-content: center;
+      width: 20%;
+      min-width: 300px;
+
+      .contact-form {
+        display: flex;
+        flex-flow: column;
+      }
+
+      .contact-us-button {
+      }
+    }
+
+  }
+
+  @media (max-width: 800px) {
+    .section1-container {
+      flex-flow: column;
+      justify-content: normal;
+      height: auto;
+      margin-bottom: 64px;
+
+      .contact-us {
+        margin-top: 64px;
+      }
+    }
   }
 }
+

@@ -1,0 +1,98 @@
+<style>
+  .in-a-column {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  .tab-content {
+    width: 400px;
+    height: 500px;
+  }
+
+  .form-content {
+    margin-top: 32px;
+    display: flex;
+    flex-flow: column;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+
+  .point-system-content {
+    width: 400px;
+    height: 477px;
+  }
+
+  .level-explanation {
+    font-size: large;
+  }
+</style>
+
+<h2 mat-dialog-title>Chest counter setup</h2>
+<mat-dialog-content>
+  <mat-tab-group class="tab-content">
+    <mat-tab label="Credentials">
+      <form [formGroup]="inputForm" (ngSubmit)="onSubmit()" class="form-content">
+        <div class="in-a-column">
+          <mat-form-field appearance="outline">
+            <mat-label>Username</mat-label>
+            <input matInput type="text" formControlName="username">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput [type]="hide() ? 'password' : 'text'" formControlName="password">
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="clickEvent($event)"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hide()">
+              <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
+          <hr>
+          <mat-form-field appearance="outline">
+            <mat-label>Kingdom</mat-label>
+            <input matInput type="number" formControlName="kingdom">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Clan name</mat-label>
+            <input matInput type="text" formControlName="clanName">
+            <mat-error *ngIf="this.inputForm.get('clanName')?.invalid">Name already taken</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Clan tag</mat-label>
+            <input matInput type="text" formControlName="clanTag">
+          </mat-form-field>
+
+        </div>
+      </form>
+    </mat-tab>
+    <mat-tab label="Requirements">
+      <form [formGroup]="inputForm" (ngSubmit)="onSubmit()" class="form-content">
+        <mat-form-field appearance="outline">
+          <mat-label>Minimal score</mat-label>
+          <input matInput type="text" formControlName="minScore">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Minimum epic crypts</mat-label>
+          <input matInput type="text" formControlName="minEpicCryptCount">
+        </mat-form-field>
+        <mat-slider min="0" max="2" step="1" showTickMarks discrete [displayWith]="formatLabel">
+          <input matSliderThumb formControlName="level" #slider>
+        </mat-slider>
+        <div *ngIf="+slider.value < 3 && +slider.value >= 0">
+          <h1 style="text-align: center">{{ levelMap[+slider.value].title }}</h1>
+          <div class="level-explanation">{{ levelMap[+slider.value].subtitle }}</div>
+          <p>See <b>point system</b> tab for more details</p>
+        </div>
+      </form>
+    </mat-tab>
+    <mat-tab label="Point system">
+      <textarea matInput class="point-system-content" [ngModel]="pointSystemFormatted" [disabled]="true"></textarea>
+    </mat-tab>
+  </mat-tab-group>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">CANCEL</button>
+  <button mat-button [disabled]="!inputForm.valid" cdkFocusInitial (click)="onSubmit()">OK</button>
+</mat-dialog-actions>

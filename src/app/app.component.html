@@ -1,35 +1,40 @@
-<mat-toolbar color="primary">
-    <span>K129</span>
-    <span class="space-filler"></span>
-    <div class="buttons">
-        <button mat-stroked-button routerLink="/stacker" routerLinkActive="active" matTooltip="Stack calculator">
-            <div class="center">
-            <span class="material-symbols-outlined">calculate</span>
-                <span class="space-filler"></span>
-
-                <span>Stack</span>
-            </div>
+<div class="example-container" [class.example-is-mobile]="isMobile()" class="no-scroll">
+  <mat-toolbar>
+    <div class="toolbar-items">
+    <span class="logo">
+      <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+      <img src="/assets/logo.png" alt="Logo" class="logo-img">
+      <span>Battle Squire</span>
+    </span>
+      <ng-container *ngIf="isAuthenticated$|async">
+        <button mat-mini-fab [matMenuTriggerFor]="menu">
+          <mat-icon fontIcon="person"></mat-icon>
         </button>
-      <button mat-stroked-button routerLink="/chest-counter" routerLinkActive="active"
-              matTooltip="Chest counter">
-        <div class="center">
-          <span class="material-symbols-outlined">inventory_2</span>
-          <span class="space-filler"></span>
-          <span>Chest counter</span>
-        </div>
-      </button>
-        <button mat-stroked-button routerLink="/cp-clan-runs" routerLinkActive="active"
-                matTooltip="CP clan run calculator">
-            <div class="center">
-            <span class="material-symbols-outlined">sprint</span>
-                <span class="space-filler"></span>
-
-            <span>CP Clan Run</span>
-            </div>
-        </button>
-
-        <span class="space-filler"></span>
+      </ng-container>
     </div>
-</mat-toolbar>
-<!-- The routed views render in the <router-outlet>-->
-<router-outlet></router-outlet>
+  </mat-toolbar>
+  <mat-sidenav-container class="example-sidenav-container">
+    <mat-sidenav #snav [mode]="isMobile() ? 'over' : 'side'"
+                 [fixedInViewport]="isMobile()" fixedTopGap="56">
+      <app-navigator></app-navigator>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="example-sidenav-content no-scroll">
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item
+            (click)="openUserSettings()">
+      <mat-icon>settings</mat-icon>
+      Settings
+    </button>
+    <hr/>
+    <button mat-menu-item
+            (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Logout
+    </button>
+  </mat-menu>
+</div>

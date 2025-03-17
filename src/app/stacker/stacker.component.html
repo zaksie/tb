@@ -1,72 +1,102 @@
-<div class="app-container">
-  <mat-stepper orientation="vertical" #stepper>
-    <!--        <mat-step>-->
-    <!--            <app-target></app-target>-->
-    <!--        </mat-step>-->
-    <mat-step>
-      <ng-template matStepLabel>Fill out the bonuses for the different troop types</ng-template>
-      <p>This will reflect the overall bonuses from everything from captain to research to equipment, gems,
-        enchantments and talent points</p>
-      <!--            <app-bonuses></app-bonuses>-->
-      <div>
-        <mat-form-field style="width: 100%;">
-          <mat-label>Bonuses</mat-label>
-          <textarea matInput [(ngModel)]="bonusesString"
-                    cdkTextareaAutosize
-                    cdkAutosizeMinRows="1"
-                    cdkAutosizeMaxRows="60">></textarea>
-        </mat-form-field>
+<mat-stepper orientation="horizontal" class="stacker-container">
+  <mat-step>
+    <ng-template matStepLabel>Type of setup</ng-template>
+    <ng-template matStepContent>
+      <div class="container full-hw">
+        <div class="row header">Select the setup that best suits your development level</div>
+        <div class="row content">
+          <mat-radio-group
+            aria-labelledby="example-radio-group-label"
+            class="example-radio-group"
+            [(ngModel)]="troopConfig.selectedSetupType" (change)="radioChange($event)">
+            @for (setupType of setupTypes; track setupType) {
+              <mat-radio-button [value]="setupType.value" class="step1-card-container">
+                <mat-card class="step1-card">
+                  <mat-card-title>{{ setupType.title }}</mat-card-title>
+                  <button mat-icon-button
+                          [matTooltip]="setupType.description"
+                          matTooltipPosition="below">
+                    <mat-icon>help</mat-icon>
+                  </button>
+                </mat-card>
+              </mat-radio-button>
+            }
+          </mat-radio-group>
+        </div>
+        <div class="row footer">
+          <button mat-button matStepperNext>Next</button>
+        </div>
       </div>
-      <div>
-        <button mat-button matStepperNext (click)="saveConfig()">Next</button>
-      </div>
-    </mat-step>
-    <mat-step>
-      <ng-template matStepLabel>Pick just one squad and enter the value for the squad size</ng-template>
-      <div class="in-column">
-        <mat-radio-group aria-label="Type of attack" [(ngModel)]="attackType">
-          <mat-radio-button value="epic">Epic</mat-radio-button>
-        </mat-radio-group>
-        <mat-form-field appearance="outline">
-          <mat-label>Leadership</mat-label>
-          <input matInput type="number" name="leadership"
-                 [(ngModel)]="leadership">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Dominance</mat-label>
-          <input matInput type="number" name="dominance"
-                 [(ngModel)]="dominance">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Guardsmen level</mat-label>
-          <mat-select [(value)]="selectedLevels" multiple>
+    </ng-template>
+  </mat-step>
+  <mat-step class="full-hw" #matStepEditor>
+    <ng-template matStepLabel>Bonuses setup</ng-template>
+    <ng-template matStepContent>
+      <div class="container full-hw">
+        <div class="row header">You can find said bonuses in an attack report when you click the individual troops in
+          the
+          report
+        </div>
+        <div class="row content">
+          <div class="example-loading-shade" *ngIf="!monacoLoaded()">
+            <mat-spinner [diameter]="40"></mat-spinner>
+          </div>
+          <ngx-monaco-editor [options]="editorOptions" (onInit)="monacoLoaded.set(true)"
+                             [(ngModel)]="troopConfig.bonusConfigs[troopConfig.selectedSetupType].config"
+                             class="editor">
 
-            <span>Guardsmen</span><mat-divider [inset]="true"></mat-divider>
-            <mat-option *ngFor="let level of troopLevelGuardsmen" [value]="level">{{level}}</mat-option>
-            <span>Specialists</span><mat-divider [inset]="true"></mat-divider>
-            <mat-option *ngFor="let level of troopLevelSpecialists" [value]="level">{{level}}</mat-option>
-            <mat-divider fxFlex="1 0"></mat-divider>
-            <span>Monsters</span>
-            <mat-divider fxFlex="1 0"></mat-divider>
-            <mat-option *ngFor="let level of troopLevelMonsters" [value]="level">{{level}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <!--                <mat-form-field appearance="outline">-->
-        <!--                    <mat-label>Specialist level</mat-label>-->
-        <!--                    <mat-select [formControl]="mercForm" multiple>-->
-        <!--                        <mat-option [value]="merc" *ngFor="let merc of mercenaryList">{{merc.name}}</mat-option>-->
-        <!--                    </mat-select>-->
-        <!--                </mat-form-field>-->
+          </ngx-monaco-editor>
+        </div>
+        <div class="row footer">
+          <button mat-button matStepperNext (click)="saveConfig()">Next</button>
+        </div>
       </div>
-      <button mat-stroked-button (click)="calculateStacks()">Calculate stacks</button>
-      <h1 *ngIf="totalDamage">Total damage: {{totalDamage | number: '1.0-0'}}</h1>
-      <mat-list>
-        <mat-list-item *ngFor="let tier of tiersDict | keyvalue">
-          <span matListItemTitle>{{tier.key}}</span>
-          <span matListItemLine *ngFor="let squad of prettify(tier.value)">{{squad}}</span>
+    </ng-template>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Leadership size</ng-template>
+    <ng-template matStepContent>
+      <div class="container full-hw">
+        <div class="row header">Enter leadership and troop types</div>
+        <div class="row content in-column">
+          <mat-form-field appearance="outline">
+            <mat-label>Leadership</mat-label>
+            <input matInput type="number" name="leadership"
+                   [(ngModel)]="troopConfig.leadership">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Guardsmen level</mat-label>
+            <mat-select [(value)]="troopConfig.selectedLevels" multiple>
+
+              <span>Guardsmen</span>
+              <mat-divider [inset]="true"></mat-divider>
+              <mat-option *ngFor="let level of troopLevelGuardsmen" [value]="level">{{ level }}</mat-option>
+              <span>Specialists</span>
+              <mat-divider [inset]="true"></mat-divider>
+              <mat-option *ngFor="let level of troopLevelSpecialists" [value]="level">{{ level }}</mat-option>
+              <mat-divider fxFlex="1 0"></mat-divider>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="row footer">
+          <button mat-button matStepperNext (click)="calculateStacks()">Calculate stacks</button>
+        </div>
+      </div>
+    </ng-template>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Recommended stack</ng-template>
+    <div class="container full-hw scrollable">
+      <h1 *ngIf="totalDamage">Total damage: {{ totalDamage | number: '1.0-0' }}</h1>
+      <mat-list class="troop-list-container">
+        <mat-list-item *ngFor="let squad of troopList">
+          <span matListItemTitle class="troop-info">
+            <img [src]="squad.image" [alt]="squad.name" class="troop-image">
+            <div class="troop-count">{{ squad.count }}</div>
+          </span>
+          <span matListItemMeta>{{ squad.name }}</span>
         </mat-list-item>
       </mat-list>
-    </mat-step>
-  </mat-stepper>
-
-</div>
+    </div>
+  </mat-step>
+</mat-stepper>

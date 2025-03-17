@@ -1,0 +1,64 @@
+<div class="grid-container">
+  <div class="dashboard-header">
+    <button mat-mini-fab [disabled]="untracking">
+      <mat-icon class="tracked" (click)="untrack()" >star</mat-icon>
+    </button>
+    <mat-chip disabled>{{ _clanName }}</mat-chip>
+    /
+    <mat-chip disabled>{{ _playerName }}</mat-chip>
+  </div>
+  <mat-grid-list cols="2" rowHeight="350px">
+    @for (card of cards$ | async; track card) {
+      <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
+        <mat-card class="dashboard-card">
+          <mat-card-header>
+            <mat-card-title>
+              {{ card.title }}
+              <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu" xPosition="before">
+                <button mat-menu-item>Expand</button>
+                <button mat-menu-item>Remove</button>
+              </mat-menu>
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="dashboard-card-content">
+            @if (!!card.type) {
+              @switch (card.type) {
+                @case (DashboardView.TASKS) {
+                  <ng-container *ngIf="dashboardTasks$ | async as tasks">
+                    <div class="task">
+                      <mat-icon class="spinner-icon overlay" *ngIf="tasks.epicCryptCount >= tasks.epicCryptCountGoal">task_alt</mat-icon>
+                      <mat-progress-spinner mode="determinate" class="spinner-shadow overlay"
+                                            value="100"></mat-progress-spinner>
+                      <mat-progress-spinner
+                        class="spinner-main overlay"
+                        mode="determinate"
+                        [value]="tasks.epicCryptCount / tasks.epicCryptCountGoal * 100">
+                      </mat-progress-spinner>
+                      <h1>Epic crypts</h1>
+                      <h5>{{tasks.epicCryptCount}}/{{tasks.epicCryptCountGoal}}</h5>
+                    </div>
+                    <div class="task">
+                      <mat-icon class="spinner-icon overlay" *ngIf="tasks.score >= tasks.scoreGoal">task_alt</mat-icon>
+                      <mat-progress-spinner mode="determinate" class="spinner-shadow overlay"
+                                            value="100"></mat-progress-spinner>
+                      <mat-progress-spinner
+                        class="spinner-main overlay"
+                        mode="determinate"
+                        [value]="tasks.score / tasks.scoreGoal * 100">
+                      </mat-progress-spinner>
+                      <h1>Score</h1>
+                      <h5>{{tasks.score}}/{{tasks.scoreGoal}}</h5>
+                    </div>
+                  </ng-container>
+                }
+              }
+            }
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+    }
+  </mat-grid-list>
+</div>

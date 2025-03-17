@@ -1,0 +1,32 @@
+@use '@angular/material' as mat;
+
+
+.mat-mdc-row:hover {
+  background-color: #1F305E;
+  cursor: pointer;
+}
+
+.action-button{
+  margin-right:8px;
+
+}
+
+.start {
+  color: dodgerblue;
+  @include mat.button-overrides((
+    filled-container-color: dodgerblue,
+    filled-label-text-color: white,
+  ));
+}
+.stop {
+  color: red;
+  @include mat.button-overrides((
+    //filled-container-color: orange,
+    filled-label-text-color: red,
+  ));
+}
+
+.table-container {
+  max-height: 80%;
+  width: 100%;
+}

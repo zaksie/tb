@@ -1,0 +1,33 @@
+<ng-container *ngIf="compact; else big">
+  <button mat-raised-button class="" [routerLink]="feature.path">
+    <div class="feature-header">
+      <div class="feature-image"
+           [ngStyle]="featureStyle"></div>
+      <h3>{{ feature.name }}</h3>
+      <h5 *ngIf="!compact">{{ feature.description }}</h5>
+    </div>
+  </button>
+  <div class="subfeatures">
+    <button mat-raised-button *ngFor="let subfeature of feature.children || []" [routerLink]="subfeature.path">
+      {{ subfeature.name }}
+    </button>
+  </div>
+</ng-container>
+
+<ng-template #big>
+  <mat-card class="feature-content">
+    <mat-card-header>
+      <div class="feature-header">
+        <div class="feature-image"
+             [ngStyle]="featureStyle"></div>
+        <mat-card-title>{{ feature.name | uppercase }}</mat-card-title>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <p class="description">{{ feature.description }}</p>
+    </mat-card-content>
+    <mat-card-actions>
+<!--      <button mat-raised-button [routerLink]="feature.path">EXPLORE</button>-->
+    </mat-card-actions>
+  </mat-card>
+</ng-template>

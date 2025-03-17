@@ -1,0 +1,91 @@
+<ng-container>
+  <mat-toolbar>
+    <button mat-raised-button (click)="openDialog()">
+      <mat-icon>add</mat-icon>
+      Add auto-crypter
+    </button>
+  </mat-toolbar>
+  <br>
+  <div class="table-container mat-elevation-z8">
+    <ng-template #loading>
+      <div class="example-loading-shade">
+        <mat-spinner [diameter]="40"></mat-spinner>
+      </div>
+    </ng-template>
+    <table class="mat-elevation-z8" mat-table [dataSource]="dataSource">
+
+      <!-- Position Column -->
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef> Username</th>
+        <td mat-cell *matCellDef="let row"> {{ row.username }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="progress">
+        <th mat-header-cell *matHeaderCellDef> Progress</th>
+        <td mat-cell *matCellDef="let row"> {{ row.total_done }} / {{ row.total }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="kingdom">
+        <th mat-header-cell *matHeaderCellDef> Kingdom</th>
+        <td mat-cell *matCellDef="let row"> {{ row.kingdom }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="clan">
+        <th mat-header-cell *matHeaderCellDef> Clan</th>
+        <td mat-cell *matCellDef="let row"> {{ row.clanTag }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="range">
+        <th mat-header-cell *matHeaderCellDef> Range</th>
+        <td mat-cell *matCellDef="let row"> {{ row.low }} - {{ row.high }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="types">
+        <th mat-header-cell *matHeaderCellDef> Crypts</th>
+        <td mat-cell *matCellDef="let row"> {{ getCryptTypes(row) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="schedule">
+        <th mat-header-cell *matHeaderCellDef> Schedule</th>
+        <td mat-cell *matCellDef="let row"> {{ getSchedule(row) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status</th>
+        <td mat-cell *matCellDef="let row"> {{ row.status.isRunning ? 'RUNNING' : 'STOPPED' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions</th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-mini-fab (click)="activate($event, row)" class="action-button"
+                  [disabled]="!!row.status.isDirty || row.status.isRunning">
+            <mat-icon [ngClass]="{'activate-button': !row.status.isDirty && !row.status.isRunning}">play_circle
+            </mat-icon>
+          </button>
+
+          <button mat-mini-fab (click)="suspend($event, row)" class="action-button"
+                  [disabled]="!!row.status.isDirty || !row.status.isRunning">
+            <mat-icon [ngClass]="{'suspend-button': !row.status.isDirty && row.status.isRunning}">stop_circle</mat-icon>
+          </button>
+
+          <button mat-mini-fab (click)="delete($event, row)" class="action-button">
+            <mat-icon class="suspend-button">delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        (click)="editRow($event, row)"
+        *matRowDef="let row; columns: displayedColumns;"
+      ></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                   showFirstLastButtons
+                   aria-label="Select page">
+    </mat-paginator>
+  </div>
+</ng-container>

@@ -1,77 +1,70 @@
-import {Component} from '@angular/core';
+import {afterNextRender, Component, inject, Injector, signal, ViewChild} from '@angular/core';
 import {Squad, Troop} from "../models/troop.model";
 import {Dictionary, groupBy} from "lodash";
 import {Store} from "@ngrx/store";
 import {State} from "../store/state.reducer";
-import {COOKIE_BONUSES, COOKIE_TROOP_CONFIG, mercenaries, TroopColors, troops} from '../troops.data';
-import {bonusesStringDefault, calculateStack} from "./stacker";
+import {COOKIE_TROOP_CONFIG, mercenaries, TroopColors, troops} from '../troops.data';
+import {calculateStack, SetupType} from "./stacker";
+import YAML from 'yaml'
+import {MatRadioChange} from "@angular/material/radio";
+import {setupTypes, TroopConfig} from "./stacker-data";
+import {CdkTextareaAutosize} from "@angular/cdk/text-field";
+
 // @ts-ignore
-const YAML = require('yaml')
+
 
 @Component({
-    selector: 'app-stacker',
-    templateUrl: './stacker.component.html',
-    styleUrls: ['./stacker.component.scss'],
-    standalone: false
+  selector: 'app-stacker',
+  templateUrl: './stacker.component.html',
+  styleUrls: ['./stacker.component.scss'],
+  standalone: false
 })
 export class StackerComponent {
   protected readonly troops: Squad[] = troops.map(t => new Squad(t, true));
-
+  editorOptions = {
+    theme: 'vs-dark',
+    language: 'YAML',
+    lineNumbers: false,
+    fontSize: 18,
+    scrollBeyondLastLine: false
+  };
   tiersDict: Dictionary<Squad[]> = {}
+  troopList: Squad[] = []
   totalDamage!: number;
   protected readonly TroopColors = TroopColors;
-  leadership: number = 0;
-  dominance: number = 0;
-  selectedLevels: string[] = [];
   protected readonly troopLevelGuardsmen = ['G5', 'G6', 'G7', 'G8', 'G9']
   protected readonly troopLevelSpecialists = ['S5', 'S6', 'S7', 'S8', 'S9']
-  protected readonly troopLevelMonsters = ['M5', 'M6', 'M7','M8', 'M9']
-  attackType: 'epic' | 'cp' = 'epic';
+  protected readonly troopLevelMonsters = ['M5', 'M6', 'M7', 'M8', 'M9']
   public readonly mercenaryList = mercenaries
-  bonusesString: string
+  troopConfig: TroopConfig
+  readonly SetupType = SetupType
+  public monacoLoaded = signal(false)
+
   constructor(private store: Store<State>) {
-    // this.bonuses$ = this.store.select(selectBonuses).pipe(
-    //     tap(bonuses => this.bonuses = bonuses),
-    //     tap(x => console.log('bonuses updates successfully!', x)),
-    //     catchError(err => of([]))
-    // )
-    const bonuses = this.loadConfig(COOKIE_BONUSES, true)
-    const troopConfig = this.loadConfig(COOKIE_TROOP_CONFIG)
+    const _troopConfig = this.loadConfig(COOKIE_TROOP_CONFIG)
     try {
-      const obj = JSON.parse(troopConfig)
-      this.leadership = obj.leadership
-      this.dominance = obj.dominance
-      this.selectedLevels = obj.selectedLevels
-      this.attackType = obj.attackType
+      const data = JSON.parse(_troopConfig)
+      this.troopConfig = Object.assign(new TroopConfig, data)
     } catch {
+      this.troopConfig = new TroopConfig()
     }
-    this.bonusesString = bonuses ? bonuses : bonusesStringDefault
   }
 
   calculateStacks() {
     this.saveConfig()
-    const bonusesObj = YAML.parse(this.bonusesString)
+    const bonusesObj = YAML.parse(this.troopConfig.getActiveBonusConfig())
 
     console.log(bonusesObj)
-    const armyLevels = this.selectedLevels.filter(x => x.startsWith('G') || x.startsWith('S'))
-    const monsterLevels = this.selectedLevels.filter(x => x.startsWith('M'))
-    const armySquads = calculateStack(armyLevels, bonusesObj, this.leadership)
+    const armyLevels = this.troopConfig.selectedLevels.filter(x => x.startsWith('G') || x.startsWith('S'))
+    const monsterLevels = this.troopConfig.selectedLevels.filter(x => x.startsWith('M'))
+    const armySquads = calculateStack(armyLevels, bonusesObj, this.troopConfig.leadership)
     const monsterSquads: Squad[] = []//calculateStack(monsterLevels, bonusesObj, this.dominance, this.attackType, armySquads[0])
-    this.tiersDict = groupBy([...armySquads, ...monsterSquads], x => x.troop.levelId)
-  }
-
-  prettify(value: Squad[]): string[] {
-    return value.map(s => s.troop.name + ': ' + s.count)
+    // this.tiersDict = groupBy([...armySquads, ...monsterSquads], x => x.troop.levelId)
+    this.troopList = armySquads.sort((a,b) => b.troop.strength - a.troop.strength)
   }
 
   saveConfig() {
-    document.cookie = COOKIE_BONUSES + '=' + JSON.stringify(this.bonusesString)
-    document.cookie = COOKIE_TROOP_CONFIG + '=' + JSON.stringify({
-      attackType: this.attackType,
-      leadership: this.leadership,
-      dominance: this.dominance,
-      selectedLevels: this.selectedLevels
-    })
+    document.cookie = COOKIE_TROOP_CONFIG + '=' + JSON.stringify(this.troopConfig)
   }
 
   replacements: { [key: string]: string } = {'\\\\': '\\', '\\n': '\n', '\\"': ''};
@@ -93,5 +86,13 @@ export class StackerComponent {
       return this.replacements[replace];
     }).replaceAll('"', '');
   }
+
+  radioChange($event: MatRadioChange) {
+    this.troopConfig.selectedSetupType = $event.value
+  }
+
+  protected readonly setupTypes = setupTypes;
+
+
 }
 

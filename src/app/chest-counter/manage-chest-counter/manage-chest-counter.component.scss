@@ -1,0 +1,18 @@
+@use '@angular/material' as mat;
+
+
+.mat-mdc-row:hover {
+  background-color: #1F305E;
+  cursor: pointer;
+}
+
+.action-button{
+  margin-right:8px;
+
+}
+
+
+.table-container {
+  max-height: 80%;
+  width: 100%;
+}

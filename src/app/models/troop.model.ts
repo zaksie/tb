@@ -1,4 +1,4 @@
-import {secondaryDivisions, TroopType} from "./troop-type";
+import {getMainDivision, getSecondaryDivision, secondaryDivisions, TroopType} from "./troop-type";
 import {ConscriptionType} from "./conscription-type";
 import {Bonus} from "./bonus.model";
 
@@ -7,6 +7,8 @@ export class Troop {
   strengthBonus: number = 0;
   featureBonus: number = 0;
   _doubleStrength: boolean = false;
+  private romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
+
   get doubleStrength(): boolean {
     return this._doubleStrength
   }
@@ -32,8 +34,8 @@ export class Troop {
     return this.strength * (this.strengthBonus / 100 + 1) * (this.doubleStrength ? 2 : 1)
   }
 
-  get weightedTotalStrength(): number{
-    return this.strength * ((this.strengthBonus + this.featureBonus) / 100 + 1) * (this.doubleStrength ? 2 : 1)/ this.conscriptionWeight
+  get weightedTotalStrength(): number {
+    return this.strength * ((this.strengthBonus + this.featureBonus) / 100 + 1) * (this.doubleStrength ? 2 : 1) / this.conscriptionWeight
   }
 
   get totalHealth(): number {
@@ -46,6 +48,19 @@ export class Troop {
 
   get id(): string {
     return [this.name, this.allTypes, this.level, ConscriptionType[this.conscriptionType]].join(' | ')
+  }
+
+  get levelRoman(): string {
+    return this.romanNumerals[this.level - 1]
+  }
+
+  get mainDivision(): string {
+    return getMainDivision(this.types, 'full')
+  }
+
+  get secondaryDivision(): string {
+    return getSecondaryDivision(this.types)
+
   }
 
   get levelId(): string {
@@ -75,6 +90,7 @@ export interface TroopBonusData {
   health: { [key: string]: number }
   strength: { [key: string]: number }
 }
+
 export interface TroopBonusDataBasic {
   health: number
   strength: number
@@ -83,11 +99,16 @@ export interface TroopBonusDataBasic {
 export interface BonusesObject {
   epic: TroopBonusDataBasic
   army: TroopBonusDataBasic
-  [key:string]: TroopBonusDataBasic;
+
+  [key: string]: TroopBonusDataBasic;
 }
 
 export class Squad {
   private bonuses!: BonusesObject;
+
+  get image(): string {
+    return `assets/troops/${this.troop.mainDivision.toLowerCase()}.${this.troop.levelRoman}.${this.troop.secondaryDivision.toLowerCase()}.png`
+  }
 
   constructor(public troop: Troop = newTroop(), public selected: boolean = false, public leadershipCount = 0) {
   }

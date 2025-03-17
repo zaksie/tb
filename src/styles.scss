@@ -1,11 +1,75 @@
 /* You can add global styles to this file, and also import other style files */
 @use '@angular/material' as mat;
 
-:root {
-  @include mat.toolbar-overrides((
-    container-background-color: black,
-    container-text-color: whitesmoke,
+//:root {
+//  @include mat.toolbar-overrides((
+//    container-background-color: #191922,
+//    container-text-color: whitesmoke
+//  ));
+//}
+//
+//:root {
+//  @include mat.card-overrides((
+//    subtitle-text-color: gold,
+//    elevated-container-color: black,
+//    outlined-container-color: #191922,
+//    outlined-outline-color: #705549
+//  ));
+//}
+//
+//:root {
+//  @include mat.button-overrides((
+//    filled-container-color: #705549,
+//    filled-label-text-color: whitesmoke,
+//  ));
+//}
+
+html {
+  color-scheme: dark;
+  @include mat.theme((
+    color: mat.$cyan-palette,
+    typography: Roboto,
+    density: 0
   ));
 }
-html, body { height: 100%; }
+@font-face {
+  font-family: "Sketch Gothic School";
+  src: local("Sketch Gothic School"),
+  url("/assets/Sketch Gothic School.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Cardinal";
+  src: local("Cardinal"),
+  url("/assets/Cardinal.ttf") format("truetype");
+}
+html, body { height: 100%; overflow: hidden }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.example-loading-shade {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+
+}
+.no-scroll {
+  height: 100%;
+  margin:0;
+  overflow: hidden;
+}
+.activate-button {
+  color: dodgerblue;
+  @include mat.button-overrides((
+    filled-container-color: dodgerblue,
+    filled-label-text-color: white,
+  ));
+}
+.suspend-button {
+  color: red;
+  @include mat.button-overrides((
+    //filled-container-color: orange,
+    filled-label-text-color: red,
+  ));
+}

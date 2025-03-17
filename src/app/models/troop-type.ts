@@ -40,3 +40,9 @@ export const getMainDivision = (tts: TroopType[], format: 'short' | 'full' = 'fu
     return res
 }
 
+export const getSecondaryDivision = (tts: TroopType[]) => {
+  const tt = tts.find(x => secondaryDivisions.includes(x))
+  if (!tt) return ''
+  return TroopType[tt as TroopType]
+}
+

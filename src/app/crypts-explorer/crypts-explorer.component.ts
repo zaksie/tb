@@ -1,0 +1,152 @@
+import {AfterViewInit, Component, inject, model, signal, ViewChild} from '@angular/core';
+import {MatPaginator} from "@angular/material/paginator";
+import {ChestCounter} from "../models/clan-data.model";
+import {BackendService} from "../services/backend.service";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {Router} from "@angular/router";
+import {MatTableDataSource} from "@angular/material/table";
+import {CryptConfig} from "./crypts.model";
+import {take} from "rxjs";
+
+
+@Component({
+  selector: 'app-crypts-explorer',
+  templateUrl: './crypts-explorer.component.html',
+  styleUrl: './crypts-explorer.component.scss',
+  standalone: false
+})
+export class CryptsExplorerComponent implements AfterViewInit {
+  displayedColumns: string[] = ['username', 'progress', 'kingdom', 'clan', 'range', 'types', 'schedule', 'status', 'actions'];
+  public dataSource = new MatTableDataSource<CryptConfig>([]);
+
+  readonly name = model('');
+  readonly dialog = inject(MatDialog);
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  private isLoading: boolean = true;
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(CreateCryptExplorerDialog,
+      {data: {low: 1, high:35, start:1, end: 6}});
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.fetch()
+    });
+  }
+
+  private fetch(){
+    this.backend.getCryptExplorers().pipe(take(1)).subscribe(rows => this.populateData(rows) )
+  }
+  constructor(private backend: BackendService, private router: Router) {
+
+  }
+
+  ngAfterViewInit() {
+    this.fetch()
+    this.dataSource.paginator = this.paginator;
+  }
+
+  populateData(data: CryptConfig[]) {
+    this.isLoading = false
+    console.log('data', data)
+    this.dataSource.data = data
+  }
+
+  editRow(mouseEvent: MouseEvent, row: any) {
+    const dialogRef = this.dialog.open(CreateCryptExplorerDialog,
+      {data: row}
+    );
+  }
+
+  activate(mouseEvent: MouseEvent, row: CryptConfig) {
+    mouseEvent.stopImmediatePropagation()
+    row.status = row.status || {}
+    row.status.isDirty = true
+    this.backend.startCryptExplorer(row.username).subscribe(() => this.fetch())
+  }
+
+  suspend(mouseEvent: MouseEvent, row: CryptConfig) {
+    mouseEvent.stopImmediatePropagation()
+    row.status = row.status || {}
+    row.status.isDirty = true
+    this.backend.stopCryptExplorer(row.username).subscribe(() => this.fetch())
+  }
+
+  delete(mouseEvent: MouseEvent, row: CryptConfig) {
+    mouseEvent.stopImmediatePropagation()
+    if (confirm("Are you sure to delete " + row.username)) {
+      row.status = row.status || {}
+      row.status.isDirty = true
+      this.backend.deleteCryptExplorer(row.username).subscribe(() => this.fetch())
+    }
+  }
+
+  getCryptTypes(row: CryptConfig) {
+    const types = []
+    types.push(row.common ? 'Common' : null)
+    types.push(row.rare ? 'Rare' : null)
+    types.push(row.epic ? 'Epic' : null)
+    return types.filter(x => !!x).join(', ')
+  }
+
+  getSchedule(row: CryptConfig) {
+    const startStr = row.start.toString().padStart(2, '0') + ':00'
+    const endStr = row.end.toString().padStart(2, '0') + ':00'
+    return startStr + '-' + endStr + ', ' + row.timezone
+  }
+}
+
+
+@Component({
+  selector: 'create-crypts-explorer-dialog',
+  templateUrl: 'crypts-explorer-dialog.html',
+  standalone: false
+})
+export class CreateCryptExplorerDialog {
+  readonly dialogRef = inject(MatDialogRef<CreateCryptExplorerDialog>);
+  readonly data = inject<CryptConfig>(MAT_DIALOG_DATA);
+  hide = signal(true);
+  readonly backend = inject(BackendService)
+
+  inputForm = new FormGroup({
+    username: new FormControl(this.data?.username || '', Validators.required),
+    password: new FormControl(this.data?.password || '', Validators.required),
+    kingdom: new FormControl(this.data?.kingdom || '', Validators.required),
+    clanTag: new FormControl(this.data?.clanTag || '', Validators.required),
+
+    total: new FormControl(this.data?.total || 0, Validators.required),
+    low: new FormControl(this.data?.low || 0, Validators.required),
+    high: new FormControl(this.data?.high || 0, Validators.required),
+    common: new FormControl(this.data?.common || true, Validators.required),
+    rare: new FormControl(this.data?.rare || true, Validators.required),
+    epic: new FormControl(this.data?.epic || true, Validators.required),
+
+    start: new FormControl(this.data?.start || 0, Validators.required),
+    end: new FormControl(this.data?.end || 0, Validators.required),
+  });
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  clickEvent(event: MouseEvent) {
+    console.log(this.data)
+    this.hide.set(!this.hide());
+    event.stopPropagation();
+  }
+
+  onSubmit() {
+    const value = this.inputForm.getRawValue() as any as CryptConfig;
+    console.log(value)
+    value.timezone = this.getTimezone()
+    this.backend.submitCryptConfig(value).subscribe(() => this.dialogRef.close())
+  }
+
+  formatHourLabel(value: number): string {
+    return value.toString().padStart(2, '0') + ':00'
+  }
+
+  getTimezone() {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone
+  }
+}

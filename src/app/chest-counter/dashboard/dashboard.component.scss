@@ -1,0 +1,75 @@
+@use '@angular/material' as mat;
+
+.grid-container {
+  margin: 20px;
+  .tracked{
+    color: yellow;
+    font-weight: bolder;
+  }
+}
+
+.dashboard-card {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
+}
+
+.more-button {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
+
+.dashboard-card-content {
+  display: flex;
+  flex-flow:row;
+  height: 100%;
+  align-items: center;
+  justify-content: space-evenly;
+  .task {
+    width:100px;
+    height: 100px;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    h1 {
+      bottom: 32px;
+      position:absolute;
+    }
+    h5 {
+      bottom: 12px;
+      position:absolute;
+    }
+  }
+  .overlay {
+    position: absolute;
+  }
+  .spinner-icon{
+    width: 80px;
+    height: 80px;
+    margin: 10px;
+    font-size: 80px;
+    color: yellow;
+  }
+  .spinner-main{
+    @include mat.progress-spinner-overrides((
+      active-indicator-color: yellow,
+    ));
+  }
+  .spinner-shadow{
+    @include mat.progress-spinner-overrides((
+      active-indicator-color: darkgray,
+    ));
+  }
+}
+
+.dashboard-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  button {
+    margin-right: 24px;
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "leadership": 1245186,
+  "dominance": 0,
+  "selectedLevels": [
+    "G8",
+    "G9",
+    "S8",
+    "S9"
+  ],
+  "attackType": "epic",
+  "selectedSetupType": 0,
+  "bonusConfigs": [
+    {
+      "setupType": 0,
+      "config": "epic:\n  strength: 1000\narmy:\n  health: 2000\n  strength: 2000\n"
+    },
+    {
+      "setupType": 1,
+      "config": "epic:\n  strength: 0\nguardsman:\n  health: 0\n  strength: 0\nspecialist:\n  health: 0\n  strength: 0\n"
+    },
+    {
+      "setupType": 2,
+      "config": "epic:\n  strength: 0\nguardsman:\n  health: 0\n  strength: 0\nspecialist:\n  health: 2333\n  strength: 432\nranged:\n  health: 0\n  strength: 0\nmelee:\n  health: 0\n  strength: 0\nmounted:\n  health: 0\n  strength: 0\nflying:\n  health: 0\n  strength: 0\n"
+    }
+  ]
+}
