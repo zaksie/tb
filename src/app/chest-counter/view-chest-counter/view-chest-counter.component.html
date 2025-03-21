@@ -1,21 +1,54 @@
 <div>
+  <!--  <mat-autocomplete #auto="matAutocomplete" [displayWith]="getOptionText">-->
+  <!--    @for (option of searchResults$|async; track option) {-->
+  <!--      <mat-option [value]="option">-->
+  <!--        <mat-chip disabled>K{{ option.kingdom }}</mat-chip>-->
+  <!--        /-->
+  <!--        <mat-chip disabled>{{ option.tag }}</mat-chip>-->
+  <!--      </mat-option>-->
+  <!--    }-->
+  <!--  </mat-autocomplete>-->
   <mat-toolbar>
     <div class="controls">
-      <mat-form-field subscriptSizing="dynamic">
-        <input matInput type="text" name="selectedProfile" placeholder="Enter clan name"
-               [(ngModel)]="clanName">
-        <button matSuffix mat-icon-button aria-label="find" (click)="find()" [disabled]="!clanName">
-          <mat-icon>search</mat-icon>
-        </button>
-      </mat-form-field>
+      <form (ngSubmit)="onSubmit()">
+        <mat-form-field subscriptSizing="dynamic">
+          <input matInput type="text" name="selectedProfile" placeholder="Enter clan tag"
+                 [formControl]="clanTagControl">
+          <!--               [matAutocomplete]="auto">-->
+          <button matSuffix mat-icon-button aria-label="find" [disabled]="!clanTagControl.valid"
+                  type="submit">
+            <mat-icon>search</mat-icon>
+          </button>
+        </mat-form-field>
+      </form>
+      @if (chestCounters$|async; as chestCounters) {
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Your chest counters</mat-label>
+          <mat-select [(ngModel)]="selectedChestCounter" (selectionChange)="getByClanTag($event.value.clanTag)">
+            @for (chestCounter of chestCounters; track chestCounter) {
+              <mat-option [value]="chestCounter">
+                <mat-chip disabled>K{{ chestCounter.kingdom }}</mat-chip>
+                /
+                <mat-chip disabled>{{ chestCounter.clanTag }}</mat-chip>
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
     </div>
   </mat-toolbar>
   <br>
-
   <div class="example-loading-shade" *ngIf="isLoading">
     <mat-spinner [diameter]="40"></mat-spinner>
   </div>
-
+      <mat-card class="clan-dashboard">
+        <mat-card-content>
+          @for (task of tasks; track task.title) {
+            <app-task [task]="task"></app-task>
+          }
+        </mat-card-content>
+      </mat-card>
+  <br>
   <table class="mat-elevation-z8" mat-table [dataSource]="dataSource" matSort>
     <ng-container matColumnDef="track">
       <th mat-header-cell *matHeaderCellDef>

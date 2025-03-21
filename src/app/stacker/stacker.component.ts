@@ -1,14 +1,11 @@
-import {afterNextRender, Component, inject, Injector, signal, ViewChild} from '@angular/core';
-import {Squad, Troop} from "../models/troop.model";
-import {Dictionary, groupBy} from "lodash";
-import {Store} from "@ngrx/store";
-import {State} from "../store/state.reducer";
+import {Component, signal} from '@angular/core';
+import {Squad} from "../models/troop.model";
+import {Dictionary} from "lodash";
 import {COOKIE_TROOP_CONFIG, mercenaries, TroopColors, troops} from '../troops.data';
 import {calculateStack, SetupType} from "./stacker";
 import YAML from 'yaml'
 import {MatRadioChange} from "@angular/material/radio";
 import {setupTypes, TroopConfig} from "./stacker-data";
-import {CdkTextareaAutosize} from "@angular/cdk/text-field";
 
 // @ts-ignore
 
@@ -40,7 +37,7 @@ export class StackerComponent {
   readonly SetupType = SetupType
   public monacoLoaded = signal(false)
 
-  constructor(private store: Store<State>) {
+  constructor() {
     const _troopConfig = this.loadConfig(COOKIE_TROOP_CONFIG)
     try {
       const data = JSON.parse(_troopConfig)
@@ -56,9 +53,9 @@ export class StackerComponent {
 
     console.log(bonusesObj)
     const armyLevels = this.troopConfig.selectedLevels.filter(x => x.startsWith('G') || x.startsWith('S'))
-    const monsterLevels = this.troopConfig.selectedLevels.filter(x => x.startsWith('M'))
+    // const monsterLevels = this.troopConfig.selectedLevels.filter(x => x.startsWith('M'))
     const armySquads = calculateStack(armyLevels, bonusesObj, this.troopConfig.leadership)
-    const monsterSquads: Squad[] = []//calculateStack(monsterLevels, bonusesObj, this.dominance, this.attackType, armySquads[0])
+    // const monsterSquads: Squad[] = []//calculateStack(monsterLevels, bonusesObj, this.dominance, this.attackType, armySquads[0])
     // this.tiersDict = groupBy([...armySquads, ...monsterSquads], x => x.troop.levelId)
     this.troopList = armySquads.sort((a,b) => b.troop.strength - a.troop.strength)
   }

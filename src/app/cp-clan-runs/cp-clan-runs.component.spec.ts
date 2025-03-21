@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { CpClanRunsComponent } from './cp-clan-runs.component';
+import {CpClanRunsComponent} from './cp-clan-runs.component';
 
 describe('CpClanRunsComponent', () => {
   let component: CpClanRunsComponent;

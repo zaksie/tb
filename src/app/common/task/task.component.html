@@ -1,0 +1,12 @@
+<div class="task">
+  <mat-icon class="spinner-icon overlay" *ngIf="task.counter >= task.goal">task_alt</mat-icon>
+  <mat-progress-spinner mode="determinate" class="spinner-shadow overlay"
+                        value="100"></mat-progress-spinner>
+  <mat-progress-spinner
+    class="spinner-main overlay"
+    [mode]="task.goal > 0 ? 'determinate' : 'indeterminate'"
+    [value]="task.counter / task.goal * 100">
+  </mat-progress-spinner>
+  <div class="task-title">{{task.title}}</div>
+  <div class="task-subtitle">{{task.counter}}{{task.goal > 0 ? '/' + task.goal : ''}}</div>
+</div>

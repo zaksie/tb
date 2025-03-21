@@ -1,7 +1,5 @@
 import {BonusesObject, Squad} from "../models/troop.model";
 import {getTier} from "../troops.data";
-import {groupBy} from "lodash";
-import {secondaryDivisions, TroopType} from "../models/troop-type";
 
 
 export function calculateStack(selectedLevels: string[], bonusesObj: BonusesObject, size: number, cappingSquad: Squad | undefined = undefined){

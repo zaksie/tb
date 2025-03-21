@@ -4,7 +4,7 @@ import {ChestAgg, enrichWithFeature} from "../models/clan-data.model";
 import {FeatureModel} from "../landing-page/feature/feature.model";
 import features from '../../assets/features.json'
 import {AuthService} from "@auth0/auth0-angular";
-import {filter, map, switchMap, tap} from "rxjs";
+import {filter, switchMap} from "rxjs";
 
 
 @Component({
@@ -23,7 +23,7 @@ export class NavigatorComponent {
     this.backend.dashboards$.subscribe(dashboards => this.updateTree(dashboards))
     this.auth.isAuthenticated$.pipe(
       filter(isAuthenticated => isAuthenticated),
-      switchMap(isAuthenticated => this.backend.getTrackPlayersList())
+      switchMap(() => this.backend.getTrackPlayersList())
     ).subscribe()
   }
 
@@ -44,6 +44,6 @@ export class NavigatorComponent {
   }
 
   login() {
-    this.auth.loginWithPopup()
+    this.auth.loginWithPopup().subscribe()
   }
 }

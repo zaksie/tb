@@ -1,19 +1,22 @@
-<table class="mat-elevation-z8" mat-table [dataSource]="dataSource">
-  <ng-container matColumnDef="timestamp">
-    <th mat-header-cell *matHeaderCellDef>
-      Player
-    </th>
-    <td mat-cell *matCellDef="let row"> {{ row.timestamp }}</td>
-  </ng-container>
+<div>
+  <app-table-actions serviceName="merc-exchange/server" [row]="ROW"></app-table-actions>
+  <table class="mat-elevation-z8" mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="timestamp">
+      <th mat-header-cell *matHeaderCellDef>
+        Player
+      </th>
+      <td mat-cell *matCellDef="let row"> {{ row.timestamp }}</td>
+    </ng-container>
 
-  <ng-container matColumnDef="coordinates">
-    <th mat-header-cell *matHeaderCellDef >
-      Coordinates
-    </th>
-    <td mat-cell *matCellDef="let row"> (K:{{row.k}}, X:{{row.x}}, Y:{{row.y}}) </td>
-  </ng-container>
+    <ng-container matColumnDef="coordinates">
+      <th mat-header-cell *matHeaderCellDef>
+        Coordinates
+      </th>
+      <td mat-cell *matCellDef="let row"> (K:{{ row.k }}, X:{{ row.x }}, Y:{{ row.y }})</td>
+    </ng-container>
 
-  <!-- Weight Column -->
-  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+    <!-- Weight Column -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {RouterModule, Routes, withHashLocation, withRouterConfig} from '@angular/router';
+import {RouterModule, Routes} from '@angular/router';
 import {StackerComponent} from "./stacker/stacker.component";
 import {CpClanRunsComponent} from "./cp-clan-runs/cp-clan-runs.component";
 import {RedirectGuard} from "./services/redirect-guard.service";

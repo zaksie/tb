@@ -1,10 +1,10 @@
 import {AfterViewInit, Component, Input} from '@angular/core';
-import {Troop, Squad} from "../../models/troop.model";
-import {count, filter, map, Observable, tap, withLatestFrom} from "rxjs";
-import {select, Store} from "@ngrx/store";
+import {Squad} from "../../models/troop.model";
+import {filter, map, tap} from "rxjs";
+import {Store} from "@ngrx/store";
 import {selectTroopState, State} from "../../store/state.reducer";
 import {OptimizationService} from "../../services/optimization.service";
-import {SET_TROOP_COUNT, setTroopCount} from "../../store/state.actions";
+import {SET_TROOP_COUNT} from "../../store/state.actions";
 
 @Component({
     selector: 'app-squad',

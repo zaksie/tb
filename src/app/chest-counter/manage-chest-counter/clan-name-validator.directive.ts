@@ -1,8 +1,7 @@
-import {Directive, inject} from '@angular/core';
-import {map, mergeMap, Observable, of, tap} from 'rxjs';
+import {Directive} from '@angular/core';
+import {map, Observable, of, tap} from 'rxjs';
 import {AbstractControl, AsyncValidator, NG_ASYNC_VALIDATORS, ValidationErrors} from "@angular/forms";
 import {BackendService} from "../../services/backend.service";
-import {CreateChestCounterDialog} from "./manage-chest-counter.component";
 
 @Directive({
   selector: '[clanNameValidator]',
@@ -10,24 +9,24 @@ import {CreateChestCounterDialog} from "./manage-chest-counter.component";
   standalone: false
 })
 export class ClanNameValidatorDirective implements AsyncValidator {
-  currentClanName: string = '';
+  currentClanTag: string = '';
 
   constructor(private backendService: BackendService) {
   }
 
-  static create(currentClanName: string, backendService: BackendService): (control: AbstractControl) => Observable<ValidationErrors | null> {
+  static create(currentClanTag: string, backendService: BackendService): (control: AbstractControl) => Observable<ValidationErrors | null> {
     const v = new ClanNameValidatorDirective(backendService);
-    console.log('creating ClanNameValidatorDirective with ' + currentClanName);
-    v.currentClanName = currentClanName;
+    console.log('creating ClanNameValidatorDirective with ' + currentClanTag);
+    v.currentClanTag = currentClanTag;
     return v.validate.bind(v)
   }
 
   validate(control: AbstractControl): Observable<ValidationErrors | null> {
-    console.log('validating ClanNameValidatorDirective with ', this.currentClanName, control.value);
-    if (this.currentClanName === control.value) return of(null)
-    return this.backendService.checkClanNameAvailable(control.value).pipe(
+    console.log('validating ClanNameValidatorDirective with ', this.currentClanTag, control.value);
+    if (this.currentClanTag === control.value) return of(null)
+    return this.backendService.checkClanTagAvailable(control.value).pipe(
       tap((res: any) => console.log(res)),
-      map((res: any) => +res < 1 ? null : {error: 'Name is already taken'})
+      map((res: any) => +res < 1 ? null : {error: 'Tag is already taken'})
     )
   }
 

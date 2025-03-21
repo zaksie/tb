@@ -59,17 +59,29 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin:0;
   overflow: hidden;
 }
-.activate-button {
-  color: dodgerblue;
+.start-button {
+  color: greenyellow;
   @include mat.button-overrides((
-    filled-container-color: dodgerblue,
+    filled-container-color: greenyellow,
     filled-label-text-color: white,
   ));
 }
-.suspend-button {
-  color: red;
+.stop-button {
+  color: orangered;
   @include mat.button-overrides((
-    //filled-container-color: orange,
+    filled-container-color: orangered,
     filled-label-text-color: red,
   ));
+}
+
+.delete-button {
+  color: indianred;
+  @include mat.button-overrides((
+    filled-container-color: indianred,
+    filled-label-text-color: red,
+  ));
+}
+.full-hw {
+  height: 100%;
+  width: 100%;
 }

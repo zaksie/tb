@@ -4,10 +4,10 @@ import {ChestCounter, PointSystem} from "../../models/clan-data.model";
 import {BackendService} from "../../services/backend.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {Router} from "@angular/router";
 import {ClanNameValidatorDirective} from "./clan-name-validator.directive";
 import {MatTableDataSource} from "@angular/material/table";
 import {take} from "rxjs";
+import {ServiceInterface} from "../../services/service-interface";
 
 
 @Component({
@@ -17,6 +17,7 @@ import {take} from "rxjs";
   standalone: false
 })
 export class ManageChestCounterComponent implements AfterViewInit {
+  protected readonly ServiceInterface = ServiceInterface;
   displayedColumns: string[] = ['username', 'kingdom', 'clanName', 'clanTag', 'status', 'actions'];
   public dataSource = new MatTableDataSource<ChestCounter>([]);
   readonly name = model('');
@@ -25,23 +26,24 @@ export class ManageChestCounterComponent implements AfterViewInit {
   isLoading: boolean = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
+  constructor(protected backend: BackendService) {
+  }
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateChestCounterDialog,
       {data: {defaultPointSystem: this.defaultPointSystem}}
     );
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(() => {
       this.fetch()
     });
   }
 
-  private fetch(){
-    this.backend.getChestCounters().pipe(take(1)).subscribe(rows => this.populateData(rows) )
-  }
-  constructor(private backend: BackendService, private router: Router) {
 
+  fetch() {
+    this.backend.getChestCounters().pipe(take(1)).subscribe(rows => this.populateData(rows))
   }
+
+
 
   ngAfterViewInit() {
     this.fetch()
@@ -56,34 +58,13 @@ export class ManageChestCounterComponent implements AfterViewInit {
   }
 
   editRow(mouseEvent: MouseEvent, row: any) {
-    const dialogRef = this.dialog.open(CreateChestCounterDialog,
+    this.dialog.open(CreateChestCounterDialog,
       {data: {...row, defaultPointSystem: this.defaultPointSystem}}
     );
   }
 
-  start(mouseEvent: MouseEvent, row: ChestCounter) {
-    mouseEvent.stopImmediatePropagation()
-    row.status = row.status || {}
-    row.status.isDirty = true
-    this.backend.startChestCounter(row.username).subscribe(() => this.fetch())
-  }
 
-  stop(mouseEvent: MouseEvent, row: ChestCounter) {
-    mouseEvent.stopImmediatePropagation()
-    row.status = row.status || {}
-    row.status.isDirty = true
-    this.backend.stopChestCounter(row.username).subscribe(() => this.fetch())
-  }
-  delete(mouseEvent: MouseEvent, row: ChestCounter) {
-    mouseEvent.stopImmediatePropagation()
-    if(confirm("Are you sure to delete "+ row.username)) {
-      row.status = row.status || {}
-      row.status.isDirty = true
-      this.backend.deleteChestCounter(row.username).subscribe(() => this.fetch())
-    }
-  }
 }
-
 
 
 @Component({
@@ -103,32 +84,37 @@ export class CreateChestCounterDialog {
         'recommended minimal score is 500 points'
     },
     {
-      title:'Competitive clan',
+      title: 'Competitive clan',
       subtitle: 'Include only crypts/citadels level 15+\n' +
         'recommended minimal score is 7k points'
     },
     {
-      title:'Skilled clan',
+      title: 'Skilled clan',
       subtitle: 'Include only crypts/citadels level 25+\n' +
         'recommended minimal score is 15k points'
     }
   ]
 
   inputForm = new FormGroup({
-    clanName: new FormControl(this.data?.clanName || '', {validators: [Validators.required], asyncValidators: [ClanNameValidatorDirective.create(this.data?.clanName, this.backend)]}),
-    clanTag: new FormControl(this.data?.clanTag || '', Validators.required),
+    clanName: new FormControl(this.data?.clanName || '', Validators.required),
+    clanTag: new FormControl(this.data?.clanTag || '', {
+      validators: [Validators.required],
+      asyncValidators: [ClanNameValidatorDirective.create(this.data?.clanTag, this.backend)]
+    }),
     kingdom: new FormControl(this.data?.kingdom || '', Validators.required),
     username: new FormControl(this.data?.username || '', Validators.required),
     password: new FormControl(this.data?.password || '', Validators.required),
+
 
     minScore: new FormControl(this.data?.minScore || '', Validators.required),
     minEpicCryptCount: new FormControl(this.data?.minEpicCryptCount || '', Validators.required),
     level: new FormControl(this.data?.level || 0, Validators.required),
   });
   pointSystem: PointSystem[] = this.data?.pointSystem || this.data?.defaultPointSystem || [];
+
   get pointSystemFormatted(): string {
     const level = this.inputForm.get('level')?.value || 0
-    return this.pointSystem.filter(x=> {
+    return this.pointSystem.filter(x => {
       switch (level) {
         case 0:
           return true
@@ -139,7 +125,7 @@ export class CreateChestCounterDialog {
         default:
           return false
       }
-    }).map(x => x.sourceName.padEnd(30, '.') + x.points.toString().padStart(3,'.'))
+    }).map(x => x.sourceName.padEnd(30, '.') + x.points.toString().padStart(3, '.'))
       .join('\n')
   }
 

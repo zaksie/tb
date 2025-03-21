@@ -1,11 +1,11 @@
 import {Component, inject, Input, OnInit} from '@angular/core';
-import {Breakpoints, BreakpointObserver} from '@angular/cdk/layout';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {catchError, map} from 'rxjs/operators';
-import {ActivatedRoute, Route, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {AuthService} from "@auth0/auth0-angular";
 import {BackendService} from "../../services/backend.service";
-import {mergeMap, Observable, of, switchMap, tap} from "rxjs";
-import {ChestAgg, DashboardTask, NULL_DASHBOARD_TASK} from "../../models/clan-data.model";
+import {mergeMap, Observable, of} from "rxjs";
+import {ChestAgg, GenericTask, NULL_DASHBOARD_TASK} from "../../models/clan-data.model";
 
 export enum DashboardView {
   TASKS = 1
@@ -20,7 +20,7 @@ export enum DashboardView {
 export class DashboardComponent implements OnInit {
   public _playerName!: string
   public _clanName!: string
-  dashboardTasks$ = new Observable<DashboardTask>()
+  tasks$ = new Observable<GenericTask[]>()
 
   @Input()
   set playerName(value: string) {
@@ -41,12 +41,25 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dashboardTasks$ = this.route.paramMap.pipe(mergeMap((params) => {
+    this.tasks$ = this.route.paramMap.pipe(mergeMap((params) => {
         console.log('dashboard selection changed....')
         return this.backend.getDashboardTasks(params.get('clanName'), params.get('playerName'))
-          .pipe(catchError(e => of(NULL_DASHBOARD_TASK)))
-      }),
-      tap((data: DashboardTask) => console.log(data))
+          .pipe(
+            map(dashboardTasks => ([
+              {
+                counter: dashboardTasks.epicCryptCount,
+                goal: dashboardTasks.epicCryptCountGoal,
+                title: 'Epic Crypts'
+              },
+              {
+                counter: dashboardTasks.score,
+                goal: dashboardTasks.scoreGoal,
+                title: 'Score'
+              }
+            ])),
+            catchError(() => of(NULL_DASHBOARD_TASK))
+          )
+      })
     )
   }
 
@@ -70,6 +83,6 @@ export class DashboardComponent implements OnInit {
   untrack() {
     this.untracking = true
     this.backend.untrackPlayer({clanName: this._clanName, playerName: this._playerName} as ChestAgg)
-      .pipe(mergeMap(x => this.backend.getTrackPlayersList())).subscribe()
+      .pipe(mergeMap(() => this.backend.getTrackPlayersList())).subscribe()
   }
 }

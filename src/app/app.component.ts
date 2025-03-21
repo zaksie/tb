@@ -4,7 +4,7 @@ import {AuthService} from "@auth0/auth0-angular";
 import features from '../assets/features.json'
 import {FeatureModel} from "./landing-page/feature/feature.model";
 import {BackendService} from "./services/backend.service";
-import {Observable, Subscription} from "rxjs";
+import {Observable} from "rxjs";
 import {MediaMatcher} from "@angular/cdk/layout";
 import {MatSidenav} from "@angular/material/sidenav";
 
@@ -14,7 +14,7 @@ import {MatSidenav} from "@angular/material/sidenav";
   styleUrls: ['./app.component.scss'],
   standalone: false
 })
-export class AppComponent implements OnDestroy{
+export class AppComponent implements OnDestroy, AfterViewInit {
   title = 'Battle Squire for TotalBattle';
   isAuthenticated$: Observable<boolean>;
   features: FeatureModel[] = features;
@@ -38,11 +38,18 @@ export class AppComponent implements OnDestroy{
     this._mobileQueryListener = () => this.isMobile.set(this._mobileQuery.matches);
     this._mobileQuery.addEventListener('change', this._mobileQueryListener);
 
-    this.isAuthenticated$ = authService.isAuthenticated$
+    this.isAuthenticated$ = this.authService.isAuthenticated$
+    this.authService.isLoading$.subscribe(x => console.log(x))
+    this.authService.error$.subscribe(err => console.log(err))
+    this.authService.appState$.subscribe(x => console.log(x))
+  }
+
+  ngAfterViewInit(): void {
     this.isAuthenticated$.subscribe(value => {
+      console.log('Authenticated:', value)
       if (value) this.snav.open()
     })
-    router.events.subscribe((val) => {
+    this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
         if (this.isMobile())
           this.snav.close()

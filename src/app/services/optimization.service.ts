@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Troop} from "../models/troop.model";
 
 @Injectable({
@@ -12,7 +12,6 @@ export class OptimizationService {
     if (typeof(src) === 'undefined') return 0;
 
     const totalHealth = src.totalHealth * count
-    const res = totalHealth / dest.totalHealth
-    return res
+    return totalHealth / dest.totalHealth
   }
 }

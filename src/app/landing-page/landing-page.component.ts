@@ -25,7 +25,6 @@ export class LandingPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.auth.getAccessTokenSilently()
     this.auth.user$.subscribe((user) => {
       console.log(user)
     })
@@ -37,7 +36,7 @@ export class LandingPageComponent implements OnInit {
   }
 
   login() {
-    this.auth.loginWithPopup()
+    this.auth.loginWithPopup().subscribe()
   }
 
   logout(){

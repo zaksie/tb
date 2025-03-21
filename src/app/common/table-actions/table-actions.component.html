@@ -1,0 +1,22 @@
+<ng-container *ngIf="row">
+  @if (ServiceInterface.isBlocked(row)) {
+    <button mat-icon-button matTooltip="Account is currently being used in a different service" (click)="info($event)">
+      <mat-icon>info</mat-icon>
+    </button>
+  } @else {
+    <button mat-icon-button (click)="start($event, row)" class="action-button"
+            [disabled]="!row.allowAllActions && (row.status.isDirty || row.status.isRunning)">
+      <mat-icon [ngClass]="{'start-button': !row.status.isDirty && !row.status.isRunning}">play_circle
+      </mat-icon>
+    </button>
+
+    <button mat-icon-button (click)="stop($event, row)" class="action-button"
+            [disabled]="!row.allowAllActions && (row.status.isDirty || !row.status.isRunning)">
+      <mat-icon [ngClass]="{'stop-button': !row.status.isDirty && row.status.isRunning}">stop_circle
+      </mat-icon>
+    </button>
+  }
+  <button mat-icon-button (click)="delete($event, row)" class="action-button">
+    <mat-icon class="delete-button">delete</mat-icon>
+  </button>
+</ng-container>

@@ -1,4 +1,4 @@
-import { default as auth } from '../../auth_config.json';
+import {default as auth} from '../../auth_config.json';
 
 export const environment = {
   production: false,

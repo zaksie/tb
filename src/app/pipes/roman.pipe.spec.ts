@@ -1,4 +1,4 @@
-import { RomanPipe } from './roman.pipe';
+import {RomanPipe} from './roman.pipe';
 
 describe('RomanPipe', () => {
   it('create an instance', () => {

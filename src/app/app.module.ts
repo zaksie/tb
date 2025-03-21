@@ -33,7 +33,7 @@ import {LandingPageComponent} from './landing-page/landing-page.component';
 import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatTableModule} from "@angular/material/table";
 import {FeatureComponent} from "./landing-page/feature/feature.component";
-import {AuthHttpInterceptor, authHttpInterceptorFn, AuthModule, provideAuth0} from "@auth0/auth0-angular";
+import {authHttpInterceptorFn, provideAuth0} from "@auth0/auth0-angular";
 import {environment} from "../environments/environment";
 import {CdkMenu, CdkMenuItem, CdkMenuTrigger} from "@angular/cdk/menu";
 import {MatMenuModule} from "@angular/material/menu";
@@ -41,7 +41,7 @@ import {HomeComponent} from "./home/home.component";
 import {ViewChestCounterComponent} from "./chest-counter/view-chest-counter/view-chest-counter.component";
 import {MatSortModule} from "@angular/material/sort";
 import {BackendService} from "./services/backend.service";
-import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptors} from "@angular/common/http";
+import {provideHttpClient, withInterceptors} from "@angular/common/http";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {DashboardComponent} from './chest-counter/dashboard/dashboard.component';
@@ -54,17 +54,21 @@ import {
 } from "./chest-counter/manage-chest-counter/manage-chest-counter.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {ClanNameValidatorDirective} from './chest-counter/manage-chest-counter/clan-name-validator.directive'
-import {MatChip} from "@angular/material/chips";
+import {MatChip, MatChipOption} from "@angular/material/chips";
 import {authenticationErrorInterceptor} from "./services/authentication-error.interceptor";
 import {MonacoEditorModule} from "ngx-monaco-editor-v2";
 import {MercExchangeComponent} from "./merc-exchange/merc-exchange.component";
 import {CreateCryptExplorerDialog, CryptsExplorerComponent} from "./crypts-explorer/crypts-explorer.component";
+import {MatAutocomplete, MatAutocompleteTrigger} from "@angular/material/autocomplete";
+import {TaskComponent} from "./common/task/task.component";
+import {TableActionsComponent} from "./common/table-actions/table-actions.component";
 
 const authorizationParams = {
   scope: "openid profile email offline_access",
   audience: 'https://dev-5ag1lfabqyttq1lj.us.auth0.com/api/v2/',
   redirect_uri: window.location.origin,
 }
+
 
 ////
 
@@ -89,7 +93,9 @@ const authorizationParams = {
     CreateCryptExplorerDialog,
     ClanNameValidatorDirective,
     MercExchangeComponent,
-    CryptsExplorerComponent
+    CryptsExplorerComponent,
+    TaskComponent,
+    TableActionsComponent
   ],
   imports: [
     FlexLayoutModule,
@@ -126,7 +132,10 @@ const authorizationParams = {
     MatTreeModule,
     MatDialogModule,
     MatTabsModule,
-    MatChip
+    MatChip,
+    MatChipOption,
+    MatAutocomplete,
+    MatAutocompleteTrigger
   ],
   providers: [
     provideAuth0({

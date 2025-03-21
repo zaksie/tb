@@ -1,13 +1,12 @@
 import {AfterViewInit, Component, inject, model, signal, ViewChild} from '@angular/core';
 import {MatPaginator} from "@angular/material/paginator";
-import {ChestCounter} from "../models/clan-data.model";
 import {BackendService} from "../services/backend.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {Router} from "@angular/router";
 import {MatTableDataSource} from "@angular/material/table";
 import {CryptConfig} from "./crypts.model";
 import {take} from "rxjs";
+import {ServiceInterface} from "../services/service-interface";
 
 
 @Component({
@@ -20,25 +19,27 @@ export class CryptsExplorerComponent implements AfterViewInit {
   displayedColumns: string[] = ['username', 'progress', 'kingdom', 'clan', 'range', 'types', 'schedule', 'status', 'actions'];
   public dataSource = new MatTableDataSource<CryptConfig>([]);
 
+
   readonly name = model('');
   readonly dialog = inject(MatDialog);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   private isLoading: boolean = true;
 
+
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateCryptExplorerDialog,
-      {data: {low: 1, high:35, start:1, end: 6}});
+      {data: {low: 1, high: 35, start: 1, end: 6}});
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(() => {
       this.fetch()
     });
   }
 
-  private fetch(){
-    this.backend.getCryptExplorers().pipe(take(1)).subscribe(rows => this.populateData(rows) )
+  fetch() {
+    this.backend.getCryptExplorers().pipe(take(1)).subscribe(rows => this.populateData(rows))
   }
-  constructor(private backend: BackendService, private router: Router) {
 
+  constructor(protected backend: BackendService) {
   }
 
   ngAfterViewInit() {
@@ -53,33 +54,11 @@ export class CryptsExplorerComponent implements AfterViewInit {
   }
 
   editRow(mouseEvent: MouseEvent, row: any) {
-    const dialogRef = this.dialog.open(CreateCryptExplorerDialog,
+    this.dialog.open(CreateCryptExplorerDialog,
       {data: row}
     );
   }
 
-  activate(mouseEvent: MouseEvent, row: CryptConfig) {
-    mouseEvent.stopImmediatePropagation()
-    row.status = row.status || {}
-    row.status.isDirty = true
-    this.backend.startCryptExplorer(row.username).subscribe(() => this.fetch())
-  }
-
-  suspend(mouseEvent: MouseEvent, row: CryptConfig) {
-    mouseEvent.stopImmediatePropagation()
-    row.status = row.status || {}
-    row.status.isDirty = true
-    this.backend.stopCryptExplorer(row.username).subscribe(() => this.fetch())
-  }
-
-  delete(mouseEvent: MouseEvent, row: CryptConfig) {
-    mouseEvent.stopImmediatePropagation()
-    if (confirm("Are you sure to delete " + row.username)) {
-      row.status = row.status || {}
-      row.status.isDirty = true
-      this.backend.deleteCryptExplorer(row.username).subscribe(() => this.fetch())
-    }
-  }
 
   getCryptTypes(row: CryptConfig) {
     const types = []
@@ -94,6 +73,8 @@ export class CryptsExplorerComponent implements AfterViewInit {
     const endStr = row.end.toString().padStart(2, '0') + ':00'
     return startStr + '-' + endStr + ', ' + row.timezone
   }
+
+  protected readonly ServiceInterface = ServiceInterface;
 }
 
 

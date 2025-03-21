@@ -1,0 +1,45 @@
+@use '@angular/material' as mat;
+
+.task {
+  position: relative;
+  width:100px;
+  height: 160px;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  text-align: center;
+  margin: 24px;
+  .task-title {
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0.6);
+    color: whitesmoke;
+    bottom: 32px;
+    position:absolute;
+  }
+  .task-subtitle {
+    background: rgba(0, 0, 0, 0.6);
+    color: antiquewhite;
+    bottom: 12px;
+    position:absolute;
+  }
+  .overlay {
+    position: absolute;
+  }
+  .spinner-icon{
+    width: 80px;
+    height: 80px;
+    margin: 10px;
+    font-size: 80px;
+    color: yellow;
+  }
+  .spinner-main{
+    @include mat.progress-spinner-overrides((
+      active-indicator-color: yellow,
+    ));
+  }
+  .spinner-shadow{
+    @include mat.progress-spinner-overrides((
+      active-indicator-color: darkgray,
+    ));
+  }
+}

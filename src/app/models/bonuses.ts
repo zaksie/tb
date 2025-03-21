@@ -1,4 +1,3 @@
-import {Bonus} from "./bonus.model";
 import {TroopType} from "./troop-type";
 
 export class Bonuses {

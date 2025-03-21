@@ -1,14 +1,6 @@
-import {
-    Action,
-    ActionReducerMap,
-    ActionType,
-    createFeatureSelector,
-    createReducer,
-    createSelector,
-    on
-} from '@ngrx/store';
+import {createReducer, createSelector, on} from '@ngrx/store';
 import {setBonuses, setTroopCount} from './state.actions';
-import {Troop, Squad} from "../models/troop.model";
+import {Troop} from "../models/troop.model";
 import {Bonuses} from "../models/bonuses";
 
 export interface TroopState {

@@ -1,4 +1,3 @@
-@use '@angular/material' as mat;
 
 .grid-container {
   margin: 20px;
@@ -28,41 +27,8 @@
   height: 100%;
   align-items: center;
   justify-content: space-evenly;
-  .task {
-    width:100px;
-    height: 100px;
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    h1 {
-      bottom: 32px;
-      position:absolute;
-    }
-    h5 {
-      bottom: 12px;
-      position:absolute;
-    }
-  }
-  .overlay {
-    position: absolute;
-  }
-  .spinner-icon{
-    width: 80px;
-    height: 80px;
-    margin: 10px;
-    font-size: 80px;
-    color: yellow;
-  }
-  .spinner-main{
-    @include mat.progress-spinner-overrides((
-      active-indicator-color: yellow,
-    ));
-  }
-  .spinner-shadow{
-    @include mat.progress-spinner-overrides((
-      active-indicator-color: darkgray,
-    ));
-  }
+
+
 }
 
 .dashboard-header {

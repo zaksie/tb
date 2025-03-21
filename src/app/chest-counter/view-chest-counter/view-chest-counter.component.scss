@@ -5,8 +5,10 @@
   justify-content: center;
   font-size: 12px;
   height:100%;
+  mat-form-field {
+    margin-right: 12px;
+  }
 }
-
 .table-container {
   height: 900px;
   overflow: auto;
@@ -15,5 +17,14 @@
   .tracked{
     color: yellow;
     font-weight: bolder;
+  }
+}
+.clan-dashboard {
+  height:100%;
+  width:100%;
+  mat-card-content {
+    display: flex;
+    justify-content: space-evenly;
+    flex-flow: row wrap;
   }
 }

@@ -24,12 +24,25 @@ export interface DashboardTaskRaw {
   requirements: {minScore: number, minEpicCryptCount: number}[]
 }
 
-export const NULL_DASHBOARD_TASK = {
-  epicCryptCount: 1,
-  epicCryptCountGoal:1,
-  score: 1,
-  scoreGoal: 1,
+export const NULL_DASHBOARD_TASK = [
+  {
+    counter: 0,
+    goal: 0,
+    title: 'Epic Crypts'
+  },
+  {
+    counter: 0,
+    goal: 0,
+    title: 'Score'
+  }
+]
+
+export interface GenericTask {
+  counter: number
+  goal: number
+  title: string
 }
+
 export interface DashboardTask {
   epicCryptCount: number
   epicCryptCountGoal: number
@@ -48,6 +61,8 @@ export interface Chest {
 export interface ChestCounterStatus {
   isDirty: boolean;
   isRunning: boolean
+  accountRunningAnotherService: boolean
+  restartCount: number
 }
 
 export interface ChestCounter {

@@ -1,5 +1,3 @@
-import {Troop} from "./troop.model";
-
 export enum TroopType {
     All,
     Guardsman,
