@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, inject, model, signal, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject, model, OnInit, signal, ViewChild} from '@angular/core';
 import {MatPaginator} from "@angular/material/paginator";
 import {ChestCounter, PointSystem} from "../../models/clan-data.model";
 import {BackendService} from "../../services/backend.service";
@@ -6,8 +6,11 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {ClanNameValidatorDirective} from "./clan-name-validator.directive";
 import {MatTableDataSource} from "@angular/material/table";
-import {take} from "rxjs";
+import {combineLatestWith, filter, merge, of, switchMap, take, tap} from "rxjs";
 import {ServiceInterface} from "../../services/service-interface";
+import {catchError} from "rxjs/operators";
+import {AuthService} from "@auth0/auth0-angular";
+import {TaskSetupComponent} from "./task-setup/task-setup.component";
 
 
 @Component({
@@ -23,11 +26,13 @@ export class ManageChestCounterComponent implements AfterViewInit {
   readonly name = model('');
   readonly dialog = inject(MatDialog);
   private defaultPointSystem!: PointSystem[];
-  isLoading: boolean = false;
+  isLoading = signal(false);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  constructor(protected backend: BackendService) {
+  constructor(protected backend: BackendService, private authService: AuthService) {
   }
+
+
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateChestCounterDialog,
       {data: {defaultPointSystem: this.defaultPointSystem}}
@@ -40,21 +45,30 @@ export class ManageChestCounterComponent implements AfterViewInit {
 
 
   fetch() {
-    this.backend.getChestCounters().pipe(take(1)).subscribe(rows => this.populateData(rows))
+    this.isLoading.set(true)
+    this.authService.isAuthenticated$.pipe(
+      filter(isAuthenticated => isAuthenticated),
+      combineLatestWith(this.backend.getChestCounters(), this.backend.getDefaultPointSystem()),
+      catchError(e => {
+        console.error(e)
+        return of([], [])
+      })
+    )
+    .subscribe(([isAuthenticated, rows, pointSystem]) => this.populateData(rows, pointSystem))
   }
 
 
 
   ngAfterViewInit() {
     this.fetch()
-    this.backend.getDefaultPointSystem().subscribe(pointSystem => this.defaultPointSystem = pointSystem);
     this.dataSource.paginator = this.paginator;
   }
 
-  populateData(data: ChestCounter[]) {
-    this.isLoading = false
+  populateData(data: ChestCounter[], pointSystem: PointSystem[]) {
+    this.defaultPointSystem = pointSystem
     console.log('data', data)
     this.dataSource.data = data
+    this.isLoading.set(false)
   }
 
   editRow(mouseEvent: MouseEvent, row: any) {
@@ -62,8 +76,6 @@ export class ManageChestCounterComponent implements AfterViewInit {
       {data: {...row, defaultPointSystem: this.defaultPointSystem}}
     );
   }
-
-
 }
 
 
@@ -94,7 +106,7 @@ export class CreateChestCounterDialog {
         'recommended minimal score is 15k points'
     }
   ]
-
+  @ViewChild(TaskSetupComponent) taskSetup!: TaskSetupComponent;
   inputForm = new FormGroup({
     clanName: new FormControl(this.data?.clanName || '', Validators.required),
     clanTag: new FormControl(this.data?.clanTag || '', {
@@ -111,6 +123,7 @@ export class CreateChestCounterDialog {
     level: new FormControl(this.data?.level || 0, Validators.required),
   });
   pointSystem: PointSystem[] = this.data?.pointSystem || this.data?.defaultPointSystem || [];
+
 
   get pointSystemFormatted(): string {
     const level = this.inputForm.get('level')?.value || 0
@@ -142,8 +155,9 @@ export class CreateChestCounterDialog {
 
   onSubmit() {
     const value = this.inputForm.getRawValue() as any as ChestCounter;
-    console.log(value)
-    this.backend.createChestCounter(value).subscribe(() => this.dialogRef.close())
+    const tasks = this.taskSetup.rows.getRawValue()
+    const payload = {...value, tasks}
+    this.backend.createChestCounter(payload).subscribe(() => this.dialogRef.close())
   }
 
   formatLabel(value: number): string {

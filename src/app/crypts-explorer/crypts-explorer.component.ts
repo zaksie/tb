@@ -1,31 +1,35 @@
-import {AfterViewInit, Component, inject, model, signal, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, inject, model, signal, ViewChild} from '@angular/core';
 import {MatPaginator} from "@angular/material/paginator";
 import {BackendService} from "../services/backend.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {MatTableDataSource} from "@angular/material/table";
 import {CryptConfig} from "./crypts.model";
-import {take} from "rxjs";
+import {filter, of, switchMap, take, tap} from "rxjs";
 import {ServiceInterface} from "../services/service-interface";
+import {catchError} from "rxjs/operators";
+import {AuthService} from "@auth0/auth0-angular";
 
 
 @Component({
   selector: 'app-crypts-explorer',
   templateUrl: './crypts-explorer.component.html',
   styleUrl: './crypts-explorer.component.scss',
-  standalone: false
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class CryptsExplorerComponent implements AfterViewInit {
-  displayedColumns: string[] = ['username', 'progress', 'kingdom', 'clan', 'range', 'types', 'schedule', 'status', 'actions'];
-  public dataSource = new MatTableDataSource<CryptConfig>([]);
-
-
+  readonly displayedColumns: string[] = ['username', 'progress', 'kingdom', 'clan', 'range', 'types', 'schedule', 'status', 'actions'];
+  public readonly dataSource = new MatTableDataSource<CryptConfig>([]);
   readonly name = model('');
   readonly dialog = inject(MatDialog);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  private isLoading: boolean = true;
+  readonly isLoading = signal(false);
 
 
+  constructor(protected backend: BackendService, private authService: AuthService) {
+  }
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateCryptExplorerDialog,
       {data: {low: 1, high: 35, start: 1, end: 6}});
@@ -36,11 +40,19 @@ export class CryptsExplorerComponent implements AfterViewInit {
   }
 
   fetch() {
-    this.backend.getCryptExplorers().pipe(take(1)).subscribe(rows => this.populateData(rows))
+    this.isLoading.set(true)
+    console.log('setting isLoading to true')
+    this.authService.isAuthenticated$.pipe(
+      filter(isAuthenticated => isAuthenticated),
+      switchMap(() => this.backend.getCryptExplorers()),
+      catchError(e => {
+        console.error(e)
+        return of([])
+      })
+    )
+      .subscribe(rows => this.populateData(rows))
   }
 
-  constructor(protected backend: BackendService) {
-  }
 
   ngAfterViewInit() {
     this.fetch()
@@ -48,9 +60,11 @@ export class CryptsExplorerComponent implements AfterViewInit {
   }
 
   populateData(data: CryptConfig[]) {
-    this.isLoading = false
     console.log('data', data)
     this.dataSource.data = data
+    this.isLoading.set(false)
+    console.log('setting isLoading to false')
+
   }
 
   editRow(mouseEvent: MouseEvent, row: any) {

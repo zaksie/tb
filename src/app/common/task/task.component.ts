@@ -9,4 +9,8 @@ import {GenericTask} from "../../models/clan-data.model";
 })
 export class TaskComponent {
   @Input() task!: GenericTask
+
+  get isOpenGoal(): boolean {
+    return this.task.goal <= 0
+  }
 }

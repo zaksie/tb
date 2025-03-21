@@ -75,10 +75,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .delete-button {
-  color: indianred;
+  color: #444;
   @include mat.button-overrides((
-    filled-container-color: indianred,
-    filled-label-text-color: red,
+    filled-container-color: #222,
+    filled-label-text-color: #222,
   ));
 }
 .full-hw {

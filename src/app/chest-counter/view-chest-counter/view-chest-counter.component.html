@@ -9,7 +9,7 @@
   <!--    }-->
   <!--  </mat-autocomplete>-->
   <mat-toolbar>
-    <div class="controls">
+<!--    <div class="controls">-->
       <form (ngSubmit)="onSubmit()">
         <mat-form-field subscriptSizing="dynamic">
           <input matInput type="text" name="selectedProfile" placeholder="Enter clan tag"
@@ -22,9 +22,9 @@
         </mat-form-field>
       </form>
       @if (chestCounters$|async; as chestCounters) {
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>Your chest counters</mat-label>
-          <mat-select [(ngModel)]="selectedChestCounter" (selectionChange)="getByClanTag($event.value.clanTag)">
+        <mat-form-field subscriptSizing="dynamic" appearance="outline" class="my-chest-counters">
+          <mat-label><mat-icon>devices</mat-icon></mat-label>
+          <mat-select [(ngModel)]="selectedChestCounter" (selectionChange)="onSubmit($event.value.clanTag)">
             @for (chestCounter of chestCounters; track chestCounter) {
               <mat-option [value]="chestCounter">
                 <mat-chip disabled>K{{ chestCounter.kingdom }}</mat-chip>
@@ -35,24 +35,29 @@
           </mat-select>
         </mat-form-field>
       }
-    </div>
+      <button mat-icon-button (click)="fetch()" [disabled]="isLoading() || !currentClanTag">
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <div class="date-info">{{ dateRangeStart | date }} - next Monday at midnight UTC</div>
+<!--    </div>-->
   </mat-toolbar>
   <br>
-  <div class="example-loading-shade" *ngIf="isLoading">
+  <div class="example-loading-shade" *ngIf="isLoading()">
     <mat-spinner [diameter]="40"></mat-spinner>
   </div>
-      <mat-card class="clan-dashboard">
-        <mat-card-content>
-          @for (task of tasks; track task.title) {
-            <app-task [task]="task"></app-task>
-          }
-        </mat-card-content>
-      </mat-card>
+  <mat-card class="clan-dashboard">
+    <mat-card-content>
+      @for (task of tasks; track task.title) {
+        <app-task [task]="task"></app-task>
+      }
+    </mat-card-content>
+  </mat-card>
   <br>
   <table class="mat-elevation-z8" mat-table [dataSource]="dataSource" matSort>
     <ng-container matColumnDef="track">
       <th mat-header-cell *matHeaderCellDef>
-        Track
+        <div>Track</div>
+        <mat-icon matTooltip="Track selected players under Chest Counter > Dashboards">help</mat-icon>
       </th>
       <td mat-cell *matCellDef="let row">
         <button mat-icon-button (click)="toggleTrackPlayer(row)">

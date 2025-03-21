@@ -4,6 +4,9 @@
       <mat-icon>add</mat-icon>
       Add auto-crypter
     </button>
+    <button mat-icon-button (click)="fetch()" [disabled]="isLoading()">
+      <mat-icon>refresh</mat-icon>
+    </button>
   </mat-toolbar>
   <br>
   <div class="table-container mat-elevation-z8">

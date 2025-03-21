@@ -41,6 +41,7 @@ export interface GenericTask {
   counter: number
   goal: number
   title: string
+  source?: string
 }
 
 export interface DashboardTask {
@@ -64,7 +65,6 @@ export interface ChestCounterStatus {
   accountRunningAnotherService: boolean
   restartCount: number
 }
-
 export interface ChestCounter {
   status: ChestCounterStatus;
   username: string
@@ -77,7 +77,9 @@ export interface ChestCounter {
   minScore: number;
   pointSystem: PointSystem[];
   defaultPointSystem: PointSystem[];
+  tasks: GenericTask[]
 }
+
 
 export interface PointSystem {
   clanId: number
@@ -85,9 +87,13 @@ export interface PointSystem {
   sourceName: string
   points: number
 }
-
+export interface ChestCounterResults {
+  players: ChestAgg[]
+  stats: ChestCounter[]
+}
 export interface ChestAgg {
-  chests: { [key: string]: number },
+  chests: { [key: string]: number }
+  sources: any[]
   totalScore: number
   epicCryptCount: number
   chestCount: number

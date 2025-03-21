@@ -1,0 +1,26 @@
+<form [formGroup]="fg">
+  <div formArrayName="rows" class="column">
+    <div *ngFor="let row of rows.controls; let i=index" [formGroupName]="i" class="row">
+      <button mat-icon-button (click)="removeRow(i)">
+        <mat-icon>close</mat-icon>
+      </button>
+      <mat-form-field appearance="outline" class="margin-to-the-right">
+        <mat-label>Chest source</mat-label>
+        <mat-select formControlName="source">
+          @for (source of SOURCES; track source) {
+            <mat-option [value]="source">{{ source }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="target-count">
+        <mat-label>Target</mat-label>
+        <input matInput formControlName="goal" type="number">
+      </mat-form-field>
+    </div>
+    <div class="add">
+    <button mat-icon-button (click)="addRow()">
+      <mat-icon>add</mat-icon>
+    </button>
+    </div>
+  </div>
+</form>

@@ -1,12 +1,15 @@
-<div class="task">
-  <mat-icon class="spinner-icon overlay" *ngIf="task.counter >= task.goal">task_alt</mat-icon>
+<div class="task" [ngClass]="{'open-goal': task.goal <= 0, 'closed-goal': task.goal > 0}">
+  <mat-icon class="spinner-icon overlay" *ngIf="task.counter >= task.goal; else text">{{isOpenGoal ? 'pending' : 'task_alt'}}</mat-icon>
+  <ng-template #text>
+    <div class="spinner-icon overlay spinner-text">{{task.counter / task.goal | percent}}</div>
+  </ng-template>
   <mat-progress-spinner mode="determinate" class="spinner-shadow overlay"
                         value="100"></mat-progress-spinner>
   <mat-progress-spinner
     class="spinner-main overlay"
-    [mode]="task.goal > 0 ? 'determinate' : 'indeterminate'"
-    [value]="task.counter / task.goal * 100">
+    [mode]="!isOpenGoal ? 'determinate' : 'indeterminate'"
+    [value]="!isOpenGoal ? task.counter / task.goal * 100 : 100">
   </mat-progress-spinner>
-  <div class="task-title">{{task.title}}</div>
-  <div class="task-subtitle">{{task.counter}}{{task.goal > 0 ? '/' + task.goal : ''}}</div>
+  <div class="task-title">{{ task.title }}</div>
+  <div class="task-subtitle">{{ task.counter }}{{ !isOpenGoal ? '/' + task.goal : '' }}</div>
 </div>

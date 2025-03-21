@@ -1,0 +1,17 @@
+.row {
+}
+.column {
+  display: flex;
+  flex-flow: column;
+}
+.margin-to-the-right {
+  margin-right: 12px;
+}
+.target-count{
+  width: 100px;
+}
+.add{
+  width:100%;
+  display:flex;
+  justify-content: center;
+}

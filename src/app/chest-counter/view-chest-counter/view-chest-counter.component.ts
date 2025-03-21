@@ -1,16 +1,16 @@
-import {AfterViewInit, Component, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, signal, ViewChild} from '@angular/core';
 import {MatSort} from "@angular/material/sort";
 import {BackendService} from "../../services/backend.service";
-import {ChestAgg, ChestCounter, GenericTask} from "../../models/clan-data.model";
+import {ChestAgg, ChestCounter, ChestCounterResults, GenericTask} from "../../models/clan-data.model";
 import {MatTableDataSource} from "@angular/material/table";
-import {filter, mergeMap, Observable, Subscription, switchMap, tap} from "rxjs";
+import {filter, mergeMap, Observable, of, Subscription, switchMap, tap} from "rxjs";
 import {FormControl, Validators} from "@angular/forms";
 import {groupBy} from "lodash";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "@auth0/auth0-angular";
+import {catchError} from "rxjs/operators";
 
 
-const GOALS = [0, 100, 5000, 10000]
 @Component({
   selector: 'app-view-chest-counter',
   templateUrl: './view-chest-counter.component.html',
@@ -20,20 +20,18 @@ const GOALS = [0, 100, 5000, 10000]
 export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   public dataSource = new MatTableDataSource<ChestAgg>([]);
   displayedColumns: string[] = ['track', 'playerName', 'epicCryptCount', 'totalScore', 'chestCount'];
-  chestCounters$: Observable<ChestCounter[]>
+  chestCounters$!: Observable<ChestCounter[]>
   tasks: GenericTask[] = [];
-  subscription!: Subscription
+  currentClanTag: string = ''
 
   constructor(private router: Router, private route: ActivatedRoute, private backend: BackendService, private authService: AuthService) {
-    this.chestCounters$ = this.backend.getChestCounters()
   }
 
   ngOnDestroy(): void {
-    this.subscription?.unsubscribe()
   }
 
   @ViewChild(MatSort) sort!: MatSort;
-  isLoading: boolean = false;
+  isLoading = signal(false);
   selectedChestCounter: any;
   // searchResults$!: Observable<Clan[]>;
   clanTagControl: FormControl = new FormControl('', Validators.required)
@@ -47,6 +45,14 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
         this.getByClanTag(tag)
       }
     );
+    this.chestCounters$ = this.authService.isAuthenticated$.pipe(
+      filter(isAuthenticated => isAuthenticated),
+      switchMap(() => this.backend.getChestCounters()),
+      catchError(e => {
+        console.error(e)
+        return of([])
+      })
+    )
     // this.searchResults$ = this.clanTagControl.valueChanges.pipe(
     //   startWith(''),
     //   debounceTime(300),
@@ -55,42 +61,39 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   }
 
   getByClanTag(clanTag: string) {
-    if (!clanTag) return;
-    if (this.subscription)
-      this.subscription.unsubscribe();
-    this.subscription = this.authService.isAuthenticated$.pipe(
+    this.currentClanTag = clanTag
+    if (!clanTag) return
+    this.isLoading.set(true)
+    this.authService.isAuthenticated$.pipe(
       filter(isAuthenticated => isAuthenticated),
-      tap(() => this.isLoading = true),
-      switchMap(() => this.backend.getChestViewByClanTag(clanTag))
+      switchMap(() => this.backend.getChestViewByClanTag(clanTag)),
+      catchError(e => {
+        console.error(e)
+        return of(null)
+      })
     ).subscribe(data => this.populateData(data))
   }
 
-  populateData(data: any[]) {
-    this.isLoading = false
+  populateData(data: ChestCounterResults | null) {
     console.log('data', data)
+    const tasks = data?.stats[0].tasks || []
+    const rows = data?.players || []
     this.tasks.length = 0
-    const tasks = groupBy(data.flatMap(d => d.sources), d2 => this.getSourceCategory(d2))
-    console.log(tasks)
-    for (const [key, value] of Object.entries(tasks)) {
-      this.tasks.push(<GenericTask>{
-        counter: value.length,
-        goal: GOALS[Math.floor(Math.random() * GOALS.length)],
-        title: key
-      })
-    }
-    this.dataSource.data = data
+    this.tasks.push(...tasks)
+    this.dataSource.data = rows
     this.dataSource.sort = this.sort
+    this.isLoading.set(false)
   }
 
   readonly sourceCategories = [
-    'Epic Crypt' ,
+    'Epic Crypt',
     'Rare Crypt',
     'Crypt',
     'Vault of the Ancients',
     'Union of Triumph personal reward',
     'Raid Runic squad',
     'heroic Monster'
-  ];
+  ]
   sourceCatgoriesFixes = [
     {
       original: 'Crypt',
@@ -115,11 +118,6 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
 
   ]
 
-  private getSourceCategory(d2: any) {
-    const name = d2.sourceName.toLowerCase()
-    const res = this.sourceCategories.find(c => name.endsWith(c.toLowerCase())) || 'Other'
-    return this.sourceCatgoriesFixes.find(f => f.original === res)?.replaceWith || res
-  }
 
   getTotalPlayerCount() {
     return this.dataSource.data.length
@@ -142,7 +140,20 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   //   console.log(window.location.origin)
   //   return this.backend.searchForClanTag(value)
   // }
-  onSubmit() {
-    this.router.navigate(['/chests/view', {tag: this.clanTagControl.value}]);
+  get dateRangeStart(): Date {
+    const currentDate = new Date();
+    const currentDay = currentDate.getDay();
+    const offsetToLastSunday = (currentDay + 7) % 7;
+    const lastSundayDate = new Date(currentDate);
+    lastSundayDate.setDate(currentDate.getDate() - offsetToLastSunday);
+    return lastSundayDate
+  }
+
+  onSubmit(value = null) {
+    this.router.navigate(['/chests/view', {tag: value || this.clanTagControl.value}]);
+  }
+
+  fetch() {
+    this.getByClanTag(this.currentClanTag)
   }
 }

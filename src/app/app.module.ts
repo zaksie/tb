@@ -62,6 +62,7 @@ import {CreateCryptExplorerDialog, CryptsExplorerComponent} from "./crypts-explo
 import {MatAutocomplete, MatAutocompleteTrigger} from "@angular/material/autocomplete";
 import {TaskComponent} from "./common/task/task.component";
 import {TableActionsComponent} from "./common/table-actions/table-actions.component";
+import {TaskSetupComponent} from "./chest-counter/manage-chest-counter/task-setup/task-setup.component";
 
 const authorizationParams = {
   scope: "openid profile email offline_access",
@@ -95,7 +96,8 @@ const authorizationParams = {
     MercExchangeComponent,
     CryptsExplorerComponent,
     TaskComponent,
-    TableActionsComponent
+    TableActionsComponent,
+    TaskSetupComponent
   ],
   imports: [
     FlexLayoutModule,

@@ -4,6 +4,9 @@
       <mat-icon>add</mat-icon>
       Add chest counter
     </button>
+    <button mat-icon-button (click)="fetch()" [disabled]="isLoading()">
+      <mat-icon>refresh</mat-icon>
+    </button>
   </mat-toolbar>
   <br>
   <div class="table-container mat-elevation-z8">
@@ -12,7 +15,7 @@
         <mat-spinner [diameter]="40"></mat-spinner>
       </div>
     </ng-template>
-    <div class="example-loading-shade" *ngIf="isLoading">
+    <div class="example-loading-shade" *ngIf="isLoading()">
       <mat-spinner [diameter]="40"></mat-spinner>
     </div>
     <table class="mat-elevation-z8" mat-table [dataSource]="dataSource">

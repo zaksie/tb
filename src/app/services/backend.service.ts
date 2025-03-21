@@ -3,7 +3,7 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {
   ChestAgg,
-  ChestCounter,
+  ChestCounter, ChestCounterResults,
   Clan,
   ContactRequest,
   DashboardTask,
@@ -24,8 +24,8 @@ export class BackendService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getChestViewByClanTag(clanTag: string): Observable<ChestAgg[]> {
-    return this.httpClient.get<ChestAgg[]>(environment.backend + '/api/v1/chests/' + clanTag)
+  getChestViewByClanTag(clanTag: string): Observable<ChestCounterResults> {
+    return this.httpClient.get<ChestCounterResults>(environment.backend + '/api/v1/chests/' + clanTag)
   }
 
   getTrackPlayersList(): Observable<ChestAgg[]> {
