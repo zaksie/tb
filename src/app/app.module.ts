@@ -63,6 +63,7 @@ import {MatAutocomplete, MatAutocompleteTrigger} from "@angular/material/autocom
 import {TaskComponent} from "./common/task/task.component";
 import {TableActionsComponent} from "./common/table-actions/table-actions.component";
 import {TaskSetupComponent} from "./chest-counter/manage-chest-counter/task-setup/task-setup.component";
+import {RequiresLoginDialog} from "./common/requires-login.dialog/requires-login-dialog.component";
 
 const authorizationParams = {
   scope: "openid profile email offline_access",
@@ -97,7 +98,8 @@ const authorizationParams = {
     CryptsExplorerComponent,
     TaskComponent,
     TableActionsComponent,
-    TaskSetupComponent
+    TaskSetupComponent,
+    RequiresLoginDialog
   ],
   imports: [
     FlexLayoutModule,
@@ -145,7 +147,13 @@ const authorizationParams = {
       authorizationParams,
       useRefreshTokens: true,
       httpInterceptor: {
-        allowedList: [environment.backend + '/api/v1/*']
+        allowedList: [
+          '/api/v1/chest-counter*',
+          '/api/v1/dashboards*',
+          '/api/v1/merc-exchange*',
+          '/api/v1/source-rule*',
+          '/api/v1/subscriptions*',
+          '/api/v1/crypts*'].map(x => environment.backend + x)
       }
     }),
     provideHttpClient(withInterceptors([authenticationErrorInterceptor, authHttpInterceptorFn])),

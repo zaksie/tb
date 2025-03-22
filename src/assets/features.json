@@ -3,7 +3,8 @@
     "name": "Stack Calculator",
     "image": "/assets/stack-calculator.jpg",
     "description": "Optimize your hits using a calculator based on your army bonuses and leadership size",
-    "path": "stacker"
+    "path": "stacker",
+    "public": true
   },
   {
     "name": "Crypts",
@@ -15,7 +16,8 @@
     "name": "Merc Exchange",
     "image": "/assets/merc-exchange.png",
     "description": "Get live feed of merc exchanges",
-    "path": "merc-exchange"
+    "path": "merc-exchange",
+    "disabled": true
   },
   {
     "name": "Chest Counter",
@@ -25,7 +27,8 @@
     "children": [
       {
         "name": "View chest count",
-        "path": "chests/view"
+        "path": "chests/view",
+        "public": true
       },
       {
         "name": "Manage chest count",

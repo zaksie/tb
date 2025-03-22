@@ -1,14 +1,15 @@
-import {AfterViewInit, Component, OnDestroy, signal, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject, OnDestroy, signal, ViewChild} from '@angular/core';
 import {MatSort} from "@angular/material/sort";
 import {BackendService} from "../../services/backend.service";
 import {ChestAgg, ChestCounter, ChestCounterResults, GenericTask} from "../../models/clan-data.model";
 import {MatTableDataSource} from "@angular/material/table";
 import {filter, mergeMap, Observable, of, Subscription, switchMap, tap} from "rxjs";
 import {FormControl, Validators} from "@angular/forms";
-import {groupBy} from "lodash";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "@auth0/auth0-angular";
 import {catchError} from "rxjs/operators";
+import {MatDialog} from "@angular/material/dialog";
+import {RequiresLoginDialog} from "../../common/requires-login.dialog/requires-login-dialog.component";
 
 
 @Component({
@@ -23,6 +24,7 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   chestCounters$!: Observable<ChestCounter[]>
   tasks: GenericTask[] = [];
   currentClanTag: string = ''
+  readonly dialog = inject(MatDialog);
 
   constructor(private router: Router, private route: ActivatedRoute, private backend: BackendService, private authService: AuthService) {
   }
@@ -64,9 +66,7 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
     this.currentClanTag = clanTag
     if (!clanTag) return
     this.isLoading.set(true)
-    this.authService.isAuthenticated$.pipe(
-      filter(isAuthenticated => isAuthenticated),
-      switchMap(() => this.backend.getChestViewByClanTag(clanTag)),
+    this.backend.getChestViewByClanTag(clanTag).pipe(
       catchError(e => {
         console.error(e)
         return of(null)
@@ -127,7 +127,7 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
     return this.dataSource.data.reduce((agg, x) => agg + x.chestCount, 0)
   }
 
-  toggleTrackPlayer(row: ChestAgg) {
+  private _toggleTrackPlayerAuthenticated(row: ChestAgg) {
     console.log(row)
     row.tracked = !row.tracked
     if (row.tracked)
@@ -136,11 +136,30 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
       this.backend.untrackPlayer(row).pipe(mergeMap(() => this.backend.getTrackPlayersList())).subscribe()
   }
 
-  // private searchForTag(value: string) {
-  //   console.log(window.location.origin)
-  //   return this.backend.searchForClanTag(value)
-  // }
-  get dateRangeStart(): Date {
+  toggleTrackPlayer(row: ChestAgg) {
+    this.authService.isAuthenticated$.subscribe(isAuthenticated => {
+      if (isAuthenticated) {
+        this._toggleTrackPlayerAuthenticated(row)
+      } else {
+        const dialogRef = this.dialog.open(RequiresLoginDialog,
+          {data: {}}
+        );
+
+        dialogRef.afterClosed().subscribe(isAuthenticated => {
+          if (isAuthenticated)
+            this._toggleTrackPlayerAuthenticated(row)
+        })
+      }
+    })
+  }
+
+// private searchForTag(value: string) {
+//   console.log(window.location.origin)
+//   return this.backend.searchForClanTag(value)
+// }
+  get dateRangeStart()
+    :
+    Date {
     const currentDate = new Date();
     const currentDay = currentDate.getDay();
     const offsetToLastSunday = (currentDay + 7) % 7;

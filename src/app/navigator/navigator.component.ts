@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, signal} from '@angular/core';
 import {BackendService} from "../services/backend.service";
 import {ChestAgg, enrichWithFeature} from "../models/clan-data.model";
 import {FeatureModel} from "../landing-page/feature/feature.model";
@@ -16,7 +16,7 @@ import {filter, switchMap} from "rxjs";
 export class NavigatorComponent {
 
   childrenAccessor = (node: FeatureModel) => node.children ?? [];
-
+  isAuthenticated = signal(false)
   dataSource = features;
 
   constructor(public auth: AuthService, public backend: BackendService) {
@@ -24,7 +24,7 @@ export class NavigatorComponent {
     this.auth.isAuthenticated$.pipe(
       filter(isAuthenticated => isAuthenticated),
       switchMap(() => this.backend.getTrackPlayersList())
-    ).subscribe()
+    ).subscribe(() => this.isAuthenticated.set(true))
   }
 
   hasChild = (_: number, node: FeatureModel) => !!node.children && node.children.length > 0;

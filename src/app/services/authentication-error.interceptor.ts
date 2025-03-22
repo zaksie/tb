@@ -8,7 +8,8 @@ export const authenticationErrorInterceptor: HttpInterceptorFn = (req, next) => 
   const auth = inject(AuthService)
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      if(error.toString().includes('Missing Refresh Token')) auth.loginWithPopup()
+      // if(error.toString().includes('Missing Refresh Token'))
+      //   auth.loginWithPopup().subscribe()
       return throwError(() => error);
     })
   );

@@ -45,13 +45,13 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.authService.isAuthenticated$.pipe(
-      switchMap(isAuthenticated =>
-        isAuthenticated ? of(true) : this.authService.loginWithPopup()
-      )).subscribe(value => {
-      console.log('Authenticated:', value)
-      if (value) this.snav.open()
-    })
+    // this.authService.isAuthenticated$.pipe(
+    //   switchMap(isAuthenticated =>
+    //     isAuthenticated ? of(true) : this.authService.loginWithPopup()
+    //   )).subscribe(value => {
+    //   console.log('Authenticated:', value)
+    //   if (value) this.snav.open()
+    // })
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
         if (this.isMobile())
