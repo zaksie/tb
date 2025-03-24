@@ -1,10 +1,10 @@
 <div class="example-container" [class.example-is-mobile]="isMobile()" class="no-scroll">
   <mat-toolbar>
     <div class="toolbar-items">
-    <span class="logo" routerLink="home">
+    <span class="logo">
       <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
-      <img src="/assets/logo.png" alt="Logo" class="logo-img">
-      <span>Battle Squire</span>
+      <img src="/assets/logo.png" alt="Logo" class="logo-img" routerLink="home">
+      <span routerLink="home">Battle Squire</span>
     </span>
       <ng-container *ngIf="isAuthenticated$|async">
         <button mat-mini-fab [matMenuTriggerFor]="menu">
@@ -16,14 +16,16 @@
   <mat-sidenav-container class="example-sidenav-container">
     <mat-sidenav #snav [mode]="isMobile() ? 'over' : 'side'"
                  [fixedInViewport]="isMobile()" fixedTopGap="56">
+      <div class="sidenav">
       <app-navigator></app-navigator>
+      <div class="footer">
+        <p>&copy; 2025 Battle Squire | <a href="assets/terms.html">Terms and Conditions</a> | Contact: <a href="mailto:zak@afiloo.io">zak&commat;afiloo.io</a></p>
+      </div>
+      </div>
     </mat-sidenav>
 
     <mat-sidenav-content class="example-sidenav-content no-scroll">
       <router-outlet></router-outlet>
-      <footer>
-        <p>&copy; 2025 Battle Squire | <a href="assets/terms.html">Terms and Conditions</a> | Contact: <a href="mailto:zak@afiloo.io">zak&commat;afiloo.io</a></p>
-      </footer>
     </mat-sidenav-content>
   </mat-sidenav-container>
 

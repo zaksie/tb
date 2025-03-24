@@ -19,7 +19,7 @@ import {AccountDialog} from "./account/account.component";
   standalone: false,
 })
 export class AppComponent implements OnDestroy, AfterViewInit {
-  title = 'Battle Squire for TotalBattle';
+  title = 'Battle Squire';
   isAuthenticated$: Observable<boolean>;
   features: FeatureModel[] = features;
   protected readonly isMobile = signal(true);

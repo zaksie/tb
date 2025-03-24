@@ -32,6 +32,7 @@ html {
     density: 0
   ));
 }
+
 @font-face {
   font-family: "Sketch Gothic School";
   src: local("Sketch Gothic School"),
@@ -43,8 +44,15 @@ html {
   src: local("Cardinal"),
   url("/assets/Cardinal.ttf") format("truetype");
 }
-html, body { height: 100%; overflow: hidden }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html, body {
+  height: 100%;
+  overflow: hidden
+}
+
+body {
+  margin: 0;
+}
 
 .example-loading-shade {
   display: flex;
@@ -54,11 +62,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   height: 40px;
 
 }
+
 .no-scroll {
   height: 100%;
-  margin:0;
+  margin: 0;
   overflow: hidden;
 }
+
 .start-button {
   color: greenyellow;
   @include mat.button-overrides((
@@ -66,6 +76,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     filled-label-text-color: white,
   ));
 }
+
 .stop-button {
   color: orangered;
   @include mat.button-overrides((
@@ -81,11 +92,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     filled-label-text-color: #222,
   ));
 }
+
 .full-hw {
   height: 100%;
   width: 100%;
 }
-.in-a-column{
+
+.in-a-column {
   display: flex;
   flex-flow: column nowrap;
 

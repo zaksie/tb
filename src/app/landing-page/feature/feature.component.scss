@@ -1,6 +1,13 @@
 .feature-content {
   width: 320px;
   color: white;
+  mat-card-title {
+    font-family: monospace;
+    font-weight: bolder;
+  }
+  mat-card-content {
+    font-weight: 100;
+  }
 }
 
 .description {
@@ -16,8 +23,7 @@
   align-items: center;
   justify-content: center;
   height: 100px;
-  font-weight: 400;
-  font-style: normal;
+
 }
 
 
