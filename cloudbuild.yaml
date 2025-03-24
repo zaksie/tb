@@ -14,7 +14,7 @@ steps:
 
   # Step 3: Copy the built files to the Cloud Storage bucket
   - name: 'gcr.io/cloud-builders/gsutil'
-    args: ['-m', 'cp', '-r', 'dist/tb/browser/**', 'gs://battle-squire/']
+    args: ['-m', 'cp', '-r', 'dist/tb/browser/', 'gs://battle-squire/']
 
   # Step 4: Set the bucket as a website with index.html as the main page
   - name: 'gcr.io/cloud-builders/gsutil'
