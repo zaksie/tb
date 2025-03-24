@@ -25,3 +25,5 @@ steps:
 # Optional: Define substitution variables for flexibility
 substitutions:
   _BUCKET_NAME: 'battle-squire'  # Replace with your bucket name
+options:
+  logging: CLOUD_LOGGING_ONLY
