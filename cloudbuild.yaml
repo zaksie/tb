@@ -15,7 +15,7 @@ steps:
     args:
       - '-c'
       - |
-        tar -czf dist.tar.gz dist/tb/public
+        tar -C dist/tb/public -czf dist.tar.gz .
     dir: '.'
 
   # Step 4: Upload the zipped file to the Cloud Storage bucket
