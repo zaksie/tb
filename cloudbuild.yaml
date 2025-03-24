@@ -23,7 +23,7 @@ steps:
 
   # Step 4: Upload the zipped file to the Cloud Storage bucket
   - name: 'gcr.io/cloud-builders/gsutil'
-    args: ['-m', 'cp', 'dist.zip', 'gs://battle-squire/']
+    args: ['-m', 'cp', 'dist.tar.gz', 'gs://battle-squire/']
     dir: '.'
 
 # Optional: Define substitution variables for flexibility
