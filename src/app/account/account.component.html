@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Account Settings</h2>
+<mat-dialog-content>
+  @if (user$|async; as user) {
+    <p>Hey {{ user.auth0.name }},</p>
+    <p>We hope you're enjoying Battle Squire
+      You have {{ getDays(user.server) }} left in trial mode.</p>
+    <p>If you have any question click below to open a contact request and we'll contact you shortly.</p>
+  }
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-stroked-button (click)="contactRequest()">OPEN A CONTACT REQUEST</button>
+  <button mat-button cdkFocusInitial (click)="dialogRef.close()">CLOSE</button>
+</mat-dialog-actions>

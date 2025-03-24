@@ -7,6 +7,10 @@ import {BackendService} from "./services/backend.service";
 import {Observable, of, switchMap} from "rxjs";
 import {MediaMatcher} from "@angular/cdk/layout";
 import {MatSidenav} from "@angular/material/sidenav";
+import {MatDialog} from "@angular/material/dialog";
+import {CreateChestCounterDialog} from "./chest-counter/manage-chest-counter/manage-chest-counter.component";
+import {AppGenericDialog} from "./common/app-generic-dialog/app-generic-dialog";
+import {AccountDialog} from "./account/account.component";
 
 @Component({
   selector: 'app-root',
@@ -19,6 +23,7 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   isAuthenticated$: Observable<boolean>;
   features: FeatureModel[] = features;
   protected readonly isMobile = signal(true);
+  readonly dialog = inject(MatDialog);
 
   private readonly _mobileQuery: MediaQueryList;
   private readonly _mobileQueryListener: () => void;
@@ -60,13 +65,14 @@ export class AppComponent implements OnDestroy, AfterViewInit {
     });
   }
 
-  openUserSettings() {
-
-  }
-
   logout() {
     this.authService.logout();
   }
 
 
+  openAcountDialog() {
+    this.dialog.open(AccountDialog,
+      {data: {}}
+    );
+  }
 }

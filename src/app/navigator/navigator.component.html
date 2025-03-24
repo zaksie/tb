@@ -4,9 +4,15 @@
     <!-- use a disabled button to provide padding for tree leaf -->
     <button mat-icon-button disabled></button>
     @if(node.public || isAuthenticated()){
-    <button mat-button [routerLink]="node.path" [disabled]="node.disabled">{{node.name}}</button>
+    <button mat-button [routerLink]="node.path" [disabled]="node.disabled">
+      @if(node.icon){
+        <mat-icon>{{node.icon}}</mat-icon>
+      }@else{
+        {{node.name}}
+      }
+    </button>
     }@else {
-    <button mat-raised-button [routerLink]="node.path" [disabled]="true">{{node.name}}</button>
+    <button mat-button [routerLink]="node.path" [disabled]="true">{{node.name}}</button>
     }
   </mat-tree-node>
   <!-- This is the tree node template for expandable nodes -->

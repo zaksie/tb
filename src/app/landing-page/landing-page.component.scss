@@ -5,15 +5,54 @@
 .landing-page {
   display: flex;
   flex-flow: column;
+  h1 {
+    font-family: 'Cardinal', sans-serif;
+    font-size: 4.5rem;
+    width: 100%;
+    text-align:center;
+  }
+  h2 {
+    font-family: 'Cardinal', sans-serif;
+    font-size: 4.5rem;
+    width: 100%;
+    color: black;
+    text-align:center;
+    border-bottom: 1px double #000;
+    line-height: 0.1em;
+    margin: 0 0 64px 0;
+    border-top: rgb(28, 28, 28) 2px double;
+  }
 
+  h2 span {
+    background:#fff;
+    padding:0 10px;
+  }
   .feature-container {
     width: 100%;
     display: flex;
     flex-flow: row wrap;
     align-items: center;
     justify-content: space-evenly;
+    margin-bottom: 200px;
+
     .feature {
       margin: 12px;
+    }
+  }
+
+  .section2-container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 200px;
+    background: rgba(16, 20, 20, 0.5);
+    padding: 32px;
+    .section2{
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      justify-content: center;
     }
   }
 
@@ -24,8 +63,8 @@
     justify-content: center;
     height: 400px;
     margin-bottom: 200px;
+    padding: 64px;
     background: rgba(16, 20, 20, 0.5);
-    padding: 32px;
 
     .contact-us {
       width: 400px;
@@ -50,16 +89,31 @@
         height: 180px;
       }
 
-      .login-title {
-        font-family: 'Cardinal', sans-serif;
-        font-size: xxx-large;
-      }
 
       .login-actions {
         display: flex;
-        flex-flow: column;
-        justify-content: center;
+        flex-flow: row;
+        justify-content: space-evenly;
         align-items: center;
+        margin-top: 50px;
+
+        .login-action {
+          flex: 1;
+          display: flex;
+          flex-flow: row;
+          width: 100%;
+          min-width: 250px;
+        }
+
+        .right-login-action {
+          justify-content: end;
+        }
+
+        .divider {
+          margin-left: 30px;
+          margin-right: 30px;
+          flex: 1
+        }
 
         button {
           margin-bottom: 12px
@@ -88,6 +142,20 @@
   }
 
   @media (max-width: 800px) {
+    .section1-container{
+      .section1{
+        .login-actions {
+          flex-flow: column;
+          .login-action {
+            justify-content: center;
+          }
+
+          .right-login-action {
+            justify-content: center;
+          }
+        }
+      }
+    }
     .section1-container {
       flex-flow: column;
       justify-content: normal;

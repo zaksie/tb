@@ -50,12 +50,6 @@ specialist:
     config:
       `epic:
   strength: 0
-guardsman:
-  health: 0
-  strength: 0
-specialist:
-  health: 0
-  strength: 0
 ranged:
   health: 0
   strength: 0

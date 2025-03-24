@@ -37,7 +37,6 @@ import {authHttpInterceptorFn, provideAuth0} from "@auth0/auth0-angular";
 import {environment} from "../environments/environment";
 import {CdkMenu, CdkMenuItem, CdkMenuTrigger} from "@angular/cdk/menu";
 import {MatMenuModule} from "@angular/material/menu";
-import {HomeComponent} from "./home/home.component";
 import {ViewChestCounterComponent} from "./chest-counter/view-chest-counter/view-chest-counter.component";
 import {MatSortModule} from "@angular/material/sort";
 import {BackendService} from "./services/backend.service";
@@ -54,7 +53,7 @@ import {
 } from "./chest-counter/manage-chest-counter/manage-chest-counter.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {ClanNameValidatorDirective} from './chest-counter/manage-chest-counter/clan-name-validator.directive'
-import {MatChip, MatChipOption} from "@angular/material/chips";
+import {MatChip, MatChipListbox, MatChipOption} from "@angular/material/chips";
 import {authenticationErrorInterceptor} from "./services/authentication-error.interceptor";
 import {MonacoEditorModule} from "ngx-monaco-editor-v2";
 import {MercExchangeComponent} from "./merc-exchange/merc-exchange.component";
@@ -63,7 +62,12 @@ import {MatAutocomplete, MatAutocompleteTrigger} from "@angular/material/autocom
 import {TaskComponent} from "./common/task/task.component";
 import {TableActionsComponent} from "./common/table-actions/table-actions.component";
 import {TaskSetupComponent} from "./chest-counter/manage-chest-counter/task-setup/task-setup.component";
-import {RequiresLoginDialog} from "./common/requires-login.dialog/requires-login-dialog.component";
+import {PricingComponent} from "./landing-page/pricing/pricing.component";
+import {AppGenericDialog} from "./common/app-generic-dialog/app-generic-dialog";
+import {AccountDialog} from "./account/account.component";
+import {ComingSoonComponent} from "./landing-page/coming-soon/coming-soon.component";
+import {SocketIoConfig, SocketIoModule} from "ngx-socket-io";
+import {DemoChestCounterComponent} from "./landing-page/demo-chest-counter/demo-chest-counter.component";
 
 const authorizationParams = {
   scope: "openid profile email offline_access",
@@ -71,6 +75,7 @@ const authorizationParams = {
   redirect_uri: window.location.origin,
 }
 
+const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} };
 
 ////
 
@@ -87,7 +92,6 @@ const authorizationParams = {
     ChestCounterComponent,
     LandingPageComponent,
     FeatureComponent,
-    HomeComponent,
     DashboardComponent,
     NavigatorComponent,
     ManageChestCounterComponent,
@@ -99,9 +103,14 @@ const authorizationParams = {
     TaskComponent,
     TableActionsComponent,
     TaskSetupComponent,
-    RequiresLoginDialog
+    AppGenericDialog,
+    PricingComponent,
+    AccountDialog,
+    ComingSoonComponent,
   ],
+
   imports: [
+    SocketIoModule.forRoot(socketIOConfig),
     FlexLayoutModule,
     MatCardModule,
     MatSliderModule,
@@ -139,7 +148,8 @@ const authorizationParams = {
     MatChip,
     MatChipOption,
     MatAutocomplete,
-    MatAutocompleteTrigger
+    MatAutocompleteTrigger,
+    MatChipListbox
   ],
   providers: [
     provideAuth0({
@@ -153,12 +163,13 @@ const authorizationParams = {
           '/api/v1/merc-exchange*',
           '/api/v1/source-rule*',
           '/api/v1/subscriptions*',
+          '/api/v1/account*',
           '/api/v1/crypts*'].map(x => environment.backend + x)
       }
     }),
     provideHttpClient(withInterceptors([authenticationErrorInterceptor, authHttpInterceptorFn])),
     RedirectGuard,
-    BackendService,
+    BackendService
     // {provide: APP_BASE_HREF, useValue: '/app'}
   ],
   bootstrap: [AppComponent]

@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+<mat-dialog-content>
+  @if (data.iframeUrl){
+    <iframe width="100%" height="100%" frameBorder="0" [src]="mypreview"></iframe>
+  }@else{
+  @for (paragraph of data.content; track paragraph) {
+    <p>{{ paragraph }} </p>
+  }
+  }
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="dialogRef.close(false)">No thanks</button>
+  <button mat-stroked-button cdkFocusInitial (click)="login()">OK</button>
+</mat-dialog-actions>

@@ -1,14 +1,14 @@
-import {Component, signal} from '@angular/core';
-import {Squad} from "../models/troop.model";
+import {Component, signal, ViewChild} from '@angular/core';
+import {BonusesObject, Squad} from "../models/troop.model";
 import {Dictionary} from "lodash";
-import {COOKIE_TROOP_CONFIG, mercenaries, TroopColors, troops} from '../troops.data';
+import {COOKIE_TROOP_CONFIG, mercenaries, specialists, TroopColors, troops} from '../troops.data';
 import {calculateStack, SetupType} from "./stacker";
 import YAML from 'yaml'
 import {MatRadioChange} from "@angular/material/radio";
 import {setupTypes, TroopConfig} from "./stacker-data";
-
-// @ts-ignore
-
+import {Subject} from "rxjs";
+import {flying, guardsman, melee, mounted, ranged, specialist} from "../models/troop-type";
+import {MatStepper} from "@angular/material/stepper";
 
 @Component({
   selector: 'app-stacker',
@@ -28,6 +28,7 @@ export class StackerComponent {
   tiersDict: Dictionary<Squad[]> = {}
   troopList: Squad[] = []
   totalDamage!: number;
+  errors$ = new Subject<string>()
   protected readonly TroopColors = TroopColors;
   protected readonly troopLevelGuardsmen = ['G5', 'G6', 'G7', 'G8', 'G9']
   protected readonly troopLevelSpecialists = ['S5', 'S6', 'S7', 'S8', 'S9']
@@ -36,6 +37,7 @@ export class StackerComponent {
   troopConfig: TroopConfig
   readonly SetupType = SetupType
   public monacoLoaded = signal(false)
+  @ViewChild(MatStepper) matStepperView!: MatStepper
 
   constructor() {
     const _troopConfig = this.loadConfig(COOKIE_TROOP_CONFIG)
@@ -48,8 +50,9 @@ export class StackerComponent {
   }
 
   calculateStacks() {
-    this.saveConfig()
     const bonusesObj = YAML.parse(this.troopConfig.getActiveBonusConfig())
+    if (!this.verifyBonuses(bonusesObj)) return;
+    this.saveConfig()
 
     console.log(bonusesObj)
     const armyLevels = this.troopConfig.selectedLevels.filter(x => x.startsWith('G') || x.startsWith('S'))
@@ -61,7 +64,10 @@ export class StackerComponent {
   }
 
   saveConfig() {
+    const bonusesObj = YAML.parse(this.troopConfig.getActiveBonusConfig())
+    if (!this.verifyBonuses(bonusesObj)) return;
     document.cookie = COOKIE_TROOP_CONFIG + '=' + JSON.stringify(this.troopConfig)
+    this.matStepperView.next()
   }
 
   replacements: { [key: string]: string } = {'\\\\': '\\', '\\n': '\n', '\\"': ''};
@@ -90,6 +96,33 @@ export class StackerComponent {
 
   protected readonly setupTypes = setupTypes;
 
-
+  readonly ERROR_MSG = ` ERROR: Either use 'army' or the 'guardsman/specialist' or the 'ranged/melee/mounted/flying' fields but don't mix them`
+  private verifyBonuses(bonusesObj: BonusesObject) {
+    if(bonusesObj.army){
+      const invalid = guardsman in bonusesObj || specialist in bonusesObj || flying in bonusesObj
+      if (invalid) {
+        this.errors$.next(this.ERROR_MSG)
+        return false
+      }
+    }
+    else if(bonusesObj[guardsman] || bonusesObj[specialist]){
+      const invalid = !!bonusesObj.army || flying in bonusesObj
+      if (invalid) {
+        this.errors$.next(this.ERROR_MSG)
+        return false
+      }
+    }else if(flying in bonusesObj || melee in bonusesObj || mounted in bonusesObj || ranged in bonusesObj){
+      const invalid = !!bonusesObj.army || guardsman in bonusesObj || specialist in bonusesObj
+      if (invalid) {
+        this.errors$.next(this.ERROR_MSG)
+        return false
+      }
+    } else {
+      this.errors$.next(` ERROR: Invalid bonuses object. Must include 'epic' field as well as one of the following 'army', 'guardsman/specialist',  'ranged/melee/mounted/flying'`);
+      return false;
+    }
+    this.errors$.next('')
+    return true
+  }
 }
 

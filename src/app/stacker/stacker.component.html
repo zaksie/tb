@@ -1,4 +1,4 @@
-<mat-stepper orientation="horizontal" class="stacker-container">
+<mat-stepper orientation="horizontal" class="stacker-container" #matStepperView>
   <mat-step>
     <ng-template matStepLabel>Type of setup</ng-template>
     <ng-template matStepContent>
@@ -23,12 +23,14 @@
           </mat-radio-group>
         </div>
         <div class="row footer">
-          <button mat-button matStepperNext>Next</button>
+          <button mat-button matStepperNext>Next
+            <mat-icon iconPositionEnd>arrow_forward_ios</mat-icon>
+          </button>
         </div>
       </div>
     </ng-template>
   </mat-step>
-  <mat-step class="full-hw" #matStepEditor>
+  <mat-step class="full-hw">
     <ng-template matStepLabel>Bonuses setup</ng-template>
     <ng-template matStepContent>
       <div class="container full-hw">
@@ -47,7 +49,14 @@
           </ngx-monaco-editor>
         </div>
         <div class="row footer">
-          <button mat-button matStepperNext (click)="saveConfig()">Next</button>
+          <button mat-button matStepperPrevious>
+            <mat-icon>arrow_back_ios_new</mat-icon>
+            Back
+          </button>
+          <button mat-button (click)="saveConfig()">Next
+            <mat-icon iconPositionEnd>arrow_forward_ios</mat-icon>
+          </button>
+          <mat-error>{{ errors$|async }}</mat-error>
         </div>
       </div>
     </ng-template>
@@ -78,24 +87,41 @@
           </mat-form-field>
         </div>
         <div class="row footer">
-          <button mat-button matStepperNext (click)="calculateStacks()">Calculate stacks</button>
+          <button mat-button matStepperPrevious>
+            <mat-icon>arrow_back_ios_new</mat-icon>
+            Back
+          </button>
+          <button mat-button matStepperNext (click)="calculateStacks()">
+            Calculate stacks
+            <mat-icon iconPositionEnd>arrow_forward_ios</mat-icon>
+          </button>
         </div>
       </div>
     </ng-template>
   </mat-step>
   <mat-step>
     <ng-template matStepLabel>Recommended stack</ng-template>
-    <div class="container full-hw scrollable">
-      <h1 *ngIf="totalDamage">Total damage: {{ totalDamage | number: '1.0-0' }}</h1>
-      <mat-list class="troop-list-container">
-        <mat-list-item *ngFor="let squad of troopList">
+    <ng-template matStepContent>
+      <div class="container full-hw">
+        <div class="row header">Optimal stacking</div>
+        <div class="row content in-column">
+          <mat-list class="troop-list-container">
+            <mat-list-item *ngFor="let squad of troopList">
           <span matListItemTitle class="troop-info">
             <img [src]="squad.image" [alt]="squad.name" class="troop-image">
             <div class="troop-count">{{ squad.count }}</div>
           </span>
-          <span matListItemMeta>{{ squad.name }}</span>
-        </mat-list-item>
-      </mat-list>
-    </div>
+              <span matListItemMeta>{{ squad.name }}</span>
+            </mat-list-item>
+          </mat-list>
+        </div>
+        <div class="row footer">
+          <button mat-button matStepperPrevious>
+            <mat-icon>arrow_back_ios_new</mat-icon>
+            Back
+          </button>
+        </div>
+      </div>
+    </ng-template>
   </mat-step>
 </mat-stepper>

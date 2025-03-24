@@ -10,7 +10,7 @@ import {GenericTask} from "../../../models/clan-data.model";
 })
 export class TaskSetupComponent implements AfterViewInit {
   readonly SOURCES = ['Arachne', 'Doomsday', 'Armageddon', 'Hellforge', 'Shadow City']
-  @Input() tasks!: GenericTask[];
+  @Input() tasks: GenericTask[] = [];
 
   readonly fg = this.fb.group({
     rows: this.fb.array([])

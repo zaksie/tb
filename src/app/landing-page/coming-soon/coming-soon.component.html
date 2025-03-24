@@ -1,0 +1,14 @@
+<div class="box">
+  <div class="inner">
+    <span>Coming Soon</span>
+  </div>
+  <div class="inner">
+    <span>Coming Soon</span>
+  </div>
+</div>
+<br/>
+<br/>
+<br/>
+<br/>
+<button mat-flat-button (click)="back()">BACK</button>
+<div *ngIf="getMessage()| async as msg">{{msg}}</div>

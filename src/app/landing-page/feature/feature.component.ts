@@ -13,9 +13,11 @@ export class FeatureComponent {
 
   get featureStyle() {
     return {
-      height: this.compact ? '40px' : '100px',
-      width: this.compact ? '40px' : '100px',
-      backgroundImage: 'url(' + this.feature.image + ')'
+      width: '100%',
+      background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.85)), url(' + this.feature.image + ')',
+      backgroundSize: 'cover',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center center',
     }
   }
 }

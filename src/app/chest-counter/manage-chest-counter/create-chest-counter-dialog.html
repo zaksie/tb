@@ -31,18 +31,19 @@
   .level-explanation {
     font-size: large;
   }
+
   .section-title {
     font-size: small;
     font-weight: bolder;
-      width: 100%;
-      text-align: center;
-      border-bottom: 1px solid #000;
-      line-height: 0.1em;
-      margin: 10px 0 20px;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #000;
+    line-height: 0.1em;
+    margin: 10px 0 20px;
 
     span {
       color: darkgray;
-      padding:0 10px;
+      padding: 0 10px;
     }
   }
 </style>
@@ -92,25 +93,25 @@
         <form [formGroup]="inputForm" (ngSubmit)="onSubmit()" class="form-content">
           <mat-form-field appearance="outline">
             <mat-label>Minimal score</mat-label>
-            <input matInput type="text" formControlName="minScore">
+            <input matInput type="number" formControlName="minScore">
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Minimum epic crypts</mat-label>
-            <input matInput type="text" formControlName="minEpicCryptCount">
+            <input matInput type="number" formControlName="minEpicCryptCount">
           </mat-form-field>
           <mat-slider min="0" max="2" step="1" showTickMarks discrete [displayWith]="formatLabel">
             <input matSliderThumb formControlName="level" #slider>
           </mat-slider>
-          <div *ngIf="+slider.value < 3 && +slider.value >= 0">
-            <h1 style="text-align: center">{{ levelMap[+slider.value].title }}<mat-icon [matTooltip]="levelMap[+slider.value].subtitle">info</mat-icon></h1>
-<!--            <div class="level-explanation">{{ levelMap[+slider.value].subtitle }}</div>-->
-<!--            <p>See <b>point system</b> tab for more details</p>-->
-          </div>
+          @if (slider && +slider.value < 3 && +slider.value >= 0) {
+            <h1 style="text-align: center">{{ levelMap[+slider.value].title }}
+              <mat-icon [matTooltip]="levelMap[+slider.value].subtitle">info</mat-icon>
+            </h1>
+          }
         </form>
         <br>
         <div class="section-title"><span>ADVANCED SETTINGS</span></div>
         <p>Fill in targets for various chest types to display clan targets in dashboard</p>
-        <app-task-setup #taskSetup [tasks]="data.tasks"></app-task-setup>
+        <app-task-setup #taskSetup [tasks]="tasks"></app-task-setup>
       </div>
     </mat-tab>
     <mat-tab label="Point system">
@@ -120,5 +121,6 @@
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button (click)="onNoClick()">CANCEL</button>
-  <button mat-button [disabled]="inputForm.invalid || taskSetup.fg.invalid" cdkFocusInitial (click)="onSubmit()">OK</button>
+  <button mat-button [disabled]="inputForm.invalid || taskSetup.fg.invalid" cdkFocusInitial (click)="onSubmit()">OK
+  </button>
 </mat-dialog-actions>

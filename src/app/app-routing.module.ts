@@ -5,20 +5,34 @@ import {CpClanRunsComponent} from "./cp-clan-runs/cp-clan-runs.component";
 import {RedirectGuard} from "./services/redirect-guard.service";
 import {ChestCounterComponent} from "./chest-counter/chest-counter.component";
 import {LandingPageComponent} from "./landing-page/landing-page.component";
-import {HomeComponent} from "./home/home.component";
 import {ViewChestCounterComponent} from "./chest-counter/view-chest-counter/view-chest-counter.component";
 import {DashboardComponent} from "./chest-counter/dashboard/dashboard.component";
 import {ManageChestCounterComponent} from "./chest-counter/manage-chest-counter/manage-chest-counter.component";
 import {MercExchangeComponent} from "./merc-exchange/merc-exchange.component";
 import {CryptsExplorerComponent} from "./crypts-explorer/crypts-explorer.component";
+import {ComingSoonComponent} from "./landing-page/coming-soon/coming-soon.component";
+import {DemoChestCounterComponent} from "./landing-page/demo-chest-counter/demo-chest-counter.component";
 
 const routes: Routes = [
   {path: '', component: LandingPageComponent},
-  {path: 'home', component: HomeComponent},
   {path: 'stacker', component: StackerComponent},
   {path: 'crypts', component: CryptsExplorerComponent},
   {path: 'merc-exchange', component: MercExchangeComponent},
   {path: 'cp-run', component: CpClanRunsComponent},
+  {
+    path: 'demo',
+    children: [
+
+      {
+        path: 'chest-counter',
+        component: DemoChestCounterComponent
+      },
+      {
+        path: '**',
+        component: ComingSoonComponent
+      },
+    ]
+  },
   {
     path: 'chests',
     children: [
@@ -47,7 +61,9 @@ const routes: Routes = [
     data: {
       externalUrl: 'https://docs.google.com/spreadsheets/d/1OLN2LyeJFvVkppnIfxVSd86bqd-0JMAyyGTLMuJxpZQ'
     }
-  }
+  },
+  {path: '**', redirectTo: ''},
+
 ];
 
 @NgModule({

@@ -3,13 +3,15 @@ import {MatSort} from "@angular/material/sort";
 import {BackendService} from "../../services/backend.service";
 import {ChestAgg, ChestCounter, ChestCounterResults, GenericTask} from "../../models/clan-data.model";
 import {MatTableDataSource} from "@angular/material/table";
-import {filter, mergeMap, Observable, of, Subscription, switchMap, tap} from "rxjs";
+import {filter, map, mergeMap, Observable, of, Subscription, switchMap, take, tap} from "rxjs";
 import {FormControl, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "@auth0/auth0-angular";
 import {catchError} from "rxjs/operators";
 import {MatDialog} from "@angular/material/dialog";
-import {RequiresLoginDialog} from "../../common/requires-login.dialog/requires-login-dialog.component";
+import {AppGenericDialog} from "../../common/app-generic-dialog/app-generic-dialog";
+import {Socket} from "ngx-socket-io";
+import {v4 as uuidv4} from 'uuid';
 
 
 @Component({
@@ -23,13 +25,48 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   displayedColumns: string[] = ['track', 'playerName', 'epicCryptCount', 'totalScore', 'chestCount'];
   chestCounters$!: Observable<ChestCounter[]>
   tasks: GenericTask[] = [];
-  currentClanTag: string = ''
+  private _currentClanTag: string = '';
+  private _currentClanTagSubscription!: Subscription
+
+  get currentClanTag(): string {
+    return this._currentClanTag
+  }
+
+  set currentClanTag(value: string) {
+    this._currentClanTag = value
+    if (this._currentClanTagSubscription)
+      this._currentClanTagSubscription.unsubscribe();
+    this._currentClanTagSubscription = this.websocket.fromEvent('api/v1/chests/' + value).pipe(
+      tap((data: ChestCounterResults) => {
+        console.log('received from server: ', data)
+        const player = data.players[0]
+        const task = this.tasks.find(t => t.source === player.sources[0].shortSourceName)
+        if (task) {
+          task.counter++
+          task.hash = uuidv4().toString()
+        }
+
+        const dataPoint = this.dataSource.data.find(row => row.playerName === player.playerName)
+        if (dataPoint) {
+          dataPoint.chestCount += player.chestCount
+          dataPoint.totalScore += player.totalScore
+          dataPoint.epicCryptCount += player.epicCryptCount
+        }
+
+        this.dataSource.sort = this.sort
+      })
+    ).subscribe()
+  }
+
   readonly dialog = inject(MatDialog);
+  websocket = inject(Socket)
 
   constructor(private router: Router, private route: ActivatedRoute, private backend: BackendService, private authService: AuthService) {
   }
 
   ngOnDestroy(): void {
+    if (this._currentClanTagSubscription)
+      this._currentClanTagSubscription.unsubscribe()
   }
 
   @ViewChild(MatSort) sort!: MatSort;
@@ -40,6 +77,9 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   getOptionText: ((value: any) => string) | null = (value: any) => value ? ['K', value.kingdom, ' ', value.tag].join('') : ''
 
   ngAfterViewInit() {
+    const paramTag = this.route.snapshot.params['tag']
+    console.log(paramTag)
+    this.getByClanTag(paramTag)
     this.dataSource.sort = this.sort
     this.route.params.subscribe(
       params => {
@@ -63,6 +103,7 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   }
 
   getByClanTag(clanTag: string) {
+    console.log('setting clantag', clanTag)
     this.currentClanTag = clanTag
     if (!clanTag) return
     this.isLoading.set(true)
@@ -70,54 +111,28 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
       catchError(e => {
         console.error(e)
         return of(null)
-      })
+      }),
+      take(1),
     ).subscribe(data => this.populateData(data))
   }
 
   populateData(data: ChestCounterResults | null) {
+    this.isLoading.set(false)
     console.log('data', data)
-    const tasks = data?.stats[0].tasks || []
+    const tasks = (data?.stats?.[0]?.tasks || []).map(x => {
+      return {
+        ...x,
+        hash: uuidv4().toString(),
+        sources: x.sources?.map(y => y.toLowerCase())
+      }
+    })
+    console.log('tasks',tasks)
     const rows = data?.players || []
     this.tasks.length = 0
     this.tasks.push(...tasks)
     this.dataSource.data = rows
     this.dataSource.sort = this.sort
-    this.isLoading.set(false)
   }
-
-  readonly sourceCategories = [
-    'Epic Crypt',
-    'Rare Crypt',
-    'Crypt',
-    'Vault of the Ancients',
-    'Union of Triumph personal reward',
-    'Raid Runic squad',
-    'heroic Monster'
-  ]
-  sourceCatgoriesFixes = [
-    {
-      original: 'Crypt',
-      replaceWith: 'Common Crypt'
-    },
-    {
-      original: 'Vault of the Ancients',
-      replaceWith: 'Vault'
-    },
-    {
-      original: 'Union of Triumph personal reward',
-      replaceWith: 'Union of Triumph'
-    },
-    {
-      original: 'Raid Runic squad',
-      replaceWith: 'Raid Runic'
-    },
-    {
-      original: 'heroic Monster',
-      replaceWith: 'Heroics'
-    },
-
-  ]
-
 
   getTotalPlayerCount() {
     return this.dataSource.data.length
@@ -141,7 +156,7 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
       if (isAuthenticated) {
         this._toggleTrackPlayerAuthenticated(row)
       } else {
-        const dialogRef = this.dialog.open(RequiresLoginDialog,
+        const dialogRef = this.dialog.open(AppGenericDialog,
           {data: {}}
         );
 
@@ -157,9 +172,7 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
 //   console.log(window.location.origin)
 //   return this.backend.searchForClanTag(value)
 // }
-  get dateRangeStart()
-    :
-    Date {
+  get dateRangeStart(): Date {
     const currentDate = new Date();
     const currentDay = currentDate.getDay();
     const offsetToLastSunday = (currentDay + 7) % 7;
@@ -169,7 +182,10 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   }
 
   onSubmit(value = null) {
-    this.router.navigate(['/chests/view', {tag: value || this.clanTagControl.value}]);
+    if (this.clanTagControl.value === this.currentClanTag)
+      this.fetch()
+    else
+      this.router.navigate(['/chests/view', {tag: value || this.clanTagControl.value}]);
   }
 
   fetch() {

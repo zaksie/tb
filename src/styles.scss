@@ -23,7 +23,7 @@
 //    filled-label-text-color: whitesmoke,
 //  ));
 //}
-
+@import url('https://fonts.googleapis.com/css2?family=Boldonse&display=swap');
 html {
   color-scheme: dark;
   @include mat.theme((
@@ -84,4 +84,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .full-hw {
   height: 100%;
   width: 100%;
+}
+.in-a-column{
+  display: flex;
+  flex-flow: column nowrap;
+
 }

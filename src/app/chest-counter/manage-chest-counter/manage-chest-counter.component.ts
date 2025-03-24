@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, inject, model, OnInit, signal, ViewChild} from '@angular/core';
 import {MatPaginator} from "@angular/material/paginator";
-import {ChestCounter, PointSystem} from "../../models/clan-data.model";
+import {ChestCounter, GenericTask, PointSystem} from "../../models/clan-data.model";
 import {BackendService} from "../../services/backend.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
@@ -84,7 +84,8 @@ export class ManageChestCounterComponent implements AfterViewInit {
   templateUrl: 'create-chest-counter-dialog.html',
   standalone: false
 })
-export class CreateChestCounterDialog {
+export class CreateChestCounterDialog implements OnInit{
+
   readonly dialogRef = inject(MatDialogRef<CreateChestCounterDialog>);
   readonly data = inject<ChestCounter>(MAT_DIALOG_DATA);
   hide = signal(true);
@@ -123,8 +124,15 @@ export class CreateChestCounterDialog {
     level: new FormControl(this.data?.level || 0, Validators.required),
   });
   pointSystem: PointSystem[] = this.data?.pointSystem || this.data?.defaultPointSystem || [];
+  tasks: GenericTask[] = this.data?.tasks || [];
 
-
+  ngOnInit(): void {
+    const level = this.inputForm.get('level')?.value || 0
+    console.log('level', level)
+    if (level > 2 || level < 0){
+      this.inputForm.get('level')?.setValue(0)
+    }
+  }
   get pointSystemFormatted(): string {
     const level = this.inputForm.get('level')?.value || 0
     return this.pointSystem.filter(x => {

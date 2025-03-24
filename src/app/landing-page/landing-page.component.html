@@ -2,16 +2,28 @@
   <div class="section1-container">
     <div class="section1">
       <img src="/assets/logo.png" class="logo-img">
-      <div class="login-title">Battle Squire</div>
+      <h1 class="login-title">Battle Squire</h1>
       <div class="login-actions">
-        <button mat-raised-button (click)="login()" *ngIf="!(auth.isAuthenticated$ | async)">LOGIN</button>
+        <div class="login-action">
+          <mat-chip-listbox aria-label="quicklinks">
+            @for (link of quickLinks; track link.path) {
+              <mat-chip-option (click)="goTo(link)">{{link.title}}</mat-chip-option>
+            }
+          </mat-chip-listbox>
+        </div>
+        <mat-divider vertical style="height:50px" *ngIf="!isMobile() && !(auth.isAuthenticated$ | async)"></mat-divider>
+        <div class="login-action right-login-action" *ngIf="!(auth.isAuthenticated$ | async)">
+          <button mat-button (click)="scrollToBottom()">FREE TRIAL</button>
+          <button mat-raised-button (click)="login()">LOGIN</button>
+        </div>
       </div>
     </div>
     <div class="section2 contact-us">
       <mat-card>
         <div mat-card-image class="contact-us-bg" alt="contact us" *ngIf="!messageSent"></div>
         <mat-card-content>
-          <form [formGroup]="contactFormGroup" (ngSubmit)="onSubmit()" class="contact-form" *ngIf="!messageSent; else messageSentSuccessfully">
+          <form [formGroup]="contactFormGroup" (ngSubmit)="onSubmit()" class="contact-form"
+                *ngIf="!messageSent; else messageSentSuccessfully">
             <mat-form-field appearance="outline">
               <mat-label>Name</mat-label>
               <input matInput type="text" formControlName="name">
@@ -34,7 +46,14 @@
       </mat-card>
     </div>
   </div>
+  <h2>Features</h2>
   <div class="feature-container">
     <app-feature *ngFor="let f of features" [feature]="f" class="feature"></app-feature>
+  </div>
+  <div class="section2-container" id="pricing">
+    <h1>Pricing</h1>
+    <div class="section2">
+    <app-pricing></app-pricing>
+    </div>
   </div>
 </div>

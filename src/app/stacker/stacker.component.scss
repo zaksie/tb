@@ -79,6 +79,8 @@
   .footer {
     height: 50px; /* Fixed height for the last row */
     flex: 0 0 auto; /* No grow, no shrink, fixed size */
+    justify-content: end;
+    display: flex;
   }
 
   ::ng-deep .mat-horizontal-stepper-wrapper {

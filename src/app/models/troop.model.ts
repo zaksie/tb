@@ -1,6 +1,9 @@
 import {getMainDivision, getSecondaryDivision, secondaryDivisions, TroopType} from "./troop-type";
 import {ConscriptionType} from "./conscription-type";
 import {Bonus} from "./bonus.model";
+import {flying, guardsman, specialist} from "./troop-type";
+
+
 
 export class Troop {
   healthBonus: number = 0;
@@ -98,9 +101,9 @@ export interface TroopBonusDataBasic {
 
 export interface BonusesObject {
   epic: TroopBonusDataBasic
-  army: TroopBonusDataBasic
+  army: TroopBonusDataBasic|undefined;
 
-  [key: string]: TroopBonusDataBasic;
+  [key: string]: TroopBonusDataBasic|undefined;
 }
 
 export class Squad {
@@ -135,7 +138,8 @@ export class Squad {
 
 
   setBonuses(bonuses: BonusesObject) {
-    if (!bonuses) return
+    if (!bonuses) return;
+    this.adjustBonuses(bonuses)
     this.bonuses = bonuses
     this.troop.resetBonuses()
 
@@ -152,8 +156,8 @@ export class Squad {
     this.troop.types.forEach(x => {
       const name: string = TroopType[x].toLowerCase()
       if (name in bonuses) {
-        this.troop.healthBonus += +bonuses[name].health || 0
-        this.troop.strengthBonus += +bonuses[name].strength || 0
+        this.troop.healthBonus += +(bonuses[name]?.health || 0)
+        this.troop.strengthBonus += +(bonuses[name]?.strength || 0)
       }
       if (name === 'beast') {
         this.troop.healthBonus += 100
@@ -162,6 +166,18 @@ export class Squad {
     })
 
     console.log(this.troop.strengthBonus)
+  }
+
+  private adjustBonuses(bonuses: BonusesObject) {
+
+    if (flying in bonuses){
+      bonuses.army = {strength:0, health: 0}
+      bonuses[guardsman] = undefined
+      bonuses[specialist] = undefined
+    }
+    else if (guardsman in bonuses && specialist in bonuses){
+      bonuses.army = {strength:0, health: 0}
+    }
   }
 }
 

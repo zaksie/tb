@@ -42,6 +42,8 @@ export interface GenericTask {
   goal: number
   title: string
   source?: string
+  sources?: string[]
+  hash?: string
 }
 
 export interface DashboardTask {
@@ -106,7 +108,7 @@ export interface ChestAgg {
 }
 
 export interface ContactRequest {
-  cityCoords: string
+  cityCoords?: string
   message?: string
   name: string
 }

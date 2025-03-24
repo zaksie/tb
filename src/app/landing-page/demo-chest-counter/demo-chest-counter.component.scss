@@ -1,0 +1,37 @@
+.demo {
+  color: black;
+  header {
+    text-align: center;
+    background-color: #333;
+    color: white;
+    padding: 10px;
+  }
+
+  section {
+    max-width: 800px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  h1 {
+    color: white;
+  }
+  h2{
+    color: #333
+  }
+
+  video {
+    display: block;
+    margin: 20px auto;
+    max-width: 100%;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #666;
+  }
+}

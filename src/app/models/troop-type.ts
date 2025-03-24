@@ -44,3 +44,9 @@ export const getSecondaryDivision = (tts: TroopType[]) => {
   return TroopType[tt as TroopType]
 }
 
+export const guardsman = TroopType[TroopType.Guardsman].toLowerCase()
+export const specialist = TroopType[TroopType.Specialist].toLowerCase()
+export const flying = TroopType[TroopType.Flying].toLowerCase()
+export const melee = TroopType[TroopType.Melee].toLowerCase()
+export const mounted = TroopType[TroopType.Mounted].toLowerCase()
+export const ranged = TroopType[TroopType.Ranged].toLowerCase()

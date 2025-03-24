@@ -47,7 +47,7 @@
   </div>
   <mat-card class="clan-dashboard">
     <mat-card-content>
-      @for (task of tasks; track task.title) {
+      @for (task of tasks; track task.hash) {
         <app-task [task]="task"></app-task>
       }
     </mat-card-content>

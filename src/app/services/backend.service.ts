@@ -14,6 +14,7 @@ import {map, mergeMap, Observable, Subject, tap} from "rxjs";
 import {MercExchange} from "../merc-exchange/merc-exchange.model";
 import {CryptConfig} from "../crypts-explorer/crypts.model";
 import {ServiceName} from "./service-interface";
+import {User} from "@auth0/auth0-angular";
 
 @Injectable({
   providedIn: 'root'
@@ -128,6 +129,12 @@ export class BackendService {
   }
 
   searchForClanTag(term: string) {
-    return this.httpClient.get<Clan[]>(environment.backend + '/api/v1/chests/q', { params: new HttpParams().set('term', term) })
+    return this.httpClient.get<Clan[]>(environment.backend + '/api/v1/chests/q', {params: new HttpParams().set('term', term)})
+  }
+
+  getUserDetails(user: User) {
+    return this.httpClient.get<any[]>(environment.backend + '/api/v1/account').pipe(
+      map((res: any[]) => ({auth0: user, server: res[0]}))
+    )
   }
 }

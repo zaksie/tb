@@ -1,7 +1,7 @@
 <div class="example-container" [class.example-is-mobile]="isMobile()" class="no-scroll">
   <mat-toolbar>
     <div class="toolbar-items">
-    <span class="logo">
+    <span class="logo" routerLink="home">
       <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
       <img src="/assets/logo.png" alt="Logo" class="logo-img">
       <span>Battle Squire</span>
@@ -21,14 +21,17 @@
 
     <mat-sidenav-content class="example-sidenav-content no-scroll">
       <router-outlet></router-outlet>
+      <footer>
+        <p>&copy; 2025 Battle Squire | <a href="assets/terms.html">Terms and Conditions</a> | Contact: <a href="mailto:zak@afiloo.io">zak&commat;afiloo.io</a></p>
+      </footer>
     </mat-sidenav-content>
   </mat-sidenav-container>
 
   <mat-menu #menu="matMenu">
     <button mat-menu-item
-            (click)="openUserSettings()">
-      <mat-icon>settings</mat-icon>
-      Settings
+            (click)="openAcountDialog()">
+      <mat-icon>person</mat-icon>
+      Account
     </button>
     <hr/>
     <button mat-menu-item
@@ -37,4 +40,5 @@
       Logout
     </button>
   </mat-menu>
+
 </div>

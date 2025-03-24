@@ -1,16 +1,66 @@
 [
   {
+    "name": "Home",
+    "icon": "home",
+    "path": "",
+    "internalNavigation": true,
+    "public": true
+  },
+  {
+    "name": "Demos",
+    "path": "",
+    "internalNavigation": true,
+    "public": true,
+    "children": [
+      {
+        "name": "Chest counter",
+        "path": "demo/chest-counter",
+        "public": true
+      },
+      {
+        "name": "Stack calculator",
+        "path": "demo/stacker",
+        "public": true
+      },
+      {
+        "name": "Auto-crypter",
+        "path": "demo/crypts",
+        "public": true
+      }
+    ]
+  },
+  {
     "name": "Stack Calculator",
     "image": "/assets/stack-calculator.jpg",
     "description": "Optimize your hits using a calculator based on your army bonuses and leadership size",
     "path": "stacker",
-    "public": true
+    "public": true,
+    "actions": [
+      {
+        "title": "START",
+        "path": "stacker"
+      },
+      {
+        "title": "DEMO",
+        "path": "demo/stacker"
+      }
+    ]
   },
   {
     "name": "Crypts",
     "image": "/assets/crypts.webp",
     "description": "Automate crypting",
-    "path": "crypts"
+    "path": "crypts",
+    "actions": [
+      {
+        "title": "START",
+        "path": "crypts"
+      },
+      {
+        "title": "DEMO",
+        "path": "demo/crypts"
+      }
+    ]
   },
   {
     "name": "Merc Exchange",
@@ -24,6 +74,16 @@
     "image": "/assets/chest-counter.jpg",
     "description": "Track clan member chest output, analyze contribution and set caps based on various sources of chests",
     "path": "chests",
+    "actions": [
+      {
+        "title": "START",
+        "path": "chests/manage"
+      },
+      {
+        "title": "DEMO",
+        "path": "demo/chest-counter"
+      }
+    ],
     "children": [
       {
         "name": "View chest count",
@@ -46,11 +106,5 @@
     "disabled": true,
     "image": "assets/cp-runs.jpg",
     "description": "Get help setting up CP runs to optimize results and reduce costs"
-  },
-  {
-    "name": "Resources",
-    "disabled": true,
-    "image": "/assets/silver.png",
-    "description": "Buy and sell resource at our marketplace"
   }
 ]
