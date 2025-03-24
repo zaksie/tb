@@ -1,0 +1,24 @@
+steps:
+  # Step 1: Install Node.js dependencies
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['install']
+
+  # Step 2: Build the Angular application for production
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'build:prod']
+
+  # Step 3: Copy the built files to the Cloud Storage bucket
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args: ['-m', 'cp', '-r', 'dist/tb/browser/**', 'gs://battle-squire/']
+
+  # Step 4: Set the bucket as a website with index.html as the main page
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args: ['web', 'set', '-m', 'index.html', 'gs://battle-squire']
+
+  # Step 5: Make the bucket contents publicly readable
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args: ['acl', 'ch', '-u', 'AllUsers:R', '-r', 'gs://battle-squire']
+
+# Optional: Define substitution variables for flexibility
+substitutions:
+  _BUCKET_NAME: 'battle-squire'  # Replace with your bucket name
