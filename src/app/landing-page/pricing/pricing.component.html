@@ -1,41 +1,72 @@
-<div class="pricing-container">
-  @for (p of pricing; track p) {
-    <mat-card class="plan">
-      <mat-card-header class="plan-header">
-        <mat-card-title>
-          {{ p.name }}
-        </mat-card-title>
-        <mat-card-subtitle>
-          <div>{{ p.price }}</div>
-          <div>{{ p.remark }}</div>
-        </mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-list class="price">
-          @for (f of features; track f.type) {
-            <mat-list-item>
-              @if (isIncluded(f.type, p)) {
-                <div class="feature-line">
-                  <mat-icon class="available">check</mat-icon>
-                  <span [ngClass]="{'glow-animation': f.type===0}">{{ f.name }}</span>
-                </div>
-              } @else {
-                <div class="unavailable feature-line">
-                  <mat-icon>close</mat-icon>
-                  <span>{{ f.name }}</span>
-                </div>
-              }
-            </mat-list-item>
+<!--<div class="pricing-container">-->
+<!--  @for (p of pricing; track p) {-->
+<!--    <mat-card class="plan">-->
+<!--      <mat-card-header class="plan-header">-->
+<!--        <mat-card-title>-->
+<!--          {{ p.name }}-->
+<!--        </mat-card-title>-->
+<!--        <mat-card-subtitle>-->
+<!--          <div>{{ p.price }}</div>-->
+<!--          <div>{{ p.remark }}</div>-->
+<!--        </mat-card-subtitle>-->
+<!--      </mat-card-header>-->
+<!--      <mat-card-content>-->
+<!--        <mat-list class="price">-->
+<!--          @for (f of features; track f.type) {-->
+<!--            <mat-list-item>-->
+<!--              @if (isIncluded(f.type, p)) {-->
+<!--                <div class="feature-line">-->
+<!--                  <mat-icon class="available">check</mat-icon>-->
+<!--                  <span [ngClass]="{'glow-animation': f.type===0}">{{ f.name }}</span>-->
+<!--                </div>-->
+<!--              } @else {-->
+<!--                <div class="unavailable feature-line">-->
+<!--                  <mat-icon>close</mat-icon>-->
+<!--                  <span>{{ f.name }}</span>-->
+<!--                </div>-->
+<!--              }-->
+<!--            </mat-list-item>-->
+<!--          }-->
+<!--        </mat-list>-->
+<!--      </mat-card-content>-->
+<!--      <mat-card-actions class="plan-actions">-->
+<!--        @if (p.price !== 'FREE') {-->
+<!--          <button mat-raised-button (click)="login()">START</button>-->
+<!--        }-->
+<!--      </mat-card-actions>-->
+<!--    </mat-card>-->
+<!--  }-->
+<!--</div>-->
+<div class="pricing-v2-container">
+  <table class="mat-elevation-z8" mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="feature">
+      <th mat-header-cell *matHeaderCellDef>
+        Feature
+      </th>
+      <td mat-cell *matCellDef="let row" [ngClass]="{bold: row.bold}"> {{ row.name }}</td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <ng-container *ngFor="let tier of tiers" [matColumnDef]="Plan[tier]">
+      <th mat-header-cell *matHeaderCellDef [ngClass]="{deluxe: tier === Plan.DELUXE}">
+        {{ Plan[tier].toLowerCase() | titlecase }}
+      </th>
+      <td mat-cell *matCellDef="let row" class="row" [ngClass]="{deluxe: tier === Plan.DELUXE}">
+        <span class="cell" [matBadge]="getBadge(tier, row)">{{ getTableValue(tier, row) }}</span>
+      </td>
+      <td mat-footer-cell *matFooterCellDef>
+        @if (!isAuthenticated) {
+          @if (getTierAction(tier); as action) {
+            <button mat-stroked-button (click)="action.onclick()">{{ action.title }}</button>
           }
-        </mat-list>
-      </mat-card-content>
-      <mat-card-actions class="plan-actions">
-        @if (p.price !== 'FREE') {
-          <button mat-raised-button (click)="login()">START</button>
         }
-      </mat-card-actions>
-    </mat-card>
-  }
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+  </table>
 </div>
 
 

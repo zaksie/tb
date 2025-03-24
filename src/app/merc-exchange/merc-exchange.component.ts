@@ -1,8 +1,6 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {BackendService} from "../services/backend.service";
 import {MercExchange} from "./merc-exchange.model";
-import {concatMap, retry, Subscription, timer} from "rxjs";
 import {ActionableRow} from "../services/service-interface";
 
 @Component({
@@ -14,7 +12,7 @@ import {ActionableRow} from "../services/service-interface";
 export class MercExchangeComponent implements AfterViewInit, OnDestroy {
   public dataSource = new MatTableDataSource<MercExchange>([]);
   displayedColumns: string[] = ['timestamp', 'coordinates'];
-  pollingHandle!: Subscription
+
   ROW: ActionableRow = {
     username: 'all',
     status: {
@@ -26,25 +24,25 @@ export class MercExchangeComponent implements AfterViewInit, OnDestroy {
     allowAllActions: true
   }
 
-  constructor(private backend: BackendService) {
+  constructor() {
 
   }
 
   ngOnDestroy(): void {
-    this.pollingHandle.unsubscribe()
+
   }
 
   ngAfterViewInit() {
     this.startPolling()
   }
 
-  private startPolling(requestInterval = 10000, retryCount = 99999999) {
-    this.pollingHandle = timer(0, requestInterval)
-      .pipe(
-        concatMap(() => this.backend.getMercExchanges()),
-        retry({count: retryCount, delay: requestInterval})
-      )
-      .subscribe(data => this.populateData(data))
+  private startPolling() {
+    // this.pollingHandle = timer(0, requestInterval)
+    //   .pipe(
+    //     concatMap(() => this.backend.getMercExchanges()),
+    //     retry({count: retryCount, delay: requestInterval})
+    //   )
+    //   .subscribe(data => this.populateData(data))
   }
 
 

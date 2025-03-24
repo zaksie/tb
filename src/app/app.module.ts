@@ -67,7 +67,7 @@ import {AppGenericDialog} from "./common/app-generic-dialog/app-generic-dialog";
 import {AccountDialog} from "./account/account.component";
 import {ComingSoonComponent} from "./landing-page/coming-soon/coming-soon.component";
 import {SocketIoConfig, SocketIoModule} from "ngx-socket-io";
-import {DemoChestCounterComponent} from "./landing-page/demo-chest-counter/demo-chest-counter.component";
+import {MatBadge} from "@angular/material/badge";
 
 const authorizationParams = {
   scope: "openid profile email offline_access",
@@ -149,7 +149,8 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
     MatChipOption,
     MatAutocomplete,
     MatAutocompleteTrigger,
-    MatChipListbox
+    MatChipListbox,
+    MatBadge
   ],
   providers: [
     provideAuth0({

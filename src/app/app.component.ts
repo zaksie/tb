@@ -1,15 +1,13 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, inject, OnDestroy, signal, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject, OnDestroy, signal, ViewChild} from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
 import {AuthService} from "@auth0/auth0-angular";
 import features from '../assets/features.json'
 import {FeatureModel} from "./landing-page/feature/feature.model";
 import {BackendService} from "./services/backend.service";
-import {Observable, of, switchMap} from "rxjs";
+import {Observable} from "rxjs";
 import {MediaMatcher} from "@angular/cdk/layout";
 import {MatSidenav} from "@angular/material/sidenav";
 import {MatDialog} from "@angular/material/dialog";
-import {CreateChestCounterDialog} from "./chest-counter/manage-chest-counter/manage-chest-counter.component";
-import {AppGenericDialog} from "./common/app-generic-dialog/app-generic-dialog";
 import {AccountDialog} from "./account/account.component";
 
 @Component({
@@ -50,13 +48,8 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // this.authService.isAuthenticated$.pipe(
-    //   switchMap(isAuthenticated =>
-    //     isAuthenticated ? of(true) : this.authService.loginWithPopup()
-    //   )).subscribe(value => {
-    //   console.log('Authenticated:', value)
-    //   if (value) this.snav.open()
-    // })
+    if(!this.isMobile())
+      this.snav.open()
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
         if (this.isMobile())
