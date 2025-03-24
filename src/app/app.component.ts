@@ -20,9 +20,9 @@ export class AppComponent implements OnDestroy, AfterViewInit {
   title = 'Battle Squire';
   isAuthenticated$: Observable<boolean>;
   features: FeatureModel[] = features;
-  protected readonly isMobile = signal(true);
   readonly dialog = inject(MatDialog);
 
+  protected readonly isMobile = signal(true);
   private readonly _mobileQuery: MediaQueryList;
   private readonly _mobileQueryListener: () => void;
   @ViewChild('snav') snav!: MatSidenav

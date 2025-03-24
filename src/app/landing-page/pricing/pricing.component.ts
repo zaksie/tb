@@ -1,8 +1,9 @@
-import {AfterViewInit, Component, inject} from '@angular/core';
+import {AfterViewInit, Component, inject, signal} from '@angular/core';
 import {AuthService} from "@auth0/auth0-angular";
 import {MatDialog} from "@angular/material/dialog";
 import {AppGenericDialog} from "../../common/app-generic-dialog/app-generic-dialog";
 import {MatTableDataSource} from "@angular/material/table";
+import {MediaMatcher} from "@angular/cdk/layout";
 
 export enum Feature {
   FREE_TRIAL,
@@ -49,9 +50,18 @@ export class PricingComponent implements AfterViewInit {
 
   private authService = inject(AuthService)
   readonly dialog = inject(MatDialog);
+
   readonly Plan = Plan
   readonly tiers: Plan[] = [Plan.FREE, Plan.BASIC, Plan.PRO, Plan.CLAN, Plan.DELUXE]
+  readonly tiersMobile1: Plan[] = [Plan.FREE, Plan.BASIC, Plan.PRO]
+  readonly tiersMobile2: Plan[] = [Plan.CLAN, Plan.DELUXE]
   displayedColumns: string[] = ['feature', Plan[Plan.FREE], Plan[Plan.BASIC], Plan[Plan.PRO], Plan[Plan.CLAN], Plan[Plan.DELUXE]];
+  displayedColumnsMobile1: string[] = ['feature', Plan[Plan.FREE], Plan[Plan.BASIC], Plan[Plan.PRO]];
+  displayedColumnsMobile2: string[] = ['feature', Plan[Plan.CLAN], Plan[Plan.DELUXE]];
+
+  protected readonly isMobile = signal(true);
+  private readonly _mobileQuery: MediaQueryList;
+  private readonly _mobileQueryListener: () => void;
 
   readonly pricing: Pricing[] = [
     {
@@ -80,7 +90,7 @@ export class PricingComponent implements AfterViewInit {
       plans: [Plan.BASIC, Plan.PRO, Plan.CLAN, Plan.DELUXE],
       remarks:
         {
-          BASIC: 'up to 200 crypts / week',
+          BASIC: '400 crypts/mo',
           PRO: 'unlimited crypts',
           DELUXE: 'unlimited crypts',
         }
@@ -97,11 +107,11 @@ export class PricingComponent implements AfterViewInit {
       plans: [Plan.FREE, Plan.BASIC, Plan.PRO, Plan.CLAN, Plan.DELUXE],
       remarks:
         {
-          FREE: ' 0 $',
-          BASIC: '15 $',
-          PRO: '25 $',
-          CLAN: '40 $',
-          DELUXE: '50 $',
+          FREE: ' 0 $ ',
+          BASIC: '15 $ ',
+          PRO: '25 $ ',
+          CLAN: '40 $ ',
+          DELUXE: '50 $ ',
         }
     },
     {
@@ -111,24 +121,32 @@ export class PricingComponent implements AfterViewInit {
       plans: [Plan.FREE, Plan.BASIC, Plan.PRO, Plan.CLAN, Plan.DELUXE],
       remarks:
         {
-          FREE: '  0 $',
-          BASIC: '153 $',
-          PRO: '210 $',
-          CLAN: '288 $',
-          DELUXE: '300 $',
+          FREE: '  0 $ ',
+          BASIC: '153 $ ',
+          PRO: '210 $ ',
+          CLAN: '288 $ ',
+          DELUXE: '300 $ ',
         },
       discounts:
         {
-          BASIC: '15% OFF',
-          PRO: '30% OFF',
-          CLAN: '40% OFF',
-          DELUXE: '50% OFF',
+          BASIC: '-15%',
+          PRO: '-30%',
+          CLAN: '-40%',
+          DELUXE: '-50%',
         }
     }
 
   ]
   public dataSource = new MatTableDataSource<Pricing>(this.pricing);
 
+  constructor() {
+    const media = inject(MediaMatcher);
+    this._mobileQuery = media.matchMedia('(max-width: 600px)');
+    this.isMobile.set(this._mobileQuery.matches);
+    this._mobileQueryListener = () => this.isMobile.set(this._mobileQuery.matches);
+    this._mobileQuery.addEventListener('change', this._mobileQueryListener);
+
+  }
 
   login(plan: Plan) {
     const dialogRef = this.dialog.open(AppGenericDialog,

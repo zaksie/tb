@@ -1,11 +1,14 @@
 
 .pricing-v2-container {
+
   .deluxe {
     background: #8C730C;
   }
-.bold{
-  font-weight: bolder;
-}
+
+  .bold {
+    font-weight: bolder;
+  }
+
   th {
     text-align: center;
   }
@@ -17,6 +20,24 @@
     .cell {
       min-width: 50px;
       display: inline-block;
+    }
+  }
+
+}
+
+@media only screen and (max-width: 600px) {
+  .pricing-v2-container {
+    * {
+      font-size: small !important;
+    }
+    .row {
+      min-width: 0;
+      text-align: center;
+
+      .cell {
+        min-width: 40px;
+        display: inline-block;
+      }
     }
   }
 
