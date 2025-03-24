@@ -7,6 +7,9 @@ steps:
   - name: 'gcr.io/cloud-builders/npm'
     args: ['run', 'build:prod']
 
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args: ['-m', 'rm', '-r', 'gs://battle-squire/*']
+
   # Step 3: Copy the built files to the Cloud Storage bucket
   - name: 'gcr.io/cloud-builders/gsutil'
     args: ['-m', 'cp', '-r', 'dist/tb/browser/**', 'gs://battle-squire/']
