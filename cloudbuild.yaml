@@ -10,7 +10,7 @@ steps:
     args: ['run', 'build:prod']
 
   - name: 'gcr.io/cloud-builders/gsutil'
-    args: ['-m', 'rm', '-r', 'gs://battle-squire/public/*']
+    args: ['-m', 'rm', '-r', 'gs://battle-squire/public']
 
   # Step 3: Zip the build output
   - name: 'node:22'
