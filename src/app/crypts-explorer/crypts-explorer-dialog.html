@@ -18,7 +18,7 @@
   }
 </style>
 
-<h2 mat-dialog-title>Chest counter setup</h2>
+<h2 mat-dialog-title>Auto Crypter Setup</h2>
 <mat-dialog-content>
   <mat-tab-group class="tab-content">
     <mat-tab label="Credentials">
@@ -81,5 +81,5 @@
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button (click)="onNoClick()">CANCEL</button>
-  <button mat-button [disabled]="!inputForm.valid" cdkFocusInitial (click)="onSubmit()">OK</button>
+  <button mat-button [disabled]="!inputForm.valid" (click)="onSubmit()">OK</button>
 </mat-dialog-actions>

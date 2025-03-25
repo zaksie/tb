@@ -86,12 +86,12 @@
     ],
     "children": [
       {
-        "name": "View chest count",
+        "name": "View chest results",
         "path": "chests/view",
         "public": true
       },
       {
-        "name": "Manage chest count",
+        "name": "My chest counters",
         "path": "chests/manage"
       },
       {

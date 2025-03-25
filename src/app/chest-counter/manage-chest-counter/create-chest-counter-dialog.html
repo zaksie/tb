@@ -4,12 +4,6 @@
     flex-flow: column nowrap;
   }
 
-  .link-button {
-    cursor: pointer;
-    color: blue;
-    text-decoration: underline;
-  }
-
   .tab-content {
     width: 400px;
     height: 500px;
@@ -28,10 +22,6 @@
     height: 477px;
   }
 
-  .level-explanation {
-    font-size: large;
-  }
-
   .section-title {
     font-size: small;
     font-weight: bolder;
@@ -48,7 +38,7 @@
   }
 </style>
 
-<h2 mat-dialog-title>Chest counter setup</h2>
+<h2 mat-dialog-title>Chest Counter Setup</h2>
 <mat-dialog-content>
   <mat-tab-group class="tab-content">
     <mat-tab label="Credentials">
@@ -78,11 +68,11 @@
           <mat-form-field appearance="outline">
             <mat-label>Clan name</mat-label>
             <input matInput type="text" formControlName="clanName">
-            <mat-error *ngIf="this.inputForm.get('clanName')?.invalid">Name already taken</mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Clan tag</mat-label>
             <input matInput type="text" formControlName="clanTag">
+            <mat-error *ngIf="this.inputForm.get('clanTag')?.invalid">Name already taken</mat-error>
           </mat-form-field>
 
         </div>
@@ -121,6 +111,6 @@
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button (click)="onNoClick()">CANCEL</button>
-  <button mat-button [disabled]="inputForm.invalid || taskSetup.fg.invalid" cdkFocusInitial (click)="onSubmit()">OK
+  <button mat-button [disabled]="inputForm.invalid || taskSetup.fg.invalid" (click)="onSubmit()">OK
   </button>
 </mat-dialog-actions>
