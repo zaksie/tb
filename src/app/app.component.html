@@ -8,9 +8,9 @@
         <span routerLink="home" *ngIf="!platform.isMobile()">Battle Squire</span>
       </span>
       <span class="anchors">
-        <a href="#features">FEATURES</a>
-        <a href="#pricing">PRICING</a>
-        <a href="#contactus">CONTACT US</a>
+        <a routerLink="/" fragment="features">FEATURES</a>
+        <a routerLink="/" fragment="pricing">PRICING</a>
+        <a routerLink="/" fragment="contactus">CONTACT US</a>
         <ng-container *ngIf="isAuthenticated$|async">
           <button mat-icon-button [matMenuTriggerFor]="menu">
             <mat-icon fontIcon="person"></mat-icon>

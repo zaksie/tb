@@ -62,7 +62,15 @@ const routes: Routes = [
 
 @NgModule({
 
-  imports: [RouterModule.forRoot(routes, {useHash: false,bindToComponentInputs: true, paramsInheritanceStrategy: 'always'})],
+  imports: [
+    RouterModule.forRoot(routes, {
+      useHash: false,
+      anchorScrolling: 'enabled',
+      onSameUrlNavigation: 'reload',
+      bindToComponentInputs: true,
+      paramsInheritanceStrategy: 'always'
+    })
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule {

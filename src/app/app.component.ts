@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, inject, OnInit, ViewChild} from '@angular/core';
-import {NavigationEnd, Router} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {AuthService} from "@auth0/auth0-angular";
 import features from '../assets/features.json'
 import {FeatureModel} from "./landing-page/feature/feature.model";
@@ -27,9 +27,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('snav') snav!: MatSidenav
 
 
-
   constructor(public router: Router, public authService: AuthService, public backend: BackendService,
-              private meta: Meta, private titleService: Title) {
+              private meta: Meta, private titleService: Title, private activatedRoute: ActivatedRoute) {
 
     this.isAuthenticated$ = this.authService.isAuthenticated$
   }
@@ -54,6 +53,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.updateMetaTags();
   }
 
+
   ngAfterViewInit(): void {
     if (!this.platform.isMobile())
       this.snav.open()
@@ -63,6 +63,16 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.snav.close()
       }
     });
+    this.activatedRoute.fragment.subscribe((fragment: string | null) => {
+      if (fragment) this.jumpToSection(fragment);
+    });
+  }
+
+
+  jumpToSection(section: string | null) {
+    console.log({section})
+    if (section)
+      setTimeout(() => document.getElementById(section)?.scrollIntoView({behavior: 'smooth'}), 100)
   }
 
   logout() {
