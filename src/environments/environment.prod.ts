@@ -8,4 +8,6 @@ export const environment = {
     domain: auth.domain,
     clientId: auth.clientId,
   },
+  frontend: 'https://battle-squire.com',
+
 }

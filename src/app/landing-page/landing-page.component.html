@@ -1,7 +1,7 @@
 <div class="landing-page">
   <div class="section1-container">
     <div class="section1">
-      <img src="/assets/logo.png" class="logo-img">
+      <img src="/assets/logo.png" class="logo-img" alt="Battle Squire logo">
       <h1>Battle Squire</h1>
       <div class="login-actions">
         <div class="login-action">
@@ -11,7 +11,7 @@
             }
           </mat-chip-listbox>
         </div>
-        <mat-divider vertical style="height:50px" *ngIf="!isMobile() && !(auth.isAuthenticated$ | async)"></mat-divider>
+        <mat-divider vertical style="height:50px" *ngIf="!platform.isMobile() && !(auth.isAuthenticated$ | async)"></mat-divider>
         <div class="login-action right-login-action" *ngIf="!(auth.isAuthenticated$ | async)">
           <button mat-button (click)="scrollToBottom()">FREE TRIAL</button>
           <button mat-raised-button (click)="login()">LOGIN</button>
@@ -20,7 +20,7 @@
     </div>
     <div class="section2 contact-us">
       <mat-card>
-        <div mat-card-image class="contact-us-bg" alt="contact us" *ngIf="!messageSent"></div>
+        <div mat-card-image class="contact-us-bg" *ngIf="!messageSent"></div>
         <mat-card-content>
           <form [formGroup]="contactFormGroup" (ngSubmit)="onSubmit()" class="contact-form"
                 *ngIf="!messageSent; else messageSentSuccessfully">

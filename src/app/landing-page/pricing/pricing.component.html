@@ -38,7 +38,7 @@
 <!--  }-->
 <!--</div>-->
 <div class="pricing-v2-container">
-  @if(isMobile()){
+  @if(platform.isMobile()){
     <table class="mat-elevation-z8" mat-table [dataSource]="dataSource">
       <ng-container matColumnDef="feature">
         <th mat-header-cell *matHeaderCellDef>

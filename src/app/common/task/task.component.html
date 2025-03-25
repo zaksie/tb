@@ -10,6 +10,9 @@
     [mode]="!isOpenGoal ? 'determinate' : 'indeterminate'"
     [value]="!isOpenGoal ? task.counter / task.goal * 100 : 100">
   </mat-progress-spinner>
-  <div class="task-title">{{ task.title }}</div>
-  <div class="task-subtitle">{{ task.counter }}{{ !isOpenGoal ? '/' + task.goal : '' }}</div>
+  <div class="task-title" [ngStyle]="{'font-size': fitTitle(task.title)}">{{ task.title }}</div>
+  <div class="task-subtitle">
+    <mat-chip>{{ task.counter }}</mat-chip>
+    <span *ngIf="!isOpenGoal" class="goal">/{{task.goal}}</span>
+  </div>
 </div>

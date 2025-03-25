@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
+import {BrowserModule, provideClientHydration, withEventReplay, withI18nSupport} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -40,7 +40,7 @@ import {MatMenuModule} from "@angular/material/menu";
 import {ViewChestCounterComponent} from "./chest-counter/view-chest-counter/view-chest-counter.component";
 import {MatSortModule} from "@angular/material/sort";
 import {BackendService} from "./services/backend.service";
-import {provideHttpClient, withInterceptors} from "@angular/common/http";
+import {provideHttpClient, withFetch, withInterceptors} from "@angular/common/http";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {DashboardComponent} from './chest-counter/dashboard/dashboard.component';
@@ -72,7 +72,7 @@ import {MatBadge} from "@angular/material/badge";
 const authorizationParams = {
   scope: "openid profile email offline_access",
   audience: 'https://dev-5ag1lfabqyttq1lj.us.auth0.com/api/v2/',
-  redirect_uri: window.location.origin,
+  redirect_uri: environment.frontend,
 }
 
 const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} };
@@ -168,9 +168,11 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
           '/api/v1/crypts*'].map(x => environment.backend + x)
       }
     }),
-    provideHttpClient(withInterceptors([authenticationErrorInterceptor, authHttpInterceptorFn])),
+    provideHttpClient(withInterceptors([authenticationErrorInterceptor, authHttpInterceptorFn]), withFetch()),
     RedirectGuard,
-    BackendService
+    BackendService,
+    provideClientHydration(withEventReplay()),
+    provideClientHydration(withI18nSupport())
     // {provide: APP_BASE_HREF, useValue: '/app'}
   ],
   bootstrap: [AppComponent]

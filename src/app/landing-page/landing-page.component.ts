@@ -1,14 +1,15 @@
-import {Component, inject, OnInit, signal, ViewChild} from '@angular/core';
+import {Component, inject, OnInit, Renderer2, RendererFactory2} from '@angular/core';
 import {FeatureModel} from "./feature/feature.model";
 import {AuthService} from "@auth0/auth0-angular";
 import features from '../../assets/features.json'
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {BackendService} from "../services/backend.service";
 import {ContactRequest} from "../models/clan-data.model";
-import {MatSidenav} from "@angular/material/sidenav";
-import {MediaMatcher} from "@angular/cdk/layout";
 import {Router} from "@angular/router";
+import {texts} from "../../environments/texts";
+import {PlatformService} from "../services/platform.service";
 
+declare var document: any;
 @Component({
   selector: 'app-landing-page',
   templateUrl: './landing-page.component.html',
@@ -16,7 +17,9 @@ import {Router} from "@angular/router";
   standalone: false
 })
 export class LandingPageComponent implements OnInit {
-
+  private renderer = inject(Renderer2)
+  private rendererFactory = inject(RendererFactory2)
+  readonly platform = inject(PlatformService)
   features: FeatureModel[] = features.filter(x => !x.internalNavigation);
   contactFormGroup = new FormGroup({
     name: new FormControl('', Validators.required),
@@ -24,9 +27,6 @@ export class LandingPageComponent implements OnInit {
     message: new FormControl('')
   })
   messageSent: boolean = false;
-  protected readonly isMobile = signal(true);
-  private readonly _mobileQuery: MediaQueryList;
-  private readonly _mobileQueryListener: () => void;
   quickLinks = [
     {
       title: 'Stack calculator',
@@ -38,21 +38,16 @@ export class LandingPageComponent implements OnInit {
     }
   ]
 
-  ngOnDestroy(): void {
-    this._mobileQuery.removeEventListener('change', this._mobileQueryListener);
-  }
 
   constructor(public auth: AuthService,
               private backend: BackendService,
               private router: Router) {
-    const media = inject(MediaMatcher);
-    this._mobileQuery = media.matchMedia('(max-width: 800px)');
-    this.isMobile.set(this._mobileQuery.matches);
-    this._mobileQueryListener = () => this.isMobile.set(this._mobileQuery.matches);
-    this._mobileQuery.addEventListener('change', this._mobileQueryListener);
+
   }
 
   ngOnInit() {
+    this.renderer = this.rendererFactory.createRenderer(null, null);
+    this.addStructuredData();
     this.auth.user$.subscribe((user) => {
       console.log(user)
     })
@@ -61,6 +56,22 @@ export class LandingPageComponent implements OnInit {
         console.log('authenticated')
       }
     });
+  }
+
+  addStructuredData() {
+    if (typeof document === 'undefined') return;
+    const script = this.renderer.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = `
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "name": "Battle Squire - TotalBattle Helper",
+      "url": "https://battle-squire.com",
+      "logo": "https://your-angular-app.com/logo.png",
+      "description": "${texts.description}"
+    }`;
+    this.renderer.appendChild(document.head, script);
   }
 
   login() {

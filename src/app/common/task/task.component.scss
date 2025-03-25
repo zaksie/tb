@@ -13,14 +13,16 @@
     text-transform: uppercase;
     background: rgba(0, 0, 0, 0.6);
     color: whitesmoke;
-    bottom: 32px;
+    top: 100px;
     position:absolute;
   }
   .task-subtitle {
-    background: rgba(0, 0, 0, 0.6);
     color: antiquewhite;
-    bottom: 12px;
+    top: 124px;
     position:absolute;
+    .goal {
+      color: darkgray;
+    }
   }
   .overlay {
     position: absolute;

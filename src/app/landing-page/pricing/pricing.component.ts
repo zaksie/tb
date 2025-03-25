@@ -1,9 +1,9 @@
-import {AfterViewInit, Component, inject, signal} from '@angular/core';
+import {AfterViewInit, Component, inject} from '@angular/core';
 import {AuthService} from "@auth0/auth0-angular";
 import {MatDialog} from "@angular/material/dialog";
 import {AppGenericDialog} from "../../common/app-generic-dialog/app-generic-dialog";
 import {MatTableDataSource} from "@angular/material/table";
-import {MediaMatcher} from "@angular/cdk/layout";
+import {PlatformService} from "../../services/platform.service";
 
 export enum Feature {
   FREE_TRIAL,
@@ -48,7 +48,8 @@ export class PricingComponent implements AfterViewInit {
     this.authService.isAuthenticated$.subscribe(isAuthenticated => this.isAuthenticated = isAuthenticated)
   }
 
-  private authService = inject(AuthService)
+  private readonly authService = inject(AuthService)
+  readonly platform = inject(PlatformService)
   readonly dialog = inject(MatDialog);
 
   readonly Plan = Plan
@@ -59,9 +60,6 @@ export class PricingComponent implements AfterViewInit {
   displayedColumnsMobile1: string[] = ['feature', Plan[Plan.FREE], Plan[Plan.BASIC], Plan[Plan.PRO]];
   displayedColumnsMobile2: string[] = ['feature', Plan[Plan.CLAN], Plan[Plan.DELUXE]];
 
-  protected readonly isMobile = signal(true);
-  private readonly _mobileQuery: MediaQueryList;
-  private readonly _mobileQueryListener: () => void;
 
   readonly pricing: Pricing[] = [
     {
@@ -87,7 +85,7 @@ export class PricingComponent implements AfterViewInit {
     {
       type: Feature.AUTO_CRYPTER,
       name: 'Auto Crypter',
-      plans: [Plan.BASIC, Plan.PRO, Plan.CLAN, Plan.DELUXE],
+      plans: [Plan.BASIC, Plan.PRO, Plan.DELUXE],
       remarks:
         {
           BASIC: '400 crypts/mo',
@@ -140,11 +138,7 @@ export class PricingComponent implements AfterViewInit {
   public dataSource = new MatTableDataSource<Pricing>(this.pricing);
 
   constructor() {
-    const media = inject(MediaMatcher);
-    this._mobileQuery = media.matchMedia('(max-width: 600px)');
-    this.isMobile.set(this._mobileQuery.matches);
-    this._mobileQueryListener = () => this.isMobile.set(this._mobileQuery.matches);
-    this._mobileQuery.addEventListener('change', this._mobileQueryListener);
+
 
   }
 
@@ -191,4 +185,5 @@ export class PricingComponent implements AfterViewInit {
       onclick: () => this.login(tier),
     }
   }
+
 }

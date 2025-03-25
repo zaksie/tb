@@ -23,5 +23,8 @@ export class FeatureComponent {
     }
   }
 
-  protected readonly window = window;
+  scrollToTop() {
+    if (window)
+      window.scrollTo(0, 0)
+  }
 }

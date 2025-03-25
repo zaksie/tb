@@ -13,4 +13,10 @@ export class TaskComponent {
   get isOpenGoal(): boolean {
     return this.task.goal <= 0
   }
+
+  fitTitle(title: string) {
+    const res = Math.min(1, 1 - (title.length - 10) * 0.111)
+    console.log('font size', res)
+    return res + 'rem'
+  }
 }

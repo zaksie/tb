@@ -1,4 +1,4 @@
-<div class="example-container" [class.example-is-mobile]="isMobile()" class="no-scroll">
+<div class="no-scroll" [class.example-is-mobile]="platform.isMobile()">
   <mat-toolbar>
     <div class="toolbar-items">
     <span class="logo">
@@ -14,8 +14,8 @@
     </div>
   </mat-toolbar>
   <mat-sidenav-container class="example-sidenav-container">
-    <mat-sidenav #snav [mode]="isMobile() ? 'over' : 'side'"
-                 [fixedInViewport]="isMobile()" fixedTopGap="56">
+    <mat-sidenav #snav [mode]="platform.isMobile() ? 'over' : 'side'"
+                 [fixedInViewport]="platform.isMobile()" fixedTopGap="56" opened="true">
       <div class="sidenav">
       <app-navigator></app-navigator>
       <div class="footer">
