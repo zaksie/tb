@@ -19,7 +19,7 @@ export enum DashboardView {
 })
 export class DashboardComponent implements OnInit {
   public _playerName!: string
-  public _clanName!: string
+  public _clanTag!: string
   tasks$ = new Observable<GenericTask[]>()
 
   @Input()
@@ -29,9 +29,9 @@ export class DashboardComponent implements OnInit {
   }
 
   @Input()
-  set clanName(value: string) {
+  set clanTag(value: string) {
     console.log(value)
-    this._clanName = value
+    this._clanTag = value
   }
 
   private breakpointObserver = inject(BreakpointObserver);
@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.tasks$ = this.route.paramMap.pipe(mergeMap((params) => {
         console.log('dashboard selection changed....')
-        return this.backend.getDashboardTasks(params.get('clanName'), params.get('playerName'))
+        return this.backend.getDashboardTasks(params.get('clanTag'), params.get('playerName'))
           .pipe(
             map(dashboardTasks => ([
               {
@@ -78,11 +78,11 @@ export class DashboardComponent implements OnInit {
     })
   );
   protected readonly DashboardView = DashboardView;
-  untracking: boolean = false;
+  isLoading: boolean = false;
 
   untrack() {
-    this.untracking = true
-    this.backend.untrackPlayer({clanName: this._clanName, playerName: this._playerName} as ChestAgg)
-      .pipe(mergeMap(() => this.backend.getTrackPlayersList())).subscribe()
+    this.isLoading = true
+    this.backend.untrackPlayer({clanTag: this._clanTag, playerName: this._playerName} as ChestAgg)
+      .pipe(mergeMap(() => this.backend.getTrackPlayersList())).subscribe(() => this.isLoading = false)
   }
 }

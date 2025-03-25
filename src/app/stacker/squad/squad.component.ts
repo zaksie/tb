@@ -31,14 +31,15 @@ export class SquadComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
+      try {
         this.store.select(selectTroopState).pipe(
-            filter(selectedTroop => !!selectedTroop.troop),
-            filter(selectedTroop => selectedTroop.troop?.id !== this.troop.troop.id),
-            map(selectedTroop => this.optimizationService.convert(selectedTroop.troop, this.troop.troop, selectedTroop.count)),
-            tap(newCount => {
-                this.troop.leadershipCount = this._sliderValue = Math.floor(newCount)
-            })
-
+          filter(selectedTroop => !!selectedTroop.troop),
+          filter(selectedTroop => selectedTroop.troop?.id !== this.troop.troop.id),
+          map(selectedTroop => this.optimizationService.convert(selectedTroop.troop, this.troop.troop, selectedTroop.count)),
+          tap(newCount => {
+            this.troop.leadershipCount = this._sliderValue = Math.floor(newCount)
+          })
         ).subscribe()
+      }catch{}
     }
 }

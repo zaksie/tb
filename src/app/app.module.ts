@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {BrowserModule, provideClientHydration, withEventReplay, withI18nSupport} from '@angular/platform-browser';
+import {BrowserModule, provideClientHydration, withEventReplay} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -25,7 +25,6 @@ import {StackerComponent} from './stacker/stacker.component';
 import {CpClanRunsComponent} from './cp-clan-runs/cp-clan-runs.component';
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {RedirectGuard} from "./services/redirect-guard.service";
 import {MatRadioModule} from "@angular/material/radio";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {ChestCounterComponent} from './chest-counter/chest-counter.component';
@@ -156,7 +155,7 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
     provideAuth0({
       ...environment.auth,
       authorizationParams,
-      useRefreshTokens: true,
+      useRefreshTokens: false,
       httpInterceptor: {
         allowedList: [
           '/api/v1/chest-counter*',
@@ -169,10 +168,8 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
       }
     }),
     provideHttpClient(withInterceptors([authenticationErrorInterceptor, authHttpInterceptorFn]), withFetch()),
-    RedirectGuard,
     BackendService,
     provideClientHydration(withEventReplay()),
-    provideClientHydration(withI18nSupport())
     // {provide: APP_BASE_HREF, useValue: '/app'}
   ],
   bootstrap: [AppComponent]

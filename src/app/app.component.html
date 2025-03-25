@@ -1,26 +1,33 @@
+<!--suppress HtmlUnknownAnchorTarget -->
 <div class="no-scroll" [class.example-is-mobile]="platform.isMobile()">
   <mat-toolbar>
     <div class="toolbar-items">
-    <span class="logo">
-      <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
-      <img src="/assets/logo.png" alt="Logo" class="logo-img" routerLink="home">
-      <span routerLink="home">Battle Squire</span>
-    </span>
-      <ng-container *ngIf="isAuthenticated$|async">
-        <button mat-mini-fab [matMenuTriggerFor]="menu">
-          <mat-icon fontIcon="person"></mat-icon>
-        </button>
-      </ng-container>
+      <span class="logo">
+        <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+        <img src="/assets/logo.png" alt="Logo" class="logo-img" routerLink="home">
+        <span routerLink="home">Battle Squire</span>
+      </span>
+      <span class="anchors">
+        <a href="#features">FEATURES</a>
+        <a href="#pricing">PRICING</a>
+        <a href="#contactus">CONTACT US</a>
+        <ng-container *ngIf="isAuthenticated$|async">
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon fontIcon="person"></mat-icon>
+          </button>
+        </ng-container>
+      </span>
     </div>
   </mat-toolbar>
   <mat-sidenav-container class="example-sidenav-container">
     <mat-sidenav #snav [mode]="platform.isMobile() ? 'over' : 'side'"
                  [fixedInViewport]="platform.isMobile()" fixedTopGap="56" opened="true">
       <div class="sidenav">
-      <app-navigator></app-navigator>
-      <div class="footer">
-        <p>&copy; 2025 Battle Squire | <a href="assets/terms.html">Terms and Conditions</a> | Contact: <a href="mailto:zak@afiloo.io">zak&commat;afiloo.io</a></p>
-      </div>
+        <app-navigator></app-navigator>
+        <div class="footer">
+          <p>&copy; 2025 Battle Squire | <a href="assets/terms.html">Terms and Conditions</a> | Contact: <a
+            href="mailto:zak@afiloo.io">zak&commat;afiloo.io</a></p>
+        </div>
       </div>
     </mat-sidenav>
 

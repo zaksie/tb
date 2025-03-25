@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {StackerComponent} from "./stacker/stacker.component";
 import {CpClanRunsComponent} from "./cp-clan-runs/cp-clan-runs.component";
-import {RedirectGuard} from "./services/redirect-guard.service";
 import {ChestCounterComponent} from "./chest-counter/chest-counter.component";
 import {LandingPageComponent} from "./landing-page/landing-page.component";
 import {ViewChestCounterComponent} from "./chest-counter/view-chest-counter/view-chest-counter.component";
@@ -22,13 +21,16 @@ const routes: Routes = [
   {
     path: 'demo',
     children: [
-
       {
         path: 'chest-counter',
         component: DemoChestCounterComponent
       },
       {
-        path: '**',
+        path: 'stacker',
+        component: ComingSoonComponent
+      },
+      {
+        path: 'crypts',
         component: ComingSoonComponent
       },
     ]
@@ -49,20 +51,11 @@ const routes: Routes = [
         component: ManageChestCounterComponent, // child route component that the router renders
       },
       {
-        path: 'dashboards/:clanName/:playerName', // child route path
+        path: 'dashboards/:clanTag/:playerName', // child route path
         component: DashboardComponent, // child route component that the router renders
       }
     ]
-  },
-  {
-    path: 'koku-chests',
-    canActivate: [RedirectGuard],
-    component: RedirectGuard,
-    data: {
-      externalUrl: 'https://docs.google.com/spreadsheets/d/1OLN2LyeJFvVkppnIfxVSd86bqd-0JMAyyGTLMuJxpZQ'
-    }
-  },
-  {path: '**', redirectTo: ''},
+  }
 
 ];
 

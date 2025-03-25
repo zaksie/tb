@@ -16,7 +16,6 @@ export class TaskComponent {
 
   fitTitle(title: string) {
     const res = Math.min(1, 1 - (title.length - 10) * 0.111)
-    console.log('font size', res)
     return res + 'rem'
   }
 }

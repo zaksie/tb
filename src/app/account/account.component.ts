@@ -3,7 +3,6 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {AuthService, User} from "@auth0/auth0-angular";
 import {filter, Observable, switchMap, tap} from "rxjs";
 import {BackendService} from "../services/backend.service";
-import {ContactRequest} from "../models/clan-data.model";
 
 @Component({
   selector: 'app-account',

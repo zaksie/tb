@@ -2,7 +2,8 @@ import {AfterViewInit, Component, inject} from '@angular/core';
 import {Location} from "@angular/common";
 import {HttpClient} from "@angular/common/http";
 import {Socket} from "ngx-socket-io";
-import {map, tap} from "rxjs";
+import {map, of, tap} from "rxjs";
+import {PlatformService} from "../../services/platform.service";
 
 @Component({
   selector: 'app-coming-soon',
@@ -15,6 +16,7 @@ export class ComingSoonComponent implements AfterViewInit {
   _location = inject(Location)
   http = inject(HttpClient)
   websocket = inject(Socket)
+  platform = inject(PlatformService)
 
   back() {
     this._location.back()
@@ -26,15 +28,21 @@ export class ComingSoonComponent implements AfterViewInit {
   }
 
   sendMessage(msg: string) {
-    this.websocket.emit('message', msg);
-    this.websocket.emit('identity', msg);
+    if (this.platform.isBrowser) {
+      this.websocket.emit('message', msg);
+      this.websocket.emit('identity', msg);
+    }
   }
 
   getMessage() {
-    return this.websocket.fromEvent('api/v1/chests').pipe(
-      tap(data => console.log(data)),
-      map(data => data.msg)
-    )
+    if (this.platform.isBrowser) {
+      console.log('getting events from websocker')
+      return this.websocket.fromEvent('api/v1/chests').pipe(
+        tap(data => console.log(data)),
+        map(data => data.msg)
+      )
+    } else
+      return of('')
   }
 
 }

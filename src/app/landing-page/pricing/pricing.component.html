@@ -1,42 +1,3 @@
-<!--<div class="pricing-container">-->
-<!--  @for (p of pricing; track p) {-->
-<!--    <mat-card class="plan">-->
-<!--      <mat-card-header class="plan-header">-->
-<!--        <mat-card-title>-->
-<!--          {{ p.name }}-->
-<!--        </mat-card-title>-->
-<!--        <mat-card-subtitle>-->
-<!--          <div>{{ p.price }}</div>-->
-<!--          <div>{{ p.remark }}</div>-->
-<!--        </mat-card-subtitle>-->
-<!--      </mat-card-header>-->
-<!--      <mat-card-content>-->
-<!--        <mat-list class="price">-->
-<!--          @for (f of features; track f.type) {-->
-<!--            <mat-list-item>-->
-<!--              @if (isIncluded(f.type, p)) {-->
-<!--                <div class="feature-line">-->
-<!--                  <mat-icon class="available">check</mat-icon>-->
-<!--                  <span [ngClass]="{'glow-animation': f.type===0}">{{ f.name }}</span>-->
-<!--                </div>-->
-<!--              } @else {-->
-<!--                <div class="unavailable feature-line">-->
-<!--                  <mat-icon>close</mat-icon>-->
-<!--                  <span>{{ f.name }}</span>-->
-<!--                </div>-->
-<!--              }-->
-<!--            </mat-list-item>-->
-<!--          }-->
-<!--        </mat-list>-->
-<!--      </mat-card-content>-->
-<!--      <mat-card-actions class="plan-actions">-->
-<!--        @if (p.price !== 'FREE') {-->
-<!--          <button mat-raised-button (click)="login()">START</button>-->
-<!--        }-->
-<!--      </mat-card-actions>-->
-<!--    </mat-card>-->
-<!--  }-->
-<!--</div>-->
 <div class="pricing-v2-container">
   @if(platform.isMobile()){
     <table class="mat-elevation-z8" mat-table [dataSource]="dataSource">
@@ -116,11 +77,9 @@
         <span class="cell" [matBadge]="getBadge(tier, row)">{{ getTableValue(tier, row) }}</span>
       </td>
       <td mat-footer-cell *matFooterCellDef>
-        @if (!isAuthenticated) {
           @if (getTierAction(tier); as action) {
-            <a href="#" (click)="action.onclick()">{{ action.title }}</a>
+            <mat-chip-option (click)="action.onclick()">{{action.title}}</mat-chip-option>
           }
-        }
       </td>
     </ng-container>
 

@@ -1,7 +1,7 @@
 import {Component, signal, ViewChild} from '@angular/core';
 import {BonusesObject, Squad} from "../models/troop.model";
 import {Dictionary} from "lodash";
-import {COOKIE_TROOP_CONFIG, mercenaries, specialists, TroopColors, troops} from '../troops.data';
+import {COOKIE_TROOP_CONFIG, mercenaries, TroopColors, troops} from '../troops.data';
 import {calculateStack, SetupType} from "./stacker";
 import YAML from 'yaml'
 import {MatRadioChange} from "@angular/material/radio";
@@ -64,23 +64,27 @@ export class StackerComponent {
   }
 
   saveConfig() {
-    const bonusesObj = YAML.parse(this.troopConfig.getActiveBonusConfig())
-    if (!this.verifyBonuses(bonusesObj)) return;
-    document.cookie = COOKIE_TROOP_CONFIG + '=' + JSON.stringify(this.troopConfig)
-    this.matStepperView.next()
+    try {
+      const bonusesObj = YAML.parse(this.troopConfig.getActiveBonusConfig())
+      if (!this.verifyBonuses(bonusesObj)) return;
+      document.cookie = COOKIE_TROOP_CONFIG + '=' + JSON.stringify(this.troopConfig)
+      this.matStepperView.next()
+    }catch{}
   }
 
   replacements: { [key: string]: string } = {'\\\\': '\\', '\\n': '\n', '\\"': ''};
 
   loadConfig(cookieName: string, unescape = false): string {
-    const s0 = document.cookie.split(';')
-    const s1 = s0.filter(x => x.trimStart().startsWith(cookieName))
-    if (s1.length) {
-      const str = s1[0].substring(s1[0].indexOf('=') + 1).trim()
-      if (unescape)
-        return this.slashUnescape(str)
-      return str
-    }
+    try {
+      const s0 = document.cookie.split(';')
+      const s1 = s0.filter(x => x.trimStart().startsWith(cookieName))
+      if (s1.length) {
+        const str = s1[0].substring(s1[0].indexOf('=') + 1).trim()
+        if (unescape)
+          return this.slashUnescape(str)
+        return str
+      }
+    }catch{}
     return ''
   }
 

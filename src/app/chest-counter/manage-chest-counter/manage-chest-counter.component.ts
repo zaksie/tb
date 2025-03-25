@@ -6,7 +6,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {ClanNameValidatorDirective} from "./clan-name-validator.directive";
 import {MatTableDataSource} from "@angular/material/table";
-import {combineLatestWith, filter, merge, of, switchMap, take, tap} from "rxjs";
+import {combineLatestWith, firstValueFrom, of} from "rxjs";
 import {ServiceInterface} from "../../services/service-interface";
 import {catchError} from "rxjs/operators";
 import {AuthService} from "@auth0/auth0-angular";
@@ -29,6 +29,7 @@ export class ManageChestCounterComponent implements AfterViewInit {
   isLoading = signal(false);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   constructor(protected backend: BackendService, private authService: AuthService) {
   }
 
@@ -44,19 +45,22 @@ export class ManageChestCounterComponent implements AfterViewInit {
   }
 
 
-  fetch() {
+  async fetch() {
     this.isLoading.set(true)
-    this.authService.isAuthenticated$.pipe(
-      filter(isAuthenticated => isAuthenticated),
-      combineLatestWith(this.backend.getChestCounters(), this.backend.getDefaultPointSystem()),
-      catchError(e => {
-        console.error(e)
-        return of([], [])
-      })
-    )
-    .subscribe(([isAuthenticated, rows, pointSystem]) => this.populateData(rows, pointSystem))
+    const isAuthenticated = await firstValueFrom(this.authService.isAuthenticated$)
+    if (isAuthenticated) {
+      this.backend.getChestCounters().pipe(
+        combineLatestWith(this.backend.getDefaultPointSystem()),
+        catchError(e => {
+          console.error(e)
+          return of([], [])
+        })
+      )
+        .subscribe(([rows, ps]) => {
+          this.populateData(rows, ps)
+        })
+    }
   }
-
 
 
   ngAfterViewInit() {
@@ -65,10 +69,11 @@ export class ManageChestCounterComponent implements AfterViewInit {
   }
 
   populateData(data: ChestCounter[], pointSystem: PointSystem[]) {
-    this.defaultPointSystem = pointSystem
-    console.log('data', data)
-    this.dataSource.data = data
+    console.log('in populateData')
+    this.defaultPointSystem = pointSystem || []
+    this.dataSource.data = data || []
     this.isLoading.set(false)
+    console.log('after populateData')
   }
 
   editRow(mouseEvent: MouseEvent, row: any) {
@@ -84,7 +89,7 @@ export class ManageChestCounterComponent implements AfterViewInit {
   templateUrl: 'create-chest-counter-dialog.html',
   standalone: false
 })
-export class CreateChestCounterDialog implements OnInit{
+export class CreateChestCounterDialog implements OnInit {
 
   readonly dialogRef = inject(MatDialogRef<CreateChestCounterDialog>);
   readonly data = inject<ChestCounter>(MAT_DIALOG_DATA);
@@ -129,10 +134,11 @@ export class CreateChestCounterDialog implements OnInit{
   ngOnInit(): void {
     const level = this.inputForm.get('level')?.value || 0
     console.log('level', level)
-    if (level > 2 || level < 0){
+    if (level > 2 || level < 0) {
       this.inputForm.get('level')?.setValue(0)
     }
   }
+
   get pointSystemFormatted(): string {
     const level = this.inputForm.get('level')?.value || 0
     return this.pointSystem.filter(x => {

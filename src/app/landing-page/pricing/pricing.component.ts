@@ -4,6 +4,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {AppGenericDialog} from "../../common/app-generic-dialog/app-generic-dialog";
 import {MatTableDataSource} from "@angular/material/table";
 import {PlatformService} from "../../services/platform.service";
+import {BackendService} from "../../services/backend.service";
 
 export enum Feature {
   FREE_TRIAL,
@@ -137,9 +138,7 @@ export class PricingComponent implements AfterViewInit {
   ]
   public dataSource = new MatTableDataSource<Pricing>(this.pricing);
 
-  constructor() {
-
-
+  constructor(private backend: BackendService) {
   }
 
   login(plan: Plan) {
@@ -158,6 +157,7 @@ export class PricingComponent implements AfterViewInit {
       if (yes)
         this.authService.loginWithPopup().subscribe(() => {
           window.scrollTo(0, 0)
+          this.backend.setPlan(Plan[plan]).subscribe()
         })
     })
   }

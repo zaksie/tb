@@ -1,9 +1,9 @@
 <div class="grid-container">
   <div class="dashboard-header">
-    <button mat-mini-fab [disabled]="untracking">
+    <button mat-mini-fab [disabled]="isLoading">
       <mat-icon class="tracked" (click)="untrack()">star</mat-icon>
     </button>
-    <mat-chip disabled>{{ _clanName }}</mat-chip>
+    <mat-chip disabled>{{ _clanTag }}</mat-chip>
     /
     <mat-chip disabled>{{ _playerName }}</mat-chip>
   </div>

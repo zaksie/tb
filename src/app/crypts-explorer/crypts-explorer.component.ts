@@ -5,7 +5,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {MatTableDataSource} from "@angular/material/table";
 import {CryptConfig} from "./crypts.model";
-import {filter, of, switchMap, take, tap} from "rxjs";
+import {firstValueFrom, of} from "rxjs";
 import {ServiceInterface} from "../services/service-interface";
 import {catchError} from "rxjs/operators";
 import {AuthService} from "@auth0/auth0-angular";
@@ -28,8 +28,9 @@ export class CryptsExplorerComponent implements AfterViewInit {
   readonly isLoading = signal(false);
 
 
-  constructor(protected backend: BackendService, private authService: AuthService) {
+  constructor(protected backend: BackendService, private auth: AuthService) {
   }
+
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateCryptExplorerDialog,
       {data: {low: 1, high: 35, start: 1, end: 6}});
@@ -39,18 +40,19 @@ export class CryptsExplorerComponent implements AfterViewInit {
     });
   }
 
-  fetch() {
+  async fetch() {
     this.isLoading.set(true)
-    console.log('setting isLoading to true')
-    this.authService.isAuthenticated$.pipe(
-      filter(isAuthenticated => isAuthenticated),
-      switchMap(() => this.backend.getCryptExplorers()),
-      catchError(e => {
-        console.error(e)
-        return of([])
-      })
-    )
-      .subscribe(rows => this.populateData(rows))
+    console.log('setting isLoading to true', this.auth.isAuthenticated$)
+    const isAuthenticated = await firstValueFrom(this.auth.isAuthenticated$)
+    if (isAuthenticated) {
+      this.backend.getCryptExplorers().pipe(
+        catchError(e => {
+          console.error(e)
+          return of([])
+        })
+      )
+        .subscribe(rows => this.populateData(rows))
+    }
   }
 
 

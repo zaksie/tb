@@ -3,7 +3,7 @@ import {MatSort} from "@angular/material/sort";
 import {BackendService} from "../../services/backend.service";
 import {ChestAgg, ChestCounter, ChestCounterResults, GenericTask} from "../../models/clan-data.model";
 import {MatTableDataSource} from "@angular/material/table";
-import {filter, map, mergeMap, Observable, of, Subscription, switchMap, take, tap} from "rxjs";
+import {filter, mergeMap, Observable, of, Subscription, switchMap, take, tap} from "rxjs";
 import {FormControl, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "@auth0/auth0-angular";
@@ -38,8 +38,9 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
       this._currentClanTagSubscription.unsubscribe();
     this._currentClanTagSubscription = this.websocket.fromEvent('api/v1/chests/' + value).pipe(
       tap((data: ChestCounterResults) => {
+        if (!data) return;
         console.log('received from server: ', data)
-        const player = data.players[0]
+        const player = data?.players[0]
         const task = this.tasks.find(t => t.source === player.sources[0].shortSourceName)
         if (task) {
           task.counter++
@@ -61,7 +62,7 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   readonly dialog = inject(MatDialog);
   websocket = inject(Socket)
 
-  constructor(private router: Router, private route: ActivatedRoute, private backend: BackendService, private authService: AuthService) {
+  constructor(private router: Router, private route: ActivatedRoute, private backend: BackendService, private auth: AuthService) {
   }
 
   ngOnDestroy(): void {
@@ -87,7 +88,7 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
         this.getByClanTag(tag)
       }
     );
-    this.chestCounters$ = this.authService.isAuthenticated$.pipe(
+    this.chestCounters$ = this.auth.isAuthenticated$.pipe(
       filter(isAuthenticated => isAuthenticated),
       switchMap(() => this.backend.getChestCounters()),
       catchError(e => {
@@ -152,7 +153,7 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   }
 
   toggleTrackPlayer(row: ChestAgg) {
-    this.authService.isAuthenticated$.subscribe(isAuthenticated => {
+    this.auth.isAuthenticated$.subscribe(isAuthenticated => {
       if (isAuthenticated) {
         this._toggleTrackPlayerAuthenticated(row)
       } else {

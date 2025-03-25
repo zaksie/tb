@@ -3,20 +3,26 @@
 }
 
 .landing-page {
+  .dark-overlay {
+    background: rgba(16, 20, 20, 0.5);
+  }
+
   display: flex;
   flex-flow: column;
+
   h1 {
     font-family: 'Cardinal', sans-serif;
     font-size: 4.5rem;
     width: 100%;
-    text-align:center;
+    text-align: center;
   }
+
   h2 {
     font-family: 'Cardinal', sans-serif;
     font-size: 4.5rem;
     width: 100%;
     color: black;
-    text-align:center;
+    text-align: center;
     border-bottom: 1px double #000;
     line-height: 0.1em;
     margin: 0 0 64px 0;
@@ -24,9 +30,10 @@
   }
 
   h2 span {
-    background:#fff;
-    padding:0 10px;
+    background: #fff;
+    padding: 0 10px;
   }
+
   .feature-container {
     width: 100%;
     display: flex;
@@ -46,9 +53,10 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 200px;
-    background: rgba(16, 20, 20, 0.5);
+
     padding: 32px;
-    .section2{
+
+    .section2 {
       display: flex;
       flex-flow: row;
       align-items: center;
@@ -64,19 +72,7 @@
     height: 400px;
     margin-bottom: 200px;
     padding: 64px;
-    background: rgba(16, 20, 20, 0.5);
 
-    .contact-us {
-      width: 400px;
-
-      .contact-us-bg {
-        background: linear-gradient(to bottom, rgba(25, 28, 28, 0) 0%, rgba(25, 28, 28, 0.5) 30%, rgba(25, 28, 28, 1) 100%),
-        url('/assets/contact-us.png');
-        background-size: cover;
-        height: 80px;
-        margin-bottom: 32px;
-      }
-    }
 
     .section1 {
       display: flex;
@@ -130,22 +126,16 @@
       width: 20%;
       min-width: 300px;
 
-      .contact-form {
-        display: flex;
-        flex-flow: column;
-      }
-
-      .contact-us-button {
-      }
     }
 
   }
 
   @media (max-width: 800px) {
-    .section1-container{
-      .section1{
+    .section1-container {
+      .section1 {
         .login-actions {
           flex-flow: column;
+
           .login-action {
             justify-content: center;
           }
@@ -162,9 +152,22 @@
       height: auto;
       margin-bottom: 64px;
 
-      .contact-us {
-        margin-top: 64px;
-      }
+
+    }
+  }
+  .contact-form {
+    display: flex;
+    flex-flow: column;
+  }
+  .contact-us {
+    width: 400px;
+
+    .contact-us-bg {
+      background: linear-gradient(to bottom, rgba(25, 28, 28, 0) 0%, rgba(25, 28, 28, 0.5) 30%, rgba(25, 28, 28, 1) 100%),
+      url('/assets/contact-us.png');
+      background-size: cover;
+      height: 80px;
+      margin-bottom: 32px;
     }
   }
 }
