@@ -10,14 +10,11 @@
             class="example-radio-group"
             [(ngModel)]="troopConfig.selectedSetupType" (change)="radioChange($event)">
             @for (setupType of setupTypes; track setupType) {
-              <mat-radio-button [value]="setupType.value" class="step1-card-container">
-                <mat-card class="step1-card">
-                  <mat-card-title>{{ setupType.title }}</mat-card-title>
-                  <button mat-icon-button
-                          [matTooltip]="setupType.description">
-                    <mat-icon>help</mat-icon>
-                  </button>
-                </mat-card>
+              <mat-radio-button [value]="setupType.value">
+                <div class="step1-card-container">
+                <h3>{{ setupType.title }}</h3>
+                <mat-icon [matTooltip]="setupType.description">help</mat-icon>
+                </div>
               </mat-radio-button>
             }
           </mat-radio-group>
