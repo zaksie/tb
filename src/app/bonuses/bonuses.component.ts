@@ -47,9 +47,11 @@ export class BonusesComponent implements AfterViewInit {
     }
 
     onSubmit() {
+      try {
         this.submitted = true
         document.cookie = COOKIE_BONUSES + ':' + JSON.stringify(this.profiles)
         this.propogateData()
+      }catch{}
     }
 
     private propogateData() {

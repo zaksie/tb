@@ -59,10 +59,11 @@ export class LandingPageComponent implements OnInit {
   }
 
   addStructuredData() {
-    if (typeof document === 'undefined') return;
-    const script = this.renderer.createElement('script');
-    script.type = 'application/ld+json';
-    script.text = `
+    try {
+      if (typeof document === 'undefined') return;
+      const script = this.renderer.createElement('script');
+      script.type = 'application/ld+json';
+      script.text = `
     {
       "@context": "http://schema.org",
       "@type": "Organization",
@@ -71,7 +72,8 @@ export class LandingPageComponent implements OnInit {
       "logo": "https://your-angular-app.com/logo.png",
       "description": "${texts.description}"
     }`;
-    this.renderer.appendChild(document.head, script);
+      this.renderer.appendChild(document.head, script);
+    }catch{}
   }
 
   login() {
@@ -96,11 +98,13 @@ export class LandingPageComponent implements OnInit {
   }
 
   scrollToBottom() {
-    // @ts-ignore
-    document.getElementById("pricing").scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-      inline: "nearest"
-    });
+    try {
+      // @ts-ignore
+      document.getElementById("pricing").scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest"
+      });
+    }catch{}
   }
 }
