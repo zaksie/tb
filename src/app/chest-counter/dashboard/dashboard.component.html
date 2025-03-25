@@ -7,7 +7,7 @@
     /
     <mat-chip disabled>{{ _playerName }}</mat-chip>
   </div>
-  <mat-grid-list cols="2">
+  <mat-grid-list cols="2" rowHeight="280">
     @for (card of cards$ | async; track card) {
       <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
         <mat-card class="dashboard-card">

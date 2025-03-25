@@ -9,8 +9,9 @@ import {DashboardComponent} from "./chest-counter/dashboard/dashboard.component"
 import {ManageChestCounterComponent} from "./chest-counter/manage-chest-counter/manage-chest-counter.component";
 import {MercExchangeComponent} from "./merc-exchange/merc-exchange.component";
 import {CryptsExplorerComponent} from "./crypts-explorer/crypts-explorer.component";
-import {ComingSoonComponent} from "./landing-page/coming-soon/coming-soon.component";
 import {DemoChestCounterComponent} from "./landing-page/demo-chest-counter/demo-chest-counter.component";
+import {DemoStackerComponent} from "./landing-page/demo-stacker/demo-stacker.component";
+import {DemoCryptsComponent} from "./landing-page/demo-crypts/demo-crypts.component";
 
 const routes: Routes = [
   {path: '', component: LandingPageComponent},
@@ -27,11 +28,11 @@ const routes: Routes = [
       },
       {
         path: 'stacker',
-        component: ComingSoonComponent
+        component: DemoStackerComponent
       },
       {
         path: 'crypts',
-        component: ComingSoonComponent
+        component: DemoCryptsComponent
       },
     ]
   },

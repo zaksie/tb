@@ -7,9 +7,9 @@ import {RouterLink} from "@angular/router";
     RouterLink
   ],
   standalone: true,
-  templateUrl: './demo-chest-counter.component.html',
-  styleUrl: './demo-chest-counter.component.scss'
+  templateUrl: './demo-crypts.component.html',
+  styleUrl: './demo-crypts.component.scss'
 })
-export class DemoChestCounterComponent {
+export class DemoCryptsComponent {
 
 }
