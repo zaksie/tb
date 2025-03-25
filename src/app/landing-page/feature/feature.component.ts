@@ -1,6 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {FeatureModel} from "./feature.model";
 
+declare var window: any;
+
 @Component({
   selector: 'app-feature',
   templateUrl: './feature.component.html',
@@ -20,4 +22,6 @@ export class FeatureComponent {
       backgroundPosition: 'center center',
     }
   }
+
+  protected readonly window = window;
 }

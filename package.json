@@ -1,6 +1,6 @@
 {
   "name": "tb",
-  "version": "0.0.0",
+  "version": "0.9.0",
   "scripts": {
     "ng": "ng",
     "start:dev": "ng serve --configuration dev",

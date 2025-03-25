@@ -9,7 +9,7 @@
   </mat-card-content>
   <mat-card-actions>
     @for (action of feature.actions; track action.path) {
-      <button mat-button [routerLink]="action.path">{{ action.title }}</button>
+      <button mat-button [routerLink]="action.path" (click)="window.scrollTo(0, 0)">{{ action.title }}</button>
     }
   </mat-card-actions>
 </mat-card>
