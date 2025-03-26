@@ -54,7 +54,7 @@ import {MatChip, MatChipListbox, MatChipOption} from "@angular/material/chips";
 import {authenticationErrorInterceptor} from "./services/authentication-error.interceptor";
 import {MonacoEditorModule} from "ngx-monaco-editor-v2";
 import {MercExchangeComponent} from "./merc-exchange/merc-exchange.component";
-import {CreateCryptExplorerDialog, CryptsExplorerComponent} from "./crypts-explorer/crypts-explorer.component";
+import {CryptsComponent} from "./crypts/crypts.component";
 import {MatAutocomplete, MatAutocompleteTrigger} from "@angular/material/autocomplete";
 import {TaskComponent} from "./common/task/task.component";
 import {TableActionsComponent} from "./common/table-actions/table-actions.component";
@@ -96,10 +96,9 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
     NavigatorComponent,
     ManageChestCounterComponent,
     NewServiceComponent,
-    CreateCryptExplorerDialog,
     ClanNameValidatorDirective,
     MercExchangeComponent,
-    CryptsExplorerComponent,
+    CryptsComponent,
     TaskComponent,
     TableActionsComponent,
     TaskSetupComponent,
@@ -175,6 +174,5 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
   ],
   bootstrap: [AppComponent]
 })
-
 export class AppModule {
 }

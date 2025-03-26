@@ -13,7 +13,7 @@ import {
 } from "../models/clan-data.model";
 import {filter, map, mergeMap, Observable, Subject, switchMap, tap} from "rxjs";
 import {MercExchange} from "../merc-exchange/merc-exchange.model";
-import {CryptConfig} from "../crypts-explorer/crypts.model";
+import {CryptConfig} from "../crypts/crypts.model";
 import {ServiceName} from "./service-interface";
 import {AuthService, User} from "@auth0/auth0-angular";
 

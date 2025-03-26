@@ -6,12 +6,12 @@
 </div>
 <mat-dialog-content>
   <mat-stepper class="tab-content" [orientation]="platform.isMobile() ? 'vertical' : 'horizontal'">
-    <mat-step label="Credentials" [stepControl]="inputForm1" editable="true" class="step-container">
-      <form [formGroup]="inputForm1" class="form-content">
+    <mat-step label="Credentials" [stepControl]="service.inputForm1" editable="true" class="step-container">
+      <form [formGroup]="service.inputForm1" class="form-content">
         <mat-form-field appearance="outline">
           <mat-label>Username</mat-label>
           <input matInput type="text" formControlName="username">
-          <mat-error *ngIf="this.inputForm1.get('username')?.invalid">Valid email address required</mat-error>
+          <mat-error *ngIf="service.inputForm1.get('username')?.invalid">Valid email address required</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Password</mat-label>
@@ -36,65 +36,116 @@
         <mat-form-field appearance="outline">
           <mat-label>Clan tag</mat-label>
           <input matInput type="text" formControlName="clanTag">
-          <mat-error *ngIf="this.inputForm1.get('clanTag')?.invalid">Name already taken</mat-error>
+          <mat-error *ngIf="service.inputForm1.get('clanTag')?.invalid">Name already taken</mat-error>
         </mat-form-field>
 
       </form>
       <div class="actions">
         <button mat-button mat-dialog-close>Cancel</button>
-        <button mat-button matStepperNext [disabled]="inputForm1.invalid">Next</button>
+        <button mat-button matStepperNext [disabled]="service.invalid1()">Next</button>
       </div>
     </mat-step>
-    <mat-step label="Settings" [stepControl]="inputForm2" editable="true" class="step-container">
+
+    <mat-step label="Settings" [stepControl]="service.inputForm2" editable="true" class="step-container">
       <div class="form-content">
-        <form [formGroup]="inputForm2">
-          <mat-form-field appearance="outline">
-            <mat-label>Minimal score</mat-label>
-            <input matInput type="number" formControlName="minScore">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Minimum epic crypts</mat-label>
-            <input matInput type="number" formControlName="minEpicCryptCount">
-          </mat-form-field>
-          <div>
-            @if (slider && +slider.value < 3 && +slider.value >= 0) {
-              <mat-label>Clan type: <b>{{ levelMap[+slider.value].title}}</b>
-                <mat-icon [matTooltip]="levelMap[+slider.value].subtitle">info</mat-icon>
-              </mat-label>
-            }
-            <mat-slider min="0" max="2" step="1" showTickMarks discrete [displayWith]="formatLabel">
-              <input matSliderThumb formControlName="level" #slider>
-            </mat-slider>
-          </div>
-        </form>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <span>Advanced settings</span>
-          </mat-expansion-panel-header>
-          <ng-template matExpansionPanelContent>
-            <p style="font-size: smaller">Fill in targets for various chest types to display clan targets in
-              dashboard</p>
-            <app-task-setup #taskSetup [tasks]="tasks"></app-task-setup>
-          </ng-template>
-        </mat-expansion-panel>
+        @if (serviceName === CHEST_COUNTER){
+        <ng-container *ngTemplateOutlet="ccForm2"></ng-container>
+        }@else if(serviceName === CRYPTS){
+          <ng-container *ngTemplateOutlet="cryptsForm2"></ng-container>
+        }
       </div>
       <div class="actions">
         <button mat-button mat-dialog-close>Cancel</button>
         <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext [disabled]="inputForm2.invalid || !isTasksValid()">Next</button>
+        <button mat-button matStepperNext [disabled]="service.invalid2({taskSetup})">Next</button>
       </div>
     </mat-step>
     <mat-step label="Points" class="step-container">
-      <textarea matInput class="form-content point-system" [ngModel]="pointSystemFormatted"
-                [disabled]="true"></textarea>
+      @if (serviceName === CHEST_COUNTER){
+        <ng-container *ngTemplateOutlet="ccForm3"></ng-container>
+      }@else if(serviceName === CRYPTS){
+        <ng-container *ngTemplateOutlet="cryptsForm3"></ng-container>
+      }
       <div class="actions">
         <button mat-button mat-dialog-close>Cancel</button>
         <button mat-button matStepperPrevious>Back</button>
-        <button mat-button [disabled]="isLoading || inputForm1.invalid || inputForm2.invalid || !isTasksValid()"
+        <button mat-button [disabled]="isLoading || service.invalid2({taskSetup})"
                 (click)="onSubmit()">Create
           <mat-progress-spinner *ngIf="isLoading"></mat-progress-spinner>
         </button>
       </div>
+      <div *ngIf="isError" class="error">There seems to be an issue with the server</div>
     </mat-step>
   </mat-stepper>
 </mat-dialog-content>
+
+
+<!----------------->
+<ng-template #ccForm2>
+  <form [formGroup]="service.inputForm2">
+
+  <mat-form-field appearance="outline">
+    <mat-label>Minimal score</mat-label>
+    <input matInput type="number" formControlName="minScore">
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Minimum epic crypts</mat-label>
+    <input matInput type="number" formControlName="minEpicCryptCount">
+  </mat-form-field>
+  <div>
+    @if (slider && +slider.value < 3 && +slider.value >= 0) {
+      <mat-label>Clan type: <b>{{ ChestCounterForm.levelMap[+slider.value].title}}</b>
+        <mat-icon [matTooltip]="ChestCounterForm.levelMap[+slider.value].subtitle">info</mat-icon>
+      </mat-label>
+    }
+    <mat-slider min="0" max="2" step="1" showTickMarks discrete [displayWith]="cc.formatLabel">
+      <input matSliderThumb formControlName="level" #slider>
+    </mat-slider>
+  </div>
+
+  </form>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <span>Advanced settings</span>
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <p style="font-size: smaller">Fill in targets for various chest types to display clan targets in
+        dashboard</p>
+      <app-task-setup #taskSetup [tasks]="cc.tasks"></app-task-setup>
+    </ng-template>
+  </mat-expansion-panel>
+</ng-template>
+
+<ng-template #ccForm3>
+  <textarea matInput class="form-content point-system" [ngModel]="cc.pointSystemFormatted"
+            [disabled]="true"></textarea>
+</ng-template>
+<!----------------->
+<ng-template #cryptsForm2>
+<form [formGroup]="service.inputForm2" class="form-content">
+  <mat-form-field appearance="outline">
+    <mat-label>Requested crypt amount</mat-label>
+    <input matInput type="number" formControlName="total">
+  </mat-form-field>
+  <mat-label>Crypt types</mat-label>
+  <mat-action-list>
+    <mat-checkbox matListItemLine formControlName="common">Common</mat-checkbox>
+    <mat-checkbox matListItemLine formControlName="rare">Rare</mat-checkbox>
+    <mat-checkbox matListItemLine formControlName="epic">Epic</mat-checkbox>
+  </mat-action-list>
+  <mat-label>Crypt levels</mat-label>
+  <mat-slider min="0" max="35" step="5" showTickMarks discrete>
+    <input matSliderStartThumb formControlName="low">
+    <input matSliderEndThumb formControlName="high">
+  </mat-slider>
+  <mat-label>Schedule using timezone <b><u>{{ crypts.getTimezone() }}</u></b></mat-label>
+  <mat-slider min="0" max="24" step="1" showTickMarks discrete [displayWith]="crypts.formatHourLabel">
+    <input matSliderStartThumb formControlName="start">
+    <input matSliderEndThumb formControlName="end">
+  </mat-slider>
+</form>
+</ng-template>
+
+<ng-template #cryptsForm3>
+  Service is ready. Let's create it!
+</ng-template>

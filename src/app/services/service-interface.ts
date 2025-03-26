@@ -10,10 +10,10 @@ export type ActionableRow = {
 export  class ServiceInterface {
   static getStatus(row: ActionableRow) {
     if (ServiceInterface.isBlocked(row))
-      return '⚠️ BLOCKED'
+      return '⚠️'
     if (row.status.restartCount > 2)
-      return '‼️ ERROR'
-    return row.status.isRunning ? '✅ RUNNING' : '⏹️ STOPPED'
+      return '‼️'
+    return row.status.isRunning ? '✅' : '⏹️'
   }
 
   static isBlocked(row: ActionableRow) {

@@ -15,7 +15,6 @@
   .example-element-row td {
     border-bottom-width: 0;
   }
-
   td {
     max-width: 120px
   }
@@ -28,8 +27,7 @@
   .example-toggle-button-expanded {
     transform: rotate(180deg);
   }
-
-  th.expand {
+  th.expand{
     padding: 0
   }
 </style>
@@ -37,7 +35,7 @@
   <mat-toolbar>
     <button mat-raised-button (click)="openDialog()">
       <mat-icon>add</mat-icon>
-      Add chest counter
+      Add auto-crypter
     </button>
     <button mat-icon-button (click)="fetch()" [disabled]="isLoading()">
       <mat-icon>refresh</mat-icon>
@@ -50,37 +48,30 @@
         <mat-spinner [diameter]="40"></mat-spinner>
       </div>
     </ng-template>
-    <div class="example-loading-shade" *ngIf="isLoading()">
-      <mat-spinner [diameter]="40"></mat-spinner>
-    </div>
     <table class=" mat-elevation-z8" mat-table [dataSource]="dataSource" multiTemplateDataRows>
 
-      @for (column of columnsBase; track column) {
-        <ng-container matColumnDef="{{column}}">
-          <th mat-header-cell *matHeaderCellDef>{{ columnMap[column] }}</th>
-          <td mat-cell *matCellDef="let row">{{ row[column] }}</td>
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef>Username</th>
+          <td mat-cell *matCellDef="let row" >{{ row.username }}</td>
         </ng-container>
-      }
-
+      <ng-container matColumnDef="progress">
+        <th mat-header-cell *matHeaderCellDef> Progress</th>
+        <td mat-cell *matCellDef="let row"> {{ row.total_done }} / {{ row.total }}</td>
+      </ng-container>
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef [attr.colspan]="2"> Status</th>
         <td mat-cell *matCellDef="let row"> {{ ServiceInterface.getStatus(row) }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="details">
-        <td mat-cell *matCellDef="let row" [attr.colspan]="1">
-          <mat-chip>K{{ row.kingdom }} / {{ row.clanTag }}</mat-chip>
-          <mat-chip>{{ ChestCounterForm.levelMap[row.level].title }}</mat-chip>
-          <mat-chip>{{ row.minScore }} score</mat-chip>
-          <mat-chip>{{ row.minEpicCryptCount }} epic crypts</mat-chip>
-        </td>
+      <ng-container matColumnDef="clanTag">
+        <th mat-header-cell *matHeaderCellDef [attr.colspan]="1">Clan</th>
+        <td mat-cell *matCellDef="let row">{{ row.clanTag }}</td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef> Actions</th>
         <td mat-cell *matCellDef="let row" [attr.colspan]="4">
-          <app-table-actions [row]="row" serviceName="chest-counter" (change)="fetch()"
-                             (edit)="edit($event)"></app-table-actions>
+          <app-table-actions [row]="row" serviceName="crypts" (change)="fetch()" (edit)="edit($event)"></app-table-actions>
         </td>
       </ng-container>
 
@@ -98,8 +89,22 @@
         </td>
       </ng-container>
 
+
+
+
+      <ng-container matColumnDef="details">
+        <td mat-cell *matCellDef="let row" [attr.colspan]="1">
+          <mat-chip>K{{row.kingdom}} / {{row.clanTag}}</mat-chip>
+          <div class="details">{{row.clanName}}</div>
+          <mat-chip>lvl{{ row.low }}-{{ row.high }}</mat-chip>
+          @for(t of getCryptTypes(row); track t){
+            <mat-chip>{{t}}</mat-chip>
+          }
+          <mat-chip>{{getSchedule(row, false)}}</mat-chip>
+        </td>
+      </ng-container>
+
       <tr mat-header-row *matHeaderRowDef="columnsMobile"></tr>
-      <!--      <tr mat-row *matRowDef="let row; columns: columnsMobile;"  (click)="editRow($event, row)"></tr>-->
       <tr mat-row *matRowDef="let element; columns: columnsMobile;"
           class="example-element-row"
           [class.example-expanded-row]="isExpanded(element)"

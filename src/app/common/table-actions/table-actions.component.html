@@ -16,6 +16,10 @@
       </mat-icon>
     </button>
   }
+  <mat-divider vertical></mat-divider>
+  <button mat-raised-button (click)="onEdit($event, row)" class="action-button">
+    EDIT
+  </button>
   <button mat-icon-button (click)="delete($event, row)" class="action-button">
     <mat-icon class="delete-button">delete</mat-icon>
   </button>

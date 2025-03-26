@@ -32,12 +32,15 @@ mat-form-field, mat-slider {
     overflow: auto;
   }
 
-  .actions {
-    height: 20%; /* 20% of container height */
-    display: flex;
-  }
-}
 
+}
+.actions {
+  margin-top: 32px;
+  display: flex;
+}
+.error {
+  color: rosybrown;
+}
 .dialog-header {
   display: flex;
   justify-content: space-between;

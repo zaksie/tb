@@ -8,7 +8,7 @@ import {ViewChestCounterComponent} from "./chest-counter/view-chest-counter/view
 import {DashboardComponent} from "./chest-counter/dashboard/dashboard.component";
 import {ManageChestCounterComponent} from "./chest-counter/manage-chest-counter/manage-chest-counter.component";
 import {MercExchangeComponent} from "./merc-exchange/merc-exchange.component";
-import {CryptsExplorerComponent} from "./crypts-explorer/crypts-explorer.component";
+import {CryptsComponent} from "./crypts/crypts.component";
 import {DemoChestCounterComponent} from "./landing-page/demo-chest-counter/demo-chest-counter.component";
 import {DemoStackerComponent} from "./landing-page/demo-stacker/demo-stacker.component";
 import {DemoCryptsComponent} from "./landing-page/demo-crypts/demo-crypts.component";
@@ -16,7 +16,7 @@ import {DemoCryptsComponent} from "./landing-page/demo-crypts/demo-crypts.compon
 const routes: Routes = [
   {path: '', component: LandingPageComponent},
   {path: 'stacker', component: StackerComponent},
-  {path: 'crypts', component: CryptsExplorerComponent},
+  {path: 'crypts', component: CryptsComponent},
   {path: 'merc-exchange', component: MercExchangeComponent},
   {path: 'cp-run', component: CpClanRunsComponent},
   {

@@ -1,8 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {BackendService} from "../../services/backend.service";
 import {ActionableRow, ServiceInterface, ServiceName} from "../../services/service-interface";
-import {of, tap} from "rxjs";
-import {catchError} from "rxjs/operators";
 
 @Component({
   selector: 'app-table-actions',
@@ -15,6 +13,8 @@ export class TableActionsComponent {
   @Input() serviceName!: ServiceName
   @Input() row!: ActionableRow;
   @Output() change = new EventEmitter<void>();
+  @Output() edit = new EventEmitter<ActionableRow>();
+
   constructor(private backend: BackendService) {
   }
   info(mouseEvent: MouseEvent) {
@@ -45,4 +45,9 @@ export class TableActionsComponent {
   }
 
 
+  onEdit(mouseEvent: MouseEvent, row: ActionableRow) {
+    console.log(row)
+    mouseEvent.stopImmediatePropagation()
+    this.edit.emit(row)
+  }
 }
