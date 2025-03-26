@@ -82,12 +82,12 @@ export class PricingComponent implements AfterViewInit {
       {
         name: Plan[Plan.CLAN],
         price: 39,
-        discount: 35
+        discount: 40
       },
       {
         name: Plan[Plan.DELUXE],
         price: 49,
-        discount: 50
+        discount: 40
       }
     ]
   readonly pricing: Pricing[] = [
