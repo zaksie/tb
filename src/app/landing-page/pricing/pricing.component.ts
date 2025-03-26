@@ -76,17 +76,17 @@ export class PricingComponent implements AfterViewInit {
       },
       {
         name: Plan[Plan.PRO],
-        price: 25,
+        price: 29,
         discount: 25
       },
       {
         name: Plan[Plan.CLAN],
-        price: 29,
+        price: 39,
         discount: 35
       },
       {
         name: Plan[Plan.DELUXE],
-        price: 39,
+        price: 49,
         discount: 50
       }
     ]
