@@ -61,7 +61,35 @@ export class PricingComponent implements AfterViewInit {
   displayedColumnsMobile1: string[] = ['feature', Plan[Plan.FREE], Plan[Plan.BASIC], Plan[Plan.PRO]];
   displayedColumnsMobile2: string[] = ['feature', Plan[Plan.CLAN], Plan[Plan.DELUXE]];
 
-
+  readonly DOLLAR = ' $ '
+  readonly pricingUSD =
+    [
+      {
+        name: Plan[Plan.FREE],
+        price: 0,
+        discount: 0
+      },
+      {
+        name: Plan[Plan.BASIC],
+        price: 15,
+        discount: 15
+      },
+      {
+        name: Plan[Plan.PRO],
+        price: 25,
+        discount: 25
+      },
+      {
+        name: Plan[Plan.CLAN],
+        price: 29,
+        discount: 35
+      },
+      {
+        name: Plan[Plan.DELUXE],
+        price: 39,
+        discount: 50
+      }
+    ]
   readonly pricing: Pricing[] = [
     {
       type: Feature.FREE_TRIAL,
@@ -104,35 +132,24 @@ export class PricingComponent implements AfterViewInit {
       name: 'Price (monthly)',
       bold: true,
       plans: [Plan.FREE, Plan.BASIC, Plan.PRO, Plan.CLAN, Plan.DELUXE],
-      remarks:
-        {
-          FREE: ' 0 $ ',
-          BASIC: '15 $ ',
-          PRO: '25 $ ',
-          CLAN: '40 $ ',
-          DELUXE: '50 $ ',
-        }
+      remarks: this.pricingUSD.reduce((acc: any, x) => {
+        acc[x.name] = (x.price + this.DOLLAR).padStart(this.DOLLAR.length + 3, ' ')
+        return acc
+      }, {})
     },
     {
       type: Feature.PRICE_YEARLY,
       name: 'Price (yearly)',
       bold: true,
       plans: [Plan.FREE, Plan.BASIC, Plan.PRO, Plan.CLAN, Plan.DELUXE],
-      remarks:
-        {
-          FREE: '  0 $ ',
-          BASIC: '153 $ ',
-          PRO: '210 $ ',
-          CLAN: '288 $ ',
-          DELUXE: '300 $ ',
-        },
-      discounts:
-        {
-          BASIC: '-15%',
-          PRO: '-30%',
-          CLAN: '-40%',
-          DELUXE: '-50%',
-        }
+      remarks: this.pricingUSD.reduce((acc: any, x) => {
+        acc[x.name] = (Math.floor(x.price * 12 * (1 - x.discount/100)) + this.DOLLAR).padStart(this.DOLLAR.length + 3, ' ')
+        return acc
+      }, {}),
+      discounts: this.pricingUSD.slice(1).reduce((acc: any, x) => {
+        acc[x.name] = -x.discount + '%'
+        return acc
+      }, {})
     }
 
   ]
