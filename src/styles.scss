@@ -104,3 +104,8 @@ body {
   flex-flow: column nowrap;
 
 }
+section.center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
