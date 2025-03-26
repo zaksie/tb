@@ -55,7 +55,7 @@ h1.example-app-name {
      causes `<mat-sidenav-content>` to act as our scrolling element for desktop layouts. */
   flex: 1 1;
   width: 100%;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 44px);
   /* Position the element to relative so that the ::before pseudo-element
     will be positioned relative to this container */
   position: relative;

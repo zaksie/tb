@@ -47,11 +47,9 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {NavigatorComponent} from './navigator/navigator.component';
 import {MatTreeModule} from '@angular/material/tree';
 import {
-  CreateChestCounterDialog,
   ManageChestCounterComponent
 } from "./chest-counter/manage-chest-counter/manage-chest-counter.component";
 import {MatDialogModule} from "@angular/material/dialog";
-import {ClanNameValidatorDirective} from './chest-counter/manage-chest-counter/clan-name-validator.directive'
 import {MatChip, MatChipListbox, MatChipOption} from "@angular/material/chips";
 import {authenticationErrorInterceptor} from "./services/authentication-error.interceptor";
 import {MonacoEditorModule} from "ngx-monaco-editor-v2";
@@ -66,7 +64,10 @@ import {AppGenericDialog} from "./common/app-generic-dialog/app-generic-dialog";
 import {AccountDialog} from "./account/account.component";
 import {ComingSoonComponent} from "./landing-page/coming-soon/coming-soon.component";
 import {SocketIoConfig, SocketIoModule} from "ngx-socket-io";
-import {MatBadge} from "@angular/material/badge";
+import {MatBadgeModule} from "@angular/material/badge";
+import {MatExpansionModule} from "@angular/material/expansion";
+import {ClanNameValidatorDirective} from "./common/new-service/clan-name-validator.directive";
+import {NewServiceComponent} from "./common/new-service/new-service.component";
 
 const authorizationParams = {
   scope: "openid profile email offline_access",
@@ -94,7 +95,7 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
     DashboardComponent,
     NavigatorComponent,
     ManageChestCounterComponent,
-    CreateChestCounterDialog,
+    NewServiceComponent,
     CreateCryptExplorerDialog,
     ClanNameValidatorDirective,
     MercExchangeComponent,
@@ -107,7 +108,6 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
     AccountDialog,
     ComingSoonComponent,
   ],
-
   imports: [
     SocketIoModule.forRoot(socketIOConfig),
     FlexLayoutModule,
@@ -144,12 +144,13 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
     MatTreeModule,
     MatDialogModule,
     MatTabsModule,
-    MatChip,
     MatChipOption,
     MatAutocomplete,
     MatAutocompleteTrigger,
     MatChipListbox,
-    MatBadge
+    MatBadgeModule,
+    MatExpansionModule,
+    MatChip
   ],
   providers: [
     provideAuth0({

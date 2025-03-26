@@ -14,10 +14,11 @@ export class PlatformService implements OnDestroy {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this._isBrowser = isPlatformBrowser(this.platformId);
     if (this._isBrowser) {
-
+      console.log('setting isMobile...')
       const media = inject(MediaMatcher);
       this._mobileQuery = media.matchMedia('(max-width: 600px)');
       this.isMobile.set(this._mobileQuery.matches);
+      console.log('setting isMobile... to ', this.isMobile())
       this._mobileQueryListener = () => this.isMobile.set(this._mobileQuery.matches);
       this._mobileQuery.addEventListener('change', this._mobileQueryListener);
     }

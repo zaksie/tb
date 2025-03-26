@@ -69,7 +69,7 @@ export class BackendService {
   }
 
   createChestCounter(value: ChestCounter) {
-    return this.httpClient.post(environment.backend + '/api/v1/chest-counter', value)
+    return this.httpClient.post(environment.backend + '/api/v1/chest-counter', value).pipe(map(_ => true))
   }
 
   getDefaultPointSystem() {
@@ -111,7 +111,7 @@ export class BackendService {
   }
 
   checkClanTagAvailable(clanTag: string) {
-    return this.httpClient.put(environment.backend + '/api/v1/chest-counter/clan-tag-available', {clanTag})
+    return this.httpClient.put<boolean>(environment.backend + '/api/v1/chest-counter/clan-tag-available', {clanTag})
   }
 
   createContactRequest(value: ContactRequest) {

@@ -1,5 +1,5 @@
 import {Directive} from '@angular/core';
-import {map, Observable, of, tap} from 'rxjs';
+import {map, Observable, of, switchMap, timer} from 'rxjs';
 import {AbstractControl, AsyncValidator, NG_ASYNC_VALIDATORS, ValidationErrors} from "@angular/forms";
 import {BackendService} from "../../services/backend.service";
 
@@ -23,11 +23,11 @@ export class ClanNameValidatorDirective implements AsyncValidator {
 
   validate(control: AbstractControl): Observable<ValidationErrors | null> {
     console.log('validating ClanNameValidatorDirective with ', this.currentClanTag, control.value);
-    if (this.currentClanTag === control.value) return of(null)
-    return this.backendService.checkClanTagAvailable(control.value).pipe(
-      tap((res: any) => console.log(res)),
-      map((res: any) => +res < 1 ? null : {error: 'Tag is already taken'})
+    if (!control.value) return of({error: 'Cannot be blank and must be unique'})
+    if (!!this.currentClanTag && this.currentClanTag === control.value) return of(null)
+    return timer(500).pipe(
+      switchMap(() => this.backendService.checkClanTagAvailable(control.value)),
+      map(res => res ? null : {error: 'Tag is already taken'})
     )
   }
-
 }

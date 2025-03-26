@@ -1,0 +1,45 @@
+.form-content {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  width: 100%;
+}
+
+.point-system {
+  height: 300px;
+}
+
+mat-expansion-panel {
+  .mat-expansion-panel-body {
+    padding: 0 !important;
+  }
+}
+
+mat-form-field, mat-slider {
+  width: 100%;
+}
+
+.step-container {
+  width: 100%; /* Full width of the page */
+  height: 100%; /* Full viewport height (adjust as needed) */
+  display: flex; /* Use flexbox for vertical stacking */
+  flex-direction: column;
+  overflow: hidden;
+
+  .form-content {
+    height: 80%; /* 80% of container height */
+    display: flex;
+    overflow: auto;
+  }
+
+  .actions {
+    height: 20%; /* 20% of container height */
+    display: flex;
+  }
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

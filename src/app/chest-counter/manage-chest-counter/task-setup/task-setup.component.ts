@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, Input} from '@angular/core';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {GenericTask} from "../../../models/clan-data.model";
+import {remove} from "lodash";
 
 @Component({
   selector: 'app-task-setup',
@@ -44,4 +45,5 @@ export class TaskSetupComponent implements AfterViewInit {
   }
 
   // For debugging or submission
+  protected readonly remove = remove;
 }

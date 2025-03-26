@@ -29,7 +29,7 @@ html {
   @include mat.theme((
     color: mat.$cyan-palette,
     typography: Roboto,
-    density: 0
+    density: -3
   ));
 }
 

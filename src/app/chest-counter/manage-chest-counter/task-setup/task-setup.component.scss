@@ -1,16 +1,30 @@
+@use '@angular/material' as mat;
+
+// Customize the entire app. Change :root to your selector if you want to scope the styles.
+:host {
+  @include mat.badge-overrides((
+    background-color: gray,
+    text-color: black,
+  ));
+}
 .row {
+  display:flex;
+  align-items: center;
 }
 .column {
   display: flex;
   flex-flow: column;
 }
-.margin-to-the-right {
-  margin-right: 12px;
-}
 .target-count{
-  width: 100px;
+  width: 140px;
+}
+.source {
+  margin-right: 12px;
+
 }
 .add{
+  margin-top: 16px;
+  margin-bottom: 16px;
   width:100%;
   display:flex;
   justify-content: center;
