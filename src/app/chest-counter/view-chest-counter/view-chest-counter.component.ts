@@ -22,7 +22,7 @@ import {v4 as uuidv4} from 'uuid';
 })
 export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   public dataSource = new MatTableDataSource<ChestAgg>([]);
-  displayedColumns: string[] = ['track', 'playerName', 'epicCryptCount', 'totalScore', 'chestCount'];
+  displayedColumns: string[] = ['track', 'playerName', 'epicCryptCount', 'totalScore'];
   chestCounters$!: Observable<ChestCounter[]>
   tasks: GenericTask[] = [];
   private _currentClanTag: string = '';
@@ -127,8 +127,9 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
         sources: x.sources?.map(y => y.toLowerCase())
       }
     })
-    console.log('tasks',tasks)
+    console.log('tasks', tasks)
     const rows = data?.players || []
+    rows.forEach((row) => this.addState(row, data?.stats[0]))
     this.tasks.length = 0
     this.tasks.push(...tasks)
     this.dataSource.data = rows
@@ -191,5 +192,15 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
 
   fetch() {
     this.getByClanTag(this.currentClanTag)
+  }
+
+  private addState(row: ChestAgg, stats: ChestCounter | undefined) {
+    if (!!stats?.minScore)
+      row.pass = row.totalScore >= stats.minScore && row.epicCryptCount >= stats.minEpicCryptCount
+  }
+
+
+  onRowClicked(row: ChestAgg) {
+    this.router.navigate(['chests/dashboards/' + row.clanTag + '/' + row.playerName])
   }
 }

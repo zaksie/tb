@@ -9,7 +9,7 @@
   <!--    }-->
   <!--  </mat-autocomplete>-->
   <mat-toolbar>
-<!--    <div class="controls">-->
+    <mat-toolbar-row>
       <form (ngSubmit)="onSubmit()">
         <mat-form-field subscriptSizing="dynamic">
           <input matInput type="text" name="selectedProfile" placeholder="Enter clan tag"
@@ -38,9 +38,10 @@
       <button mat-icon-button (click)="fetch()" [disabled]="isLoading() || !currentClanTag">
         <mat-icon>refresh</mat-icon>
       </button>
-      <div class="date-info">{{ dateRangeStart | date }} - next Monday at midnight UTC</div>
-<!--    </div>-->
+    </mat-toolbar-row>
   </mat-toolbar>
+  <div class="date-info">{{ dateRangeStart | date }} - next Monday at midnight UTC</div>
+
   <br>
   <div class="example-loading-shade" *ngIf="isLoading()">
     <mat-spinner [diameter]="40"></mat-spinner>
@@ -72,37 +73,35 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by number">
         Player
       </th>
-      <td mat-cell *matCellDef="let row"> {{ row.playerName }}</td>
+      <td mat-cell *matCellDef="let row" style="max-width:90px" [style.color]="row.pass ? 'green': 'default'"> {{(row.pass ? '✓' : '') +  row.playerName }}</td>
       <td mat-footer-cell *matFooterCellDef> {{ getTotalPlayerCount() }} players</td>
     </ng-container>
 
     <ng-container matColumnDef="epicCryptCount">
       <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by epic crypt score">
-        Epic crypt score
+        Epic crypts
       </th>
       <td mat-cell *matCellDef="let row"> {{ row.epicCryptCount }}</td>
-      <td mat-footer-cell *matFooterCellDef></td>
+      <td mat-footer-cell *matFooterCellDef> Total chests</td>
     </ng-container>
 
     <ng-container matColumnDef="totalScore">
       <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by score">
-        Total score
+        Score
       </th>
       <td mat-cell *matCellDef="let row"> {{ row.totalScore }}</td>
-      <td mat-footer-cell *matFooterCellDef> Total chests</td>
-    </ng-container>
-
-    <ng-container matColumnDef="chestCount">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by score">
-        Chest total
-      </th>
-      <td mat-cell *matCellDef="let row"> {{ row.chestCount }}</td>
       <td mat-footer-cell *matFooterCellDef> {{ getTotalChestCount() }}</td>
     </ng-container>
 
     <!-- Weight Column -->
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    http://localhost:4200//FAR/Creiza%202
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+             (click)="onRowClicked(row)"></tr>
     <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
   </table>
+  <br>
+  <br>
+  <br>
+  <br>
 </div>

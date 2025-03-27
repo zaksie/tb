@@ -105,6 +105,8 @@ export interface ChestAgg {
   kingdom: number
   playerName: string
   tracked: boolean
+
+  pass?: boolean
 }
 
 export interface ContactRequest {
