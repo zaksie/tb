@@ -69,10 +69,19 @@
 
       <ng-container matColumnDef="details">
         <td mat-cell *matCellDef="let row" [attr.colspan]="1">
-          <mat-chip>K{{ row.kingdom }} / {{ row.clanTag }}</mat-chip>
-          <mat-chip>{{ ChestCounterForm.levelMap[row.level].title }}</mat-chip>
-          <mat-chip>{{ row.minScore }} score</mat-chip>
-          <mat-chip>{{ row.minEpicCryptCount }} epic crypts</mat-chip>
+          <mat-chip-set role="list">
+            <mat-chip role="listitem">K{{ row.kingdom }} / {{ row.clanTag }}</mat-chip>
+            <mat-chip role="listitem">{{ ChestCounterForm.levelMap[row.level].title }}</mat-chip>
+            <mat-chip role="listitem" matTooltip="Minimum required weekly score">
+              <mat-icon matChipAvatar>sports_score</mat-icon>
+              <span>{{ row.minScore }}</span>
+            </mat-chip>
+            <mat-chip role="listitem" matTooltip="Minimum required weekly epic crypts">
+              <mat-icon matChipAvatar>explore</mat-icon>
+              <span>{{ row.minEpicCryptCount }}</span>
+            </mat-chip>
+          </mat-chip-set>
+
         </td>
       </ng-container>
 

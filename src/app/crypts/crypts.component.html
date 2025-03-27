@@ -15,19 +15,21 @@
   .example-element-row td {
     border-bottom-width: 0;
   }
+
   td {
     max-width: 120px
   }
 
   .example-toggle-button {
-    float:right;
+    float: right;
     transition: transform 225ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .example-toggle-button-expanded {
     transform: rotate(180deg);
   }
-  th.expand{
+
+  th.expand {
     padding: 0
   }
 </style>
@@ -50,10 +52,10 @@
     </ng-template>
     <table class=" mat-elevation-z8" mat-table [dataSource]="dataSource" multiTemplateDataRows>
 
-        <ng-container matColumnDef="username">
-          <th mat-header-cell *matHeaderCellDef>Username</th>
-          <td mat-cell *matCellDef="let row" >{{ row.username }}</td>
-        </ng-container>
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef>Username</th>
+        <td mat-cell *matCellDef="let row">{{ row.username }}</td>
+      </ng-container>
       <ng-container matColumnDef="progress">
         <th mat-header-cell *matHeaderCellDef> Progress</th>
         <td mat-cell *matCellDef="let row"> {{ row.total_done }} / {{ row.total }}</td>
@@ -71,7 +73,8 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef> Actions</th>
         <td mat-cell *matCellDef="let row" [attr.colspan]="4">
-          <app-table-actions [row]="row" serviceName="crypts" (change)="fetch()" (edit)="edit($event)"></app-table-actions>
+          <app-table-actions [row]="row" serviceName="crypts" (change)="fetch()"
+                             (edit)="edit($event)"></app-table-actions>
         </td>
       </ng-container>
 
@@ -90,17 +93,22 @@
       </ng-container>
 
 
-
-
       <ng-container matColumnDef="details">
-        <td mat-cell *matCellDef="let row" [attr.colspan]="1">
-          <mat-chip>K{{row.kingdom}} / {{row.clanTag}}</mat-chip>
-          <div class="details">{{row.clanName}}</div>
-          <mat-chip>lvl{{ row.low }}-{{ row.high }}</mat-chip>
-          @for(t of getCryptTypes(row); track t){
-            <mat-chip>{{t}}</mat-chip>
-          }
-          <mat-chip>{{getSchedule(row, false)}}</mat-chip>
+        <td mat-cell *matCellDef="let row" [attr.colspan]="1" class="details">
+          <mat-chip-set role="list">
+            <mat-chip role="listitem">K{{ row.kingdom }} / {{ row.clanTag }}</mat-chip>
+            <mat-chip role="listitem" matTooltip="Crypt level range">
+              <svg matChipAvatar xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-280 80-480l200-200 56 56-103 104h494L624-624l56-56 200 200-200 200-56-56 103-104H233l103 104-56 56Z"/></svg>
+              <span>{{ row.low }}-{{ row.high }}</span>
+            </mat-chip>
+            @for (t of getCryptTypes(row); track t) {
+              <mat-chip role="listitem">{{ t }}</mat-chip>
+            }
+            <mat-chip role="listitem" matTooltip="Daily scheduler till weekly quota is met">
+              <mat-icon matChipAvatar>schedule</mat-icon>
+              <span>{{ getSchedule(row, false) }}</span>
+            </mat-chip>
+          </mat-chip-set>
         </td>
       </ng-container>
 

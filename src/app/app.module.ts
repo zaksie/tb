@@ -50,7 +50,7 @@ import {
   ManageChestCounterComponent
 } from "./chest-counter/manage-chest-counter/manage-chest-counter.component";
 import {MatDialogModule} from "@angular/material/dialog";
-import {MatChip, MatChipListbox, MatChipOption} from "@angular/material/chips";
+import {MatChip, MatChipAvatar, MatChipListbox, MatChipOption, MatChipSet} from "@angular/material/chips";
 import {authenticationErrorInterceptor} from "./services/authentication-error.interceptor";
 import {MonacoEditorModule} from "ngx-monaco-editor-v2";
 import {MercExchangeComponent} from "./merc-exchange/merc-exchange.component";
@@ -149,7 +149,9 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
     MatChipListbox,
     MatBadgeModule,
     MatExpansionModule,
-    MatChip
+    MatChip,
+    MatChipSet,
+    MatChipAvatar
   ],
   providers: [
     provideAuth0({
