@@ -19,6 +19,7 @@
       </span>
     </div>
   </mat-toolbar>
+  @if (platform.isBrowser){
   <mat-sidenav-container class="example-sidenav-container">
     <mat-sidenav #snav [mode]="platform.isMobile() ? 'over' : 'side'"
                  [fixedInViewport]="platform.isMobile()" fixedTopGap="44" opened="true">
@@ -35,7 +36,7 @@
       <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
-
+  }
   <mat-menu #menu="matMenu">
     <button mat-menu-item
             (click)="openAcountDialog()">

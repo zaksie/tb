@@ -4,8 +4,8 @@ import {catchError, map} from 'rxjs/operators';
 import {ActivatedRoute} from "@angular/router";
 import {AuthService} from "@auth0/auth0-angular";
 import {BackendService} from "../../services/backend.service";
-import {mergeMap, Observable, of} from "rxjs";
-import {ChestAgg, GenericTask, NULL_DASHBOARD_TASK} from "../../models/clan-data.model";
+import {of, switchMap, tap} from "rxjs";
+import {ChestAgg, DashboardTasks} from "../../models/clan-data.model";
 
 export enum DashboardView {
   TASKS = 1
@@ -18,19 +18,19 @@ export enum DashboardView {
   standalone: false
 })
 export class DashboardComponent implements OnInit {
-  public _playerName!: string
-  public _clanTag!: string
-  tasks$ = new Observable<GenericTask[]>()
+  public _playerName!: string | null
+  public _clanTag!: string | null
+  dashboard: DashboardTasks = {} as any as DashboardTasks
+  protected readonly DashboardView = DashboardView;
+  isLoading: boolean = false;
 
   @Input()
-  set playerName(value: string) {
-    console.log(value)
+  set playerName(value: string | null) {
     this._playerName = value
   }
 
   @Input()
-  set clanTag(value: string) {
-    console.log(value)
+  set clanTag(value: string | null) {
     this._clanTag = value
   }
 
@@ -41,24 +41,22 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.tasks$ = this.route.paramMap.pipe(mergeMap((params) => {
+    this.route.paramMap.pipe(switchMap((params) => {
+        this.isLoading = false
         console.log('dashboard selection changed....')
-        return this.backend.getDashboardTasks(params.get('clanTag'), params.get('playerName'))
-          .pipe(
-            map(dashboardTasks => ([
-              {
-                counter: dashboardTasks.epicCryptCount,
-                goal: dashboardTasks.epicCryptCountGoal,
-                title: 'Epic Crypts'
-              },
-              {
-                counter: dashboardTasks.score,
-                goal: dashboardTasks.scoreGoal,
-                title: 'Score'
-              }
-            ])),
-            catchError(() => of(NULL_DASHBOARD_TASK))
-          )
+        this.clanTag = params.get('clanTag')
+        this.playerName = params.get('playerName')
+        return this.fetch$()
+      })
+    ).subscribe(() => this.isLoading = false)
+  }
+
+  fetch$() {
+    return this.backend.getDashboardTasks(this._clanTag, this._playerName).pipe(
+      tap(d => this.dashboard = d),
+      catchError(e => {
+        this.isLoading = false
+        return of(e)
       })
     )
   }
@@ -77,12 +75,12 @@ export class DashboardComponent implements OnInit {
       ];
     })
   );
-  protected readonly DashboardView = DashboardView;
-  isLoading: boolean = false;
 
-  untrack() {
+
+  toggleTrack() {
     this.isLoading = true
-    this.backend.untrackPlayer({clanTag: this._clanTag, playerName: this._playerName} as ChestAgg)
-      .pipe(mergeMap(() => this.backend.getTrackPlayersList())).subscribe(() => this.isLoading = false)
+    const data = {clanTag: this._clanTag, playerName: this._playerName} as ChestAgg
+    const obs = this.dashboard.tracked ? this.backend.untrackPlayer(data) : this.backend.trackPlayer(data)
+    obs.pipe(switchMap(() => this.fetch$())).subscribe(() => this.isLoading = false)
   }
 }

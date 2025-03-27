@@ -7,8 +7,7 @@ import {
   ChestCounterResults,
   Clan,
   ContactRequest,
-  DashboardTask,
-  DashboardTaskRaw,
+  DashboardTasks,
   PointSystem
 } from "../models/clan-data.model";
 import {filter, map, mergeMap, Observable, Subject, switchMap, tap} from "rxjs";
@@ -40,28 +39,9 @@ export class BackendService {
     )
   }
 
-  getDashboardTasks(clanTag: string | null, playerName: string | null): Observable<DashboardTask> {
+  getDashboardTasks(clanTag: string | null, playerName: string | null): Observable<DashboardTasks> {
     if (!clanTag || !playerName) throw new Error('missing clan name');
-    return this.httpClient.get<DashboardTaskRaw>(environment.backend + `/api/v1/dashboards/tasks/${clanTag}/${playerName}`)
-      .pipe(
-        map((res: DashboardTaskRaw) => {
-          const epicCryptCount = res.chests
-            .filter(chest => chest.sourceName.includes(' epic crypt'))
-            .reduce((agg, chest) => agg + chest.chestCount, 0)
-          const score = res.chests.reduce((agg, chest) => {
-            const points = res.pointSystem.find(ps => ps.sourceName.toLowerCase() === chest.sourceName.toLowerCase())?.points || 0
-            return agg + chest.chestCount * points
-          }, 0)
-          const scoreGoal = res.requirements[0].minScore
-          const epicCryptCountGoal = res.requirements[0].minEpicCryptCount
-          return {
-            epicCryptCount,
-            epicCryptCountGoal,
-            score,
-            scoreGoal
-          }
-        })
-      )
+    return this.httpClient.get<DashboardTasks>(environment.backend + `/api/v1/dashboards/tasks/${clanTag}/${playerName}`)
   }
 
   getChestCounters() {
@@ -104,10 +84,12 @@ export class BackendService {
 
   trackPlayer(row: ChestAgg) {
     return this.httpClient.post(environment.backend + '/api/v1/dashboards/preview/' + row.clanTag + '/' + row.playerName, {})
+      .pipe(mergeMap(() => this.getTrackPlayersList()))
   }
 
   untrackPlayer(row: ChestAgg) {
     return this.httpClient.delete(environment.backend + '/api/v1/dashboards/preview/' + row.clanTag + '/' + row.playerName)
+      .pipe(mergeMap(() => this.getTrackPlayersList()))
   }
 
   checkClanTagAvailable(clanTag: string) {

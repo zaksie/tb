@@ -1,11 +1,14 @@
 <div class="grid-container">
   <div class="dashboard-header">
     <button mat-mini-fab [disabled]="isLoading">
-      <mat-icon class="tracked" (click)="untrack()">star</mat-icon>
+      <mat-icon (click)="toggleTrack()" [class.tracked]="dashboard.tracked">star</mat-icon>
     </button>
     <mat-chip disabled>{{ _clanTag }}</mat-chip>
     /
     <mat-chip disabled>{{ _playerName }}</mat-chip>
+    <button mat-icon-button (click)="fetch$().subscribe()" [disabled]="isLoading">
+      <mat-icon>refresh</mat-icon>
+    </button>
   </div>
   <mat-grid-list cols="2" rowHeight="280">
     @for (card of cards$ | async; track card) {
@@ -27,9 +30,10 @@
             @if (!!card.type) {
               @switch (card.type) {
                 @case (DashboardView.TASKS) {
-                  @for (task of tasks$|async; track task.title) {
-                    <app-task [task]="task"></app-task>
-                  }
+                    @for (task of dashboard.mainTasks; track task.title) {
+                      <app-task [task]="task"></app-task>
+                    }
+
                 }
               }
             }

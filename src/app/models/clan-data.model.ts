@@ -18,24 +18,19 @@ export const enrichWithFeature = (ps: ChestAgg): PlayerSubscriptionFeature => {
   return {...feature, ...ps}
 }
 
-export interface DashboardTaskRaw {
-  pointSystem: {sourceName: string, points: number}[]
-  chests: {sourceName: string, chestCount: number}[]
-  requirements: {minScore: number, minEpicCryptCount: number}[]
-}
 
-export const NULL_DASHBOARD_TASK = [
-  {
+export const NULL_DASHBOARD_TASK = {
+  mainTasks: [{
     counter: 0,
     goal: 0,
     title: 'Epic Crypts'
   },
-  {
-    counter: 0,
-    goal: 0,
-    title: 'Score'
-  }
-]
+    {
+      counter: 0,
+      goal: 0,
+      title: 'Score'
+    }]
+}
 
 export interface GenericTask {
   counter: number
@@ -46,11 +41,12 @@ export interface GenericTask {
   hash?: string
 }
 
-export interface DashboardTask {
-  epicCryptCount: number
-  epicCryptCountGoal: number
-  score: number
-  scoreGoal: number
+export interface DashboardTasks{
+  mainTasks: GenericTask[]
+  pointSystem: {sourceName: string, points: number}[]
+  chests: {sourceName: string, chestCount: number}[]
+  requirements: {minScore: number, minEpicCryptCount: number}[]
+  tracked: boolean
 }
 
 export interface Chest {

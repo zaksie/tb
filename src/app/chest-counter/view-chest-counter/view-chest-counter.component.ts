@@ -3,7 +3,7 @@ import {MatSort} from "@angular/material/sort";
 import {BackendService} from "../../services/backend.service";
 import {ChestAgg, ChestCounter, ChestCounterResults, GenericTask} from "../../models/clan-data.model";
 import {MatTableDataSource} from "@angular/material/table";
-import {filter, mergeMap, Observable, of, Subscription, switchMap, take, tap} from "rxjs";
+import {filter, Observable, of, Subscription, switchMap, take, tap} from "rxjs";
 import {FormControl, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "@auth0/auth0-angular";
@@ -148,9 +148,9 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
     console.log(row)
     row.tracked = !row.tracked
     if (row.tracked)
-      this.backend.trackPlayer(row).pipe(mergeMap(() => this.backend.getTrackPlayersList())).subscribe()
+      this.backend.trackPlayer(row).subscribe()
     else
-      this.backend.untrackPlayer(row).pipe(mergeMap(() => this.backend.getTrackPlayersList())).subscribe()
+      this.backend.untrackPlayer(row).subscribe()
   }
 
   toggleTrackPlayer(row: ChestAgg) {

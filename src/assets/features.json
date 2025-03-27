@@ -95,7 +95,7 @@
         "path": "chests/manage"
       },
       {
-        "name": "Dashboards",
+        "name": "Favorites",
         "path": "chests/dashboards",
         "children": []
       }

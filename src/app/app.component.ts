@@ -56,11 +56,11 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (!this.platform.isMobile())
-      this.snav.open()
+      this.snav?.open()
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
         if (this.platform.isMobile())
-          this.snav.close()
+          this.snav?.close()
       }
     });
     this.activatedRoute.fragment.subscribe((fragment: string | null) => {
