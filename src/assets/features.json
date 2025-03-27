@@ -49,7 +49,7 @@
   {
     "name": "Crypts",
     "image": "/assets/crypts.webp",
-    "description": "Automate crypting",
+    "description": "Let the squire crypt for you in the cloud while you sleep! \nOptimal crypting using Great Archeologist mode so you never have to worry about meeting the weekly quota!",
     "path": "crypts",
     "actions": [
       {
@@ -62,13 +62,7 @@
       }
     ]
   },
-  {
-    "name": "Merc Exchange",
-    "image": "/assets/merc-exchange.png",
-    "description": "Get live feed of merc exchanges",
-    "path": "merc-exchange",
-    "disabled": true
-  },
+
   {
     "name": "Chest Counter",
     "image": "/assets/chest-counter.jpg",

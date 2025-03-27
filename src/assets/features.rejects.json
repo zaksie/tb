@@ -1,0 +1,8 @@
+[{
+  "name": "Merc Exchange",
+  "image": "/assets/merc-exchange.png",
+  "description": "Get live feed of merc exchanges",
+  "path": "merc-exchange",
+  "disabled": true
+}
+]
