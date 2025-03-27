@@ -32,7 +32,7 @@
   {
     "name": "Stack Calculator",
     "image": "/assets/stack-calculator.jpg",
-    "description": "Optimize your hits using a calculator based on your army bonuses and leadership size",
+    "description": ["Optimize your hits using a calculator based on your army bonuses and leadership size"],
     "path": "stacker",
     "public": true,
     "actions": [
@@ -49,7 +49,7 @@
   {
     "name": "Crypts",
     "image": "/assets/crypts.webp",
-    "description": "Let the squire crypt for you in the cloud while you sleep! \nOptimal crypting using Great Archeologist mode so you never have to worry about meeting the weekly quota!",
+    "description": ["Let the squire crypt for you in the cloud while you sleep!", "Optimal crypting using Great Archeologist mode so you never have to worry about meeting the weekly quota!"],
     "path": "crypts",
     "actions": [
       {
@@ -66,7 +66,7 @@
   {
     "name": "Chest Counter",
     "image": "/assets/chest-counter.jpg",
-    "description": "Track clan member chest output, analyze contribution and set caps based on various sources of chests",
+    "description": ["Track clan member chest output, analyze contribution and set caps based on various sources of chests"],
     "path": "chests",
     "actions": [
       {
@@ -99,6 +99,6 @@
     "name": "CP Runs",
     "disabled": true,
     "image": "assets/cp-runs.jpg",
-    "description": "Get help setting up CP runs to optimize results and reduce costs"
+    "description": ["Get help setting up CP runs to optimize results and reduce costs"]
   }
 ]

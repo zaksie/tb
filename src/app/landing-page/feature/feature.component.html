@@ -5,7 +5,11 @@
     </div>
   </mat-card-header>
   <mat-card-content>
-    <p class="description">{{ feature.description }}</p>
+    <div class="description">
+    @for (desc of feature.description || []; track desc) {
+      <p>{{ desc }}</p>
+    }
+    </div>
   </mat-card-content>
   <mat-card-actions>
     @for (action of feature.actions; track action.path) {
