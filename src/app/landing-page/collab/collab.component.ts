@@ -1,5 +1,7 @@
 import {Component} from '@angular/core';
 import {BackendService} from "../../services/backend.service";
+import {AuthService} from "@auth0/auth0-angular";
+import {firstValueFrom} from "rxjs";
 
 @Component({
   selector: 'app-collab',
@@ -9,11 +11,15 @@ import {BackendService} from "../../services/backend.service";
 })
 export class CollabComponent {
   referral: string|undefined;
-  constructor(public backend: BackendService) {
+  constructor(public auth: AuthService, public backend: BackendService) {
     this.backend.getReferral().subscribe(data => this.referral = data.referral_code)
   }
-  createReferral() {
-    this.backend.createReferral().subscribe(data => this.referral = data.referral_code)
-
+  async createReferral() {
+    const isAuthenticated = await firstValueFrom(this.auth.isAuthenticated$)
+    if (isAuthenticated)
+      this.backend.createReferral().subscribe(data => this.referral = data.referral_code)
+    else{
+      this.auth.loginWithPopup();
+    }
   }
 }
