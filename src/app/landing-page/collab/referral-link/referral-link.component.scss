@@ -1,0 +1,17 @@
+@use '@angular/material' as mat;
+:host {
+  * {
+    background: darkgoldenrod;
+  }
+}
+.input-container {
+  height: 64px;
+  width: 240px;
+
+  .input {
+    text-transform:uppercase;
+    text-align: center;
+    font-size: xx-large;
+    font-weight: bolder;
+  }
+}

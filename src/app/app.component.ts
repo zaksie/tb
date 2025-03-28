@@ -4,13 +4,14 @@ import {AuthService} from "@auth0/auth0-angular";
 import features from '../assets/features.json'
 import {FeatureModel} from "./landing-page/feature/feature.model";
 import {BackendService} from "./services/backend.service";
-import {Observable} from "rxjs";
+import {filter, Observable, switchMap} from "rxjs";
 import {MatSidenav} from "@angular/material/sidenav";
 import {MatDialog} from "@angular/material/dialog";
 import {AccountDialog} from "./account/account.component";
 import {texts} from "../environments/texts";
 import {Meta, Title} from "@angular/platform-browser";
 import {PlatformService} from "./services/platform.service";
+import {ReferralLinkComponent} from "./landing-page/collab/referral-link/referral-link.component";
 
 @Component({
   selector: 'app-root',
@@ -51,6 +52,11 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.updateMetaTags();
+    this.isAuthenticated$.pipe(filter(x => x),
+      switchMap(() => this.backend.isReferralLinked()),
+      filter(x => !x)
+      )
+      .subscribe(() => this.openReferralDialog())
   }
 
 
@@ -84,5 +90,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.dialog.open(AccountDialog,
       {data: {}}
     );
+  }
+
+  private openReferralDialog() {
+    this.dialog.open(ReferralLinkComponent, {
+      height: '200px',
+      width: '300px',
+      disableClose: true
+    })
   }
 }

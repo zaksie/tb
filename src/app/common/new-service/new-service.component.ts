@@ -71,4 +71,8 @@ export class NewServiceComponent implements OnInit {
   }
 
   protected readonly ChestCounterForm = ChestCounterForm;
+
+  copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text).then()
+  }
 }

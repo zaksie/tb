@@ -1,0 +1,16 @@
+<section class="referral-section">
+  <h2>Join the Battle-Squire Referral Crew</h2>
+  <h3>Team Up with Us – Earn Rewards, Share the Power!</h3>
+  <p>Love Battle-Squire? Invite your squad and unlock exclusive perks while helping others level up.</p>
+  <ul>
+    <li>Share your unique referral link.</li>
+    <li>Invite friends, clanmates, or anyone ready to join the fight.</li>
+    <li>Earn 3 free premium days for every signup you bring in!</li>
+  </ul>
+  <p>No limits, just rewards. Ready to rally your crew?</p>
+  @if (!referral){
+  <a href="#" class="cta-button" (click)="createReferral()">Grab Your Referral Link Now</a>
+  }@else {
+    <div class="cta-button">Referral code: {{referral}}</div>
+  }
+</section>

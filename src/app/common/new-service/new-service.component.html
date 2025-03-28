@@ -117,8 +117,15 @@
 </ng-template>
 
 <ng-template #ccForm3>
-  <textarea matInput class="form-content point-system" [ngModel]="cc.pointSystemFormatted"
+  <div class="point-system-container">
+  <div class="copy-button">
+    <button mat-mini-fab (click)="copyToClipboard(cc.pointSystemFormatted)">
+      <mat-icon>content_copy</mat-icon>
+    </button>
+  </div>
+  <textarea matInput class="point-system" [ngModel]="cc.pointSystemFormatted"
             [disabled]="true"></textarea>
+  </div>
 </ng-template>
 <!----------------->
 <ng-template #cryptsForm2>

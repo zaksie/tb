@@ -68,6 +68,8 @@ import {MatBadgeModule} from "@angular/material/badge";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {ClanNameValidatorDirective} from "./common/new-service/clan-name-validator.directive";
 import {NewServiceComponent} from "./common/new-service/new-service.component";
+import {CollabComponent} from "./landing-page/collab/collab.component";
+import {ReferralLinkComponent} from "./landing-page/collab/referral-link/referral-link.component";
 
 const authorizationParams = {
   scope: "openid profile email offline_access",
@@ -106,6 +108,8 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
     PricingComponent,
     AccountDialog,
     ComingSoonComponent,
+    CollabComponent,
+    ReferralLinkComponent
   ],
   imports: [
     SocketIoModule.forRoot(socketIOConfig),
@@ -151,7 +155,7 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
     MatExpansionModule,
     MatChip,
     MatChipSet,
-    MatChipAvatar
+    MatChipAvatar,
   ],
   providers: [
     provideAuth0({

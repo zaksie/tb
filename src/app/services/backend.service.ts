@@ -127,4 +127,18 @@ export class BackendService {
   setPlan(plan: string) {
     return this.httpClient.post(environment.backend + '/api/v1/account/plan', {plan})
   }
+
+  getReferral() {
+    return this.httpClient.get<{referral_code: string}[]>(environment.backend + '/api/v1/account/referral').pipe(map(x => x[0]))
+  }
+  createReferral() {
+    return this.httpClient.post<{referral_code: string}>(environment.backend + '/api/v1/account/referral', {})
+  }
+
+  isReferralLinked() {
+    return this.httpClient.get<{referral_code: string}[]>(environment.backend + '/api/v1/account/referral/linked').pipe(map(x => x[0]))
+  }
+  linkReferral(referral_code: string){
+    return this.httpClient.post(environment.backend + '/api/v1/account/referral/linked', {referral_code})
+  }
 }

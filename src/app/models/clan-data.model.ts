@@ -10,13 +10,6 @@ export interface Clan {
 
 
 export type PlayerSubscriptionFeature = ChestAgg | FeatureModel
-export const enrichWithFeature = (ps: ChestAgg): PlayerSubscriptionFeature => {
-  const feature: FeatureModel = {
-    name: `K${ps?.kingdom} ${ps?.clanTag} / ${ps?.playerName}`,
-    path: [`/chests/dashboards/${ps.clanTag}/${ps.playerName}`]
-  }
-  return {...feature, ...ps}
-}
 
 
 export const NULL_DASHBOARD_TASK = {

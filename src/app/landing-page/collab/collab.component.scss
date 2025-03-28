@@ -1,0 +1,70 @@
+.referral-section {
+  max-width: 800px;
+  margin: 120px auto;
+  padding: 30px;
+  background: #1a1a1a; /* Dark gaming vibe */
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.referral-section h2 {
+  font-size: 2em;
+  margin-bottom: 10px;
+  color: #ffcc00; /* Bright accent color */
+}
+
+.referral-section h3 {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  color: #ccc;
+}
+
+.referral-section p {
+  font-size: 1em;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.referral-section ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.referral-section ul li {
+  margin: 10px 0;
+  font-size: 1em;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 12px 30px;
+  background: #ffcc00;
+  color: #1a1a1a;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.cta-button:hover {
+  background: #e6b800;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .referral-section {
+    padding: 20px;
+  }
+
+  .referral-section h2 {
+    font-size: 1.5em;
+  }
+
+  .referral-section h3 {
+    font-size: 1em;
+  }
+}

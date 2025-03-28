@@ -3,13 +3,13 @@
     "name": "Home",
     "icon": "home",
     "path": "",
-    "internalNavigation": true,
+    "visible": ["nav"],
     "public": true
   },
   {
     "name": "Demos",
     "path": "",
-    "internalNavigation": true,
+    "visible": ["nav"],
     "public": true,
     "children": [
       {
@@ -30,11 +30,34 @@
     ]
   },
   {
+    "name": "View chest results",
+    "public": true,
+    "visible": ["nav"],
+
+    "path": "chests/view"
+  },
+  {
+    "name": "My chest counters",
+    "path": "chests/manage",
+    "visible": ["nav"]
+  },
+  {
+    "name": "Favorites",
+    "icon": "star",
+    "iconStyle": {
+      "color": "yellow"
+    },
+    "path": "chests/dashboards",
+    "children": [],
+    "visible": ["nav"]
+  },
+  {
     "name": "Stack Calculator",
     "image": "/assets/stack-calculator.jpg",
     "description": ["Optimize your hits using a calculator based on your army bonuses and leadership size"],
     "path": "stacker",
     "public": true,
+    "visible": ["nav", "features"],
     "actions": [
       {
         "title": "START",
@@ -51,6 +74,7 @@
     "image": "/assets/crypts.webp",
     "description": ["Let the squire crypt for you in the cloud while you sleep!", "Optimal crypting using Great Archeologist mode so you never have to worry about meeting the weekly quota!"],
     "path": "crypts",
+    "visible": ["nav", "features"],
     "actions": [
       {
         "title": "START",
@@ -68,6 +92,7 @@
     "image": "/assets/chest-counter.jpg",
     "description": ["Track clan member chest output, analyze contribution and set caps based on various sources of chests"],
     "path": "chests",
+    "visible": ["features"],
     "actions": [
       {
         "title": "START",
@@ -77,28 +102,13 @@
         "title": "DEMO",
         "path": "demo/chest-counter"
       }
-    ],
-    "children": [
-      {
-        "name": "View chest results",
-        "path": "chests/view",
-        "public": true
-      },
-      {
-        "name": "My chest counters",
-        "path": "chests/manage"
-      },
-      {
-        "name": "Favorites",
-        "path": "chests/dashboards",
-        "children": []
-      }
     ]
   },
   {
     "name": "CP Runs",
     "disabled": true,
     "image": "assets/cp-runs.jpg",
+    "visible": ["nav", "features"],
     "description": ["Get help setting up CP runs to optimize results and reduce costs"]
   }
 ]

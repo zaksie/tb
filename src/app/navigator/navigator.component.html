@@ -3,17 +3,7 @@
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
     <!-- use a disabled button to provide padding for tree leaf -->
     <button mat-icon-button disabled></button>
-    @if(node.public || isAuthenticated()){
-    <button mat-button [routerLink]="node.path" [disabled]="node.disabled">
-      @if(node.icon){
-        <mat-icon>{{node.icon}}</mat-icon>
-      }@else{
-        {{node.name}}
-      }
-    </button>
-    }@else {
-    <button mat-button [routerLink]="node.path" [disabled]="true">{{node.name}}</button>
-    }
+    <ng-container [ngTemplateOutlet]="menuButtons" [ngTemplateOutletContext]="{node}"></ng-container>
   </mat-tree-node>
   <!-- This is the tree node template for expandable nodes -->
   <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding matTreeNodeToggle
@@ -21,15 +11,28 @@
     <button mat-icon-button matTreeNodeToggle
             [attr.aria-label]="'Toggle ' + node.name">
       <mat-icon class="mat-icon-rtl-mirror">
-        {{tree.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+        {{ tree.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
       </mat-icon>
     </button>
-    <button mat-raised-button>{{node.name}}</button>
+    <ng-container [ngTemplateOutlet]="menuButtons" [ngTemplateOutletContext]="{node}"></ng-container>
   </mat-tree-node>
 </mat-tree>
 <ng-container *ngIf="!isAuthenticated()">
   <div class="not-authenticated">
-  <p style="width: 100%">You are not authenticated. Please log in to view the tree.</p>
-  <button mat-raised-button (click)="login()">LOGIN</button>
+    <p style="width: 100%">You are not authenticated. Please log in to view the tree.</p>
+    <button mat-raised-button (click)="login()">LOGIN</button>
   </div>
 </ng-container>
+
+<ng-template #menuButtons let-node='node'>
+  @if (node.icon) {
+    <button mat-raised-button [routerLink]="node.path" [disabled]="node.isDisabled()">
+      <mat-icon [ngStyle]="node.iconStyle">{{node.icon}}</mat-icon>
+      {{ node.name }}
+    </button>
+  } @else {
+    <button mat-raised-button [routerLink]="node.path" [disabled]="node.isDisabled()">
+      {{ node.name }}
+    </button>
+  }
+</ng-template>

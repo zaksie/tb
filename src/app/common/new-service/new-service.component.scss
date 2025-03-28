@@ -5,8 +5,22 @@
   width: 100%;
 }
 
-.point-system {
-  height: 300px;
+.point-system-container {
+  position: relative;
+
+  .point-system {
+    height: 300px;
+    width: 100%;
+  }
+
+  .copy-button {
+    position: absolute;
+    width: 100%;
+    margin-top: 8px;
+    display: flex;
+    justify-content: end;
+  }
+
 }
 
 mat-expansion-panel {
@@ -34,15 +48,19 @@ mat-form-field, mat-slider {
 
 
 }
+
 .actions {
   margin-top: 32px;
   display: flex;
 }
+
 .error {
   color: rosybrown;
 }
+
 .dialog-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+

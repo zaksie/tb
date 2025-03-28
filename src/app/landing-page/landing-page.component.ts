@@ -20,7 +20,7 @@ export class LandingPageComponent implements OnInit {
   private renderer = inject(Renderer2)
   private rendererFactory = inject(RendererFactory2)
   readonly platform = inject(PlatformService)
-  features: FeatureModel[] = features.filter(x => !x.internalNavigation);
+  features: FeatureModel[] = features.filter(x => x.visible.includes('features'));
   contactFormGroup = new FormGroup({
     name: new FormControl('', Validators.required),
     cityCoords: new FormControl('', Validators.required),

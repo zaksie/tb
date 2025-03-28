@@ -1,0 +1,16 @@
+<mat-dialog-content>
+  <h3>Enter referral code</h3>
+  <form [formGroup]="referralFormGroup" (ngSubmit)="onSubmit()">
+  <mat-form-field appearance="outline" class="input-container">
+    <input matInput class="input" type="text" placeholder="REF2025" formControlName="code">
+    <mat-error *ngIf="errorMsg">
+      <mat-icon>error</mat-icon>
+      {{errorMsg}}
+    </mat-error>
+  </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="proceedWithoutReferral()">DON'T HAVE ONE</button>
+  <button mat-stroked-button (click)="onSubmit()" >SEND</button>
+</mat-dialog-actions>
