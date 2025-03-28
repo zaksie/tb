@@ -79,7 +79,7 @@ import {CollabComponent} from "./landing-page/collab/collab.component";
 import {ReferralLinkComponent} from "./landing-page/collab/referral-link/referral-link.component";
 
 const authorizationParams = {
-  scope: "openid profile email offline_access",
+  scope: "openid profile email",
   audience: 'https://dev-5ag1lfabqyttq1lj.us.auth0.com/api/v2/',
   redirect_uri: environment.frontend,
 }
