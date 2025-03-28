@@ -1,14 +1,21 @@
 <h2 mat-dialog-title>{{ data.title }}</h2>
 <mat-dialog-content>
-  @if (data.iframeUrl){
+  @if (data.iframeUrl) {
     <iframe width="100%" height="100%" frameBorder="0" [src]="mypreview"></iframe>
-  }@else{
-  @for (paragraph of data.content; track paragraph) {
-    <p>{{ paragraph }} </p>
-  }
+  } @else if (data.input) {
+    <form (ngSubmit)="done()">
+      <mat-form-field>
+        <mat-icon matIconPrefix *ngIf="data.input.icon">{{ data.input.icon }}</mat-icon>
+        <input matInput [type]="data.input.type" [formControl]="myinput">
+      </mat-form-field>
+    </form>
+  } @else {
+    @for (paragraph of data.content; track paragraph) {
+      <p>{{ paragraph }} </p>
+    }
   }
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button (click)="dialogRef.close(false)">No thanks</button>
-  <button mat-stroked-button cdkFocusInitial (click)="login()">OK</button>
+  <button mat-button (click)="dialogRef.close(false)">{{ getNoText() }}</button>
+  <button mat-stroked-button (click)="done()">OK</button>
 </mat-dialog-actions>

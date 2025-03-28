@@ -12,6 +12,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {AppGenericDialog} from "../../common/app-generic-dialog/app-generic-dialog";
 import {Socket} from "ngx-socket-io";
 import {v4 as uuidv4} from 'uuid';
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 
 @Component({
@@ -27,6 +28,7 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   tasks: GenericTask[] = [];
   private _currentClanTag: string = '';
   private _currentClanTagSubscription!: Subscription
+  isFirstTime: boolean = localStorage.getItem("ViewChestCounterComponent.exampleClicked") !== 'true';
 
   get currentClanTag(): string {
     return this._currentClanTag
@@ -77,7 +79,15 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   clanTagControl: FormControl = new FormControl('', Validators.required)
   getOptionText: ((value: any) => string) | null = (value: any) => value ? ['K', value.kingdom, ' ', value.tag].join('') : ''
 
+  private _snackBar = inject(MatSnackBar);
+
+
   ngAfterViewInit() {
+      const duration = this.isFirstTime ? 1000* 9999999 : 1000 * 5
+      const snackBarRef = this._snackBar.open('See an example clan', 'GO', {duration});
+      snackBarRef.onAction().subscribe(() => {
+        this.exampleClicked()
+      });
     const paramTag = this.route.snapshot.params['tag']
     console.log(paramTag)
     this.getByClanTag(paramTag)
@@ -85,6 +95,7 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
     this.route.params.subscribe(
       params => {
         const tag = params['tag'];
+        this.clanTagControl.setValue(tag)
         this.getByClanTag(tag)
       }
     );
@@ -202,5 +213,10 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
 
   onRowClicked(row: ChestAgg) {
     this.router.navigate(['chests/dashboards/' + row.clanTag + '/' + row.playerName])
+  }
+
+  exampleClicked() {
+    // localStorage.setItem("ViewChestCounterComponent.exampleClicked", 'true')
+    this.router.navigate(['chests/view', {tag: 'FAR'}]).then(() => this.isFirstTime = false)
   }
 }

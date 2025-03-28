@@ -4,7 +4,7 @@ import {AuthService} from "@auth0/auth0-angular";
 import features from '../assets/features.json'
 import {FeatureModel} from "./landing-page/feature/feature.model";
 import {BackendService} from "./services/backend.service";
-import {filter, Observable, switchMap} from "rxjs";
+import {filter, Observable, switchMap, tap} from "rxjs";
 import {MatSidenav} from "@angular/material/sidenav";
 import {MatDialog} from "@angular/material/dialog";
 import {AccountDialog} from "./account/account.component";
@@ -12,6 +12,7 @@ import {texts} from "../environments/texts";
 import {Meta, Title} from "@angular/platform-browser";
 import {PlatformService} from "./services/platform.service";
 import {ReferralLinkComponent} from "./landing-page/collab/referral-link/referral-link.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   isAuthenticated$: Observable<boolean>;
   features: FeatureModel[] = features;
   readonly dialog = inject(MatDialog);
+  readonly _snackBar = inject(MatSnackBar)
   readonly platform = inject(PlatformService)
   @ViewChild('snav') snav!: MatSidenav
 
@@ -52,7 +54,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.updateMetaTags();
-    this.isAuthenticated$.pipe(filter(x => x),
+    const snackBarRef = this.openSnackBar()
+    this.isAuthenticated$.pipe(
+      filter(x => x),
+      tap(() => snackBarRef.dismiss()),
       switchMap(() => this.backend.isReferralLinked()),
       filter(x => !x)
       )
@@ -98,5 +103,12 @@ export class AppComponent implements OnInit, AfterViewInit {
       width: '300px',
       disableClose: true
     })
+  }
+
+  private openSnackBar() {
+    const duration =  1000 * 9999999
+    const snackBarRef = this._snackBar.open('Register or log in now!', 'LOGIN', {duration});
+    snackBarRef.onAction().pipe(switchMap(() => this.authService.loginWithPopup())).subscribe()
+    return snackBarRef
   }
 }

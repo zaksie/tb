@@ -3,21 +3,38 @@
     <ng-template matStepLabel>Type of setup</ng-template>
     <ng-template matStepContent>
       <div class="container full-hw">
-        <div class="row header">Select the setup that best suits your development level</div>
-        <div class="row content">
-          <mat-radio-group
-            aria-labelledby="example-radio-group-label"
-            class="example-radio-group"
-            [(ngModel)]="troopConfig.selectedSetupType" (change)="radioChange($event)">
+        <div class="row header"></div>
+        <div class="row content bigger" [style.max-width]="'300px'">
+          <div>From template</div>
+          <br>
+          <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="troop config type" (change)="radioChange($event)">
             @for (setupType of setupTypes; track setupType) {
-              <mat-radio-button [value]="setupType.value">
-                <div class="step1-card-container">
-                <h3>{{ setupType.title }}</h3>
-                <mat-icon [matTooltip]="setupType.description">help</mat-icon>
-                </div>
-              </mat-radio-button>
+              <mat-chip-option [selected]="troopConfig.selectedSetupType === setupType.value" [value]="setupType.value">
+                {{ setupType.title }}
+                <button matChipRemove [matTooltip]="setupType.description">
+                  <mat-icon>help</mat-icon>
+                </button>
+              </mat-chip-option>
             }
-          </mat-radio-group>
+          </mat-chip-listbox>
+
+          @if (savedConfigs.length > 0) {
+            <br>
+            <mat-divider></mat-divider>
+            <br>
+            <div>Saved setups</div>
+            <br>
+            <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="troop config type" (change)="radioChange($event)">
+              @for (savedConfig of savedConfigs; track savedConfig) {
+                <mat-chip-option [selected]="troopConfig.id === savedConfig.id" (removed)="removeSavedConfig(savedConfig)" [value]="savedConfig">
+                  {{ savedConfig.name }}
+                  <button matChipRemove aria-label="'remove template form' + keyword">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </mat-chip-option>
+              }
+            </mat-chip-listbox>
+          }
         </div>
         <div class="row footer">
           <button mat-button matStepperNext>Next
@@ -31,16 +48,44 @@
     <ng-template matStepLabel>Bonuses setup</ng-template>
     <ng-template matStepContent>
       <div class="container full-hw">
-        <div class="row header">You can find said bonuses in an attack report when you click the individual troops in
-          the
-          report
+        <div class="row header center-buttons">
+          <button mat-button [matMenuTriggerFor]="menu" class="reset-button">
+            <mat-icon svgIcon="reset_settings"></mat-icon>
+            Reset
+          </button>
+          <button mat-button (click)="openExample()">
+            <mat-icon>info</mat-icon>
+            Example
+          </button>
         </div>
-        <div class="row content">
+        <div class="content">
           <div class="example-loading-shade" *ngIf="!monacoLoaded()">
             <mat-spinner [diameter]="40"></mat-spinner>
           </div>
+          <div>
+
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="resetTo(SetupType.FULLY_BALANCED)">New army setup</button>
+              <button mat-menu-item (click)="resetTo(SetupType.GUARDSMAN_SPECIALIST_BALANCED)">New guardsman/specialist
+                setup
+              </button>
+              <button mat-menu-item (click)="resetTo(SetupType.NON_BALANCED)">New flying/melee/mounted/ranged setup
+              </button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item [matMenuTriggerFor]="savedMenu" [disabled]="savedConfigs.length < 1">Saved</button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item>Close</button>
+            </mat-menu>
+            <mat-menu #savedMenu="matMenu">
+              @for (savedConfig of savedConfigs; track savedConfig) {
+                <button mat-menu-item
+                        (click)="troopConfig.bonusConfig = savedConfig.bonusConfig">{{ savedConfig.name }}
+                </button>
+              }
+            </mat-menu>
+          </div>
           <ngx-monaco-editor [options]="editorOptions" (onInit)="monacoLoaded.set(true)"
-                             [(ngModel)]="troopConfig.bonusConfigs[troopConfig.selectedSetupType].config"
+                             [(ngModel)]="troopConfig.bonusConfig" (ngModelChange)="valuesChange$.next()"
                              class="editor">
 
           </ngx-monaco-editor>
@@ -50,10 +95,9 @@
             <mat-icon>arrow_back_ios_new</mat-icon>
             Back
           </button>
-          <button mat-button (click)="saveConfig()">Next
+          <button mat-button (click)="validateBonusConfig() ? matStepperView.next() : null ">Next
             <mat-icon iconPositionEnd>arrow_forward_ios</mat-icon>
           </button>
-          <mat-error>{{ errors$|async }}</mat-error>
         </div>
       </div>
     </ng-template>
@@ -64,32 +108,35 @@
       <div class="container full-hw">
         <div class="row header">Enter leadership and troop types</div>
         <div class="row content in-column">
-          <mat-form-field appearance="outline">
-            <mat-label>Leadership</mat-label>
-            <input matInput type="number" name="leadership"
-                   [(ngModel)]="troopConfig.leadership">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Guardsmen level</mat-label>
-            <mat-select [(value)]="troopConfig.selectedLevels" multiple>
-
-              <span>Guardsmen</span>
-              <mat-divider [inset]="true"></mat-divider>
-              <mat-option *ngFor="let level of troopLevelGuardsmen" [value]="level">{{ level }}</mat-option>
-              <span>Specialists</span>
-              <mat-divider [inset]="true"></mat-divider>
-              <mat-option *ngFor="let level of troopLevelSpecialists" [value]="level">{{ level }}</mat-option>
-              <mat-divider fxFlex="1 0"></mat-divider>
-            </mat-select>
-          </mat-form-field>
+          <form [formGroup]="fg">
+            <mat-form-field appearance="outline">
+              <mat-label>Leadership</mat-label>
+              <input matInput type="number" name="leadership"
+                     formControlName="leadership" (change)="leaderhshipChange()">
+              <mat-error *ngIf="fg.get('leadership')?.errors">Input your leadership</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Guardsmen level</mat-label>
+              <mat-select formControlName="tiers" multiple (selectionChange)="tiersChange()">
+                <span>Guardsmen</span>
+                <mat-divider [inset]="true"></mat-divider>
+                <mat-option *ngFor="let level of troopLevelGuardsmen" [value]="level">{{ level }}</mat-option>
+                <span>Specialists</span>
+                <mat-divider [inset]="true"></mat-divider>
+                <mat-option *ngFor="let level of troopLevelSpecialists" [value]="level">{{ level }}</mat-option>
+                <mat-divider fxFlex="1 0"></mat-divider>
+              </mat-select>
+              <mat-error *ngIf="fg.get('tiers')?.errors">Select at least one tier</mat-error>
+            </mat-form-field>
+          </form>
         </div>
         <div class="row footer">
           <button mat-button matStepperPrevious>
             <mat-icon>arrow_back_ios_new</mat-icon>
             Back
           </button>
-          <button mat-button matStepperNext (click)="calculateStacks()">
-            Calculate stacks
+          <button mat-button matStepperNext [disabled]="fg.invalid">
+            Next
             <mat-icon iconPositionEnd>arrow_forward_ios</mat-icon>
           </button>
         </div>
@@ -103,7 +150,7 @@
         <div class="row header">Optimal stacking</div>
         <div class="row content in-column">
           <mat-list class="troop-list-container">
-            <mat-list-item *ngFor="let squad of troopList">
+            <mat-list-item *ngFor="let squad of troopList" class="troop-list-item">
           <span matListItemTitle class="troop-info">
             <img [src]="squad.image" [alt]="squad.name" class="troop-image">
             <div class="troop-count">{{ squad.count }}</div>
@@ -116,6 +163,14 @@
           <button mat-button matStepperPrevious>
             <mat-icon>arrow_back_ios_new</mat-icon>
             Back
+          </button>
+          <button mat-button (click)="saveConfigToServer(true)" *ngIf="troopConfig.id>0">
+            <mat-icon>save_as</mat-icon>
+            Save As
+          </button>
+          <button mat-button (click)="saveConfigToServer(troopConfig.id < 0)">
+            <mat-icon>save</mat-icon>
+            Save
           </button>
         </div>
       </div>

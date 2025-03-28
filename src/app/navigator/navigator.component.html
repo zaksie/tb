@@ -20,18 +20,18 @@
 <ng-container *ngIf="!isAuthenticated()">
   <div class="not-authenticated">
     <p style="width: 100%">You are not authenticated. Please log in to view the tree.</p>
-    <button mat-raised-button (click)="login()">LOGIN</button>
+    <button mat-button (click)="login()">LOGIN</button>
   </div>
 </ng-container>
 
 <ng-template #menuButtons let-node='node'>
   @if (node.icon) {
-    <button mat-raised-button [routerLink]="node.path" [disabled]="node.isDisabled()">
+    <button mat-button [routerLink]="node.path" [disabled]="node.isDisabled()">
       <mat-icon [ngStyle]="node.iconStyle">{{node.icon}}</mat-icon>
       {{ node.name }}
     </button>
   } @else {
-    <button mat-raised-button [routerLink]="node.path" [disabled]="node.isDisabled()">
+    <button mat-button [routerLink]="node.path" [disabled]="node.isDisabled()">
       {{ node.name }}
     </button>
   }

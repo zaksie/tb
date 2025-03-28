@@ -15,6 +15,7 @@ import {MercExchange} from "../merc-exchange/merc-exchange.model";
 import {CryptConfig} from "../crypts/crypts.model";
 import {ServiceName} from "./service-interface";
 import {AuthService, User} from "@auth0/auth0-angular";
+import {TroopConfig} from "../stacker/stacker-data";
 
 @Injectable({
   providedIn: 'root'
@@ -129,16 +130,39 @@ export class BackendService {
   }
 
   getReferral() {
-    return this.httpClient.get<{referral_code: string}[]>(environment.backend + '/api/v1/account/referral').pipe(map(x => x[0]))
+    return this.httpClient.get<{
+      referral_code: string
+    }[]>(environment.backend + '/api/v1/account/referral').pipe(map(x => x[0]))
   }
+
   createReferral() {
-    return this.httpClient.post<{referral_code: string}>(environment.backend + '/api/v1/account/referral', {})
+    return this.httpClient.post<{ referral_code: string }>(environment.backend + '/api/v1/account/referral', {})
   }
 
   isReferralLinked() {
-    return this.httpClient.get<{referral_code: string}[]>(environment.backend + '/api/v1/account/referral/linked').pipe(map(x => x[0]))
+    return this.httpClient.get<{
+      referral_code: string
+    }[]>(environment.backend + '/api/v1/account/referral/linked').pipe(map(x => x[0]))
   }
-  linkReferral(referral_code: string){
+
+  linkReferral(referral_code: string) {
     return this.httpClient.post(environment.backend + '/api/v1/account/referral/linked', {referral_code})
+  }
+
+  getSavedTroopConfigs() {
+    return this.httpClient.get<TroopConfig[]>(environment.backend + '/api/v1/account/troop-config')
+  }
+
+  saveTroopConfig(config: TroopConfig) {
+    console.log('saving ...', config)
+    return this.httpClient.post(environment.backend + '/api/v1/account/troop-config', {
+      name: config.name,
+      id: config.id,
+      config: JSON.stringify(config)
+    })
+  }
+
+  deleteTroopConfig(config: TroopConfig) {
+    return this.httpClient.delete(environment.backend + '/api/v1/account/troop-config/' + config.id)
   }
 }

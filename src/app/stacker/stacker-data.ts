@@ -1,30 +1,28 @@
 import {SetupType} from "./stacker";
 
-export class TroopConfig {
-  leadership: number =0
-  dominance?: number = 0
-  selectedLevels: string[] = []
-  attackType: 'epic' | 'cp' = 'epic'
-  selectedSetupType: SetupType = SetupType.NON_BALANCED
-  bonusConfigs: BonusConfig[] = bonusConfigDefaults
-
-  constructor() {
+export interface TroopConfig {
+  valid: {
+    bonus: boolean,
+    tier: boolean
   }
-
-  getActiveBonusConfig(): string {
-    return this.bonusConfigs.find(x => x.setupType === this.selectedSetupType)?.config || ''
-  }
+  id: number
+  leadership: number
+  tiers: string[]
+  selectedSetupType: SetupType
+  bonusConfig: string
+  bonusConfigObject?: any
+  name: string
 }
+
 export interface BonusConfig {
   setupType: SetupType
-  config: string
+  bonusConfig: string
 }
-
 
 export const bonusConfigDefaults: BonusConfig[] = [
   {
     setupType: SetupType.FULLY_BALANCED,
-    config:
+    bonusConfig:
       `epic:
   strength: 0
 army:
@@ -34,7 +32,7 @@ army:
   },
   {
     setupType: SetupType.GUARDSMAN_SPECIALIST_BALANCED,
-    config:
+    bonusConfig:
       `epic:
   strength: 0
 guardsman:
@@ -47,7 +45,7 @@ specialist:
   },
   {
     setupType: SetupType.NON_BALANCED,
-    config:
+    bonusConfig:
       `epic:
   strength: 0
 ranged:
@@ -65,7 +63,20 @@ flying:
 `
   }
 ]
-
+export const DEFAULT_TROOP_CONFIG = (setupType: SetupType=SetupType.FULLY_BALANCED) => {
+  return {
+    valid: {
+      bonus: false,
+      tier: false
+    },
+    name: 'New Setup',
+    id: -setupType,
+    leadership: 0,
+    tiers: [],
+    selectedSetupType: setupType,
+    bonusConfig: bonusConfigDefaults.find(x => x.setupType === setupType)?.bonusConfig || '',
+  }
+}
 export const setupTypes = [
   {
     title: 'Entire army',
@@ -78,7 +89,7 @@ export const setupTypes = [
     description: 'Fully researched monster mod, balanced bonuses for guardsman and separately for specialists.'
   },
   {
-    title: 'Irregular bonuses',
+    title: 'Other',
     value: SetupType.NON_BALANCED,
     description: "If you don't know what to choose, you can fill out the bonuses for each troop type (flying/melee/mounted/ranged)"
   }

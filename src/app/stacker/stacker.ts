@@ -61,5 +61,6 @@ function normalizeResults(squads: Squad[], cappingSquad: Squad){
 export enum SetupType {
   FULLY_BALANCED,
   GUARDSMAN_SPECIALIST_BALANCED,
-  NON_BALANCED
+  NON_BALANCED,
+  CUSTOM,
 }
