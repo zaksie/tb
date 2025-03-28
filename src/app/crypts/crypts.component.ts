@@ -4,7 +4,7 @@ import {BackendService} from "../services/backend.service";
 import {MatDialog} from "@angular/material/dialog";
 import {MatTableDataSource} from "@angular/material/table";
 import {CryptConfig} from "./crypts.model";
-import {firstValueFrom, of} from "rxjs";
+import {filter, firstValueFrom, of} from "rxjs";
 import {ActionableRow, ServiceInterface} from "../services/service-interface";
 import {catchError} from "rxjs/operators";
 import {AuthService} from "@auth0/auth0-angular";
@@ -54,10 +54,9 @@ export class CryptsComponent implements AfterViewInit {
   }
 
   async fetch() {
-    this.isLoading.set(true)
-    console.log('setting isLoading to true', this.auth.isAuthenticated$)
     const isAuthenticated = await firstValueFrom(this.auth.isAuthenticated$)
     if (isAuthenticated) {
+      this.isLoading.set(true)
       this.backend.getCryptExplorers().pipe(
         catchError(e => {
           console.error(e)
@@ -70,7 +69,9 @@ export class CryptsComponent implements AfterViewInit {
 
 
   ngAfterViewInit() {
-    this.fetch()
+    this.auth.isAuthenticated$.pipe(
+      filter(x => x)
+    ).subscribe(() => this.fetch())
     this.dataSource.paginator = this.paginator;
   }
 

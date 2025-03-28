@@ -4,7 +4,7 @@ import {ChestCounter, PointSystem} from "../../models/clan-data.model";
 import {BackendService} from "../../services/backend.service";
 import {MatDialog} from "@angular/material/dialog";
 import {MatTableDataSource} from "@angular/material/table";
-import {combineLatestWith, firstValueFrom, of} from "rxjs";
+import {combineLatestWith, filter, firstValueFrom, of} from "rxjs";
 import {ActionableRow, ServiceInterface} from "../../services/service-interface";
 import {catchError} from "rxjs/operators";
 import {AuthService} from "@auth0/auth0-angular";
@@ -46,7 +46,7 @@ export class ManageChestCounterComponent implements AfterViewInit {
   }
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(protected backend: BackendService, private authService: AuthService) {
+  constructor(protected backend: BackendService, private auth: AuthService) {
   }
 
 
@@ -64,9 +64,9 @@ export class ManageChestCounterComponent implements AfterViewInit {
 
 
   async fetch() {
-    this.isLoading.set(true)
-    const isAuthenticated = await firstValueFrom(this.authService.isAuthenticated$)
+    const isAuthenticated = await firstValueFrom(this.auth.isAuthenticated$)
     if (isAuthenticated) {
+      this.isLoading.set(true)
       this.backend.getChestCounters().pipe(
         combineLatestWith(this.backend.getDefaultPointSystem()),
         catchError(e => {
@@ -82,7 +82,9 @@ export class ManageChestCounterComponent implements AfterViewInit {
 
 
   ngAfterViewInit() {
-    this.fetch()
+    this.auth.isAuthenticated$.pipe(
+      filter(x => x)
+    ).subscribe(() => this.fetch())
     this.dataSource.paginator = this.paginator;
   }
 
