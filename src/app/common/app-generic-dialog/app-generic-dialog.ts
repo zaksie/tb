@@ -33,7 +33,7 @@ export class AppGenericDialog implements AfterViewInit, OnInit {
   readonly data = inject<AppGenericDialogData>(MAT_DIALOG_DATA);
   readonly authService = inject(AuthService)
   mypreview!: SafeResourceUrl;
-  myinput = new FormControl(this.data.input.value, Validators.required);
+  myinput = new FormControl(this.data?.input?.value, Validators.required);
   constructor(public sanitizer: DomSanitizer) {
   }
 
@@ -68,6 +68,8 @@ export class AppGenericDialog implements AfterViewInit, OnInit {
       case 'return':
         return 'Cancel'
       case 'login':
+        return 'No thanks'
+      default:
         return 'No thanks'
     }
   }

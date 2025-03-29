@@ -128,6 +128,9 @@ export class BackendService {
   setPlan(plan: string) {
     return this.httpClient.post(environment.backend + '/api/v1/account/plan', {plan})
   }
+  getPlan() {
+    return this.httpClient.get<{plan: string}>(environment.backend + '/api/v1/account/plan')
+  }
 
   getReferral() {
     return this.httpClient.get<{
@@ -165,4 +168,6 @@ export class BackendService {
   deleteTroopConfig(config: TroopConfig) {
     return this.httpClient.delete(environment.backend + '/api/v1/account/troop-config/' + config.id)
   }
+
+
 }

@@ -57,13 +57,13 @@
     justify-content: center;
     margin-bottom: 120px;
 
-    padding: 32px;
 
     .section2 {
       display: flex;
       flex-flow: row;
       align-items: center;
       justify-content: center;
+      width:100%;
     }
   }
 
@@ -175,3 +175,21 @@
   }
 }
 
+.v-divider {
+  width: 1px;
+  height: 50px;
+  margin: 0 64px;
+}
+
+.h-divider-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .h-divider {
+    width: 50%;
+    height: 1px;
+    margin: 32px 0;
+  }
+}

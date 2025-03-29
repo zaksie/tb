@@ -17,17 +17,17 @@ export class ReferralLinkComponent {
   referralFormGroup: FormGroup = new FormGroup({
     code: new FormControl('', Validators.required),
   });
-  errorMsg: string|undefined
+  errorMsg: string | undefined
 
   onSubmit() {
     this.backend.linkReferral(this.referralFormGroup.get('code')?.value).pipe(
-    catchError(() => {
-      this.errorMsg = 'Invalid referral code'
-      return of(null)
-    })
-      ).subscribe((res: any) => {
-      if (res?.affectedRows === 1)
-        this.dialogRef.close()
+      catchError(() => {
+        this.errorMsg = 'Invalid referral code'
+        return of(null)
+      })
+    ).subscribe(() => {
+      // if (res?.affectedRows === 1) //Close anyway
+      this.dialogRef.close()
     })
   }
 

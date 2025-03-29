@@ -1,10 +1,11 @@
 import {AfterViewInit, Component, inject} from '@angular/core';
 import {AuthService} from "@auth0/auth0-angular";
 import {MatDialog} from "@angular/material/dialog";
-import {AppGenericDialog} from "../../common/app-generic-dialog/app-generic-dialog";
 import {MatTableDataSource} from "@angular/material/table";
 import {PlatformService} from "../../services/platform.service";
 import {BackendService} from "../../services/backend.service";
+import {filter, of, switchMap, tap} from "rxjs";
+import {catchError} from "rxjs/operators";
 
 export enum Feature {
   FREE_TRIAL,
@@ -22,7 +23,8 @@ export enum Plan {
   BASIC,
   PRO,
   CLAN,
-  DELUXE
+  DELUXE,
+  None
 }
 
 export interface Pricing {
@@ -44,12 +46,27 @@ export interface Pricing {
 })
 export class PricingComponent implements AfterViewInit {
   isAuthenticated: boolean = false
+  selectedPlan: Plan = Plan.None;
 
   ngAfterViewInit(): void {
-    this.authService.isAuthenticated$.subscribe(isAuthenticated => this.isAuthenticated = isAuthenticated)
+    this.auth.isAuthenticated$.pipe(
+      filter(x => x),
+      tap(() => {
+        this.isAuthenticated = true
+        console.log('getting plan...')
+      }),
+      switchMap(() => this.backend.getPlan()),
+      catchError(error => {
+        console.error("Error in PRICING", error)
+        return of ({plan: 'None'})
+      })
+    ).subscribe(({plan}) => {
+      // @ts-ignore
+      this.selectedPlan = Plan[plan]
+    })
   }
 
-  private readonly authService = inject(AuthService)
+  private readonly auth = inject(AuthService)
   readonly platform = inject(PlatformService)
   readonly dialog = inject(MatDialog);
 
@@ -62,8 +79,7 @@ export class PricingComponent implements AfterViewInit {
   displayedColumnsMobile2: string[] = ['feature', Plan[Plan.CLAN], Plan[Plan.DELUXE]];
 
   readonly DOLLAR = ' $ '
-  readonly pricingUSD =
-    [
+  readonly pricingUSD = [
       {
         name: Plan[Plan.FREE],
         price: 0,
@@ -154,28 +170,34 @@ export class PricingComponent implements AfterViewInit {
 
   ]
   public dataSource = new MatTableDataSource<Pricing>(this.pricing);
+  contextMobile1 = {tiers:this.tiersMobile1, displayedColumns:this.displayedColumnsMobile1}
+  contextMobile2 = {tiers:this.tiersMobile2, displayedColumns:this.displayedColumnsMobile2}
+  context = {tiers:this.tiers, displayedColumns:this.displayedColumns}
 
   constructor(private backend: BackendService) {
+    console.log([this.context, this.contextMobile1, this.contextMobile2])
   }
 
   login(plan: Plan) {
-    const dialogRef = this.dialog.open(AppGenericDialog,
-      {
-        height: '400px',
-        width: '600px',
-        data: {
-          title: 'Terms & Conditions',
-          iframeUrl: '/assets/terms.html',
-        }
-      }
-    );
+    // const dialogRef = this.dialog.open(AppGenericDialog,
+    //   {
+    //     height: '400px',
+    //     width: '600px',
+    //     data: {
+    //       title: 'Terms & Conditions',
+    //       iframeUrl: '/assets/terms.html',
+    //     }
+    //   }
+    // );
 
-    dialogRef.afterClosed().subscribe(yes => {
-      if (yes)
-        this.authService.loginWithPopup().subscribe(() => {
-          window.scrollTo(0, 0)
-          this.backend.setPlan(Plan[plan]).subscribe()
-        })
+    // dialogRef.afterClosed().subscribe(yes => {
+    //   if (yes)
+    //     ....
+    // })
+    this.auth.loginWithPopup().subscribe(() => {
+      this.backend.setPlan(Plan[plan]).subscribe()
+      this.selectedPlan = plan
+      window.scrollTo(0, 0)
     })
   }
 

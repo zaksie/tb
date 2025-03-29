@@ -1,4 +1,6 @@
-
+:host {
+  width:100%
+}
 .pricing-v2-container {
 
   .deluxe {
@@ -41,4 +43,13 @@
     }
   }
 
+}
+.actions{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+table{
+  table-layout:fixed;
+  width:100%;
 }
