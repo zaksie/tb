@@ -60,9 +60,9 @@ export class PricingComponent implements AfterViewInit {
         console.error("Error in PRICING", error)
         return of ({plan: 'None'})
       })
-    ).subscribe(({plan}) => {
-      // @ts-ignore
-      this.selectedPlan = Plan[plan]
+    ).subscribe((res: {plan: string}) => {
+      if (res && res.plan)
+      this.selectedPlan = Plan[res.plan as keyof typeof Plan]
     })
   }
 
@@ -197,7 +197,10 @@ export class PricingComponent implements AfterViewInit {
     this.auth.loginWithPopup().subscribe(() => {
       this.backend.setPlan(Plan[plan]).subscribe()
       this.selectedPlan = plan
-      window.scrollTo(0, 0)
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
     })
   }
 

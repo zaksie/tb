@@ -2,7 +2,12 @@
   height: 40px;
   margin-right: 16px;
 }
-
+.toolbar {
+  position: sticky;
+  position: -webkit-sticky; /* For macOS/iOS Safari */
+  top: 0; /* Sets the sticky toolbar to be on top */
+  z-index: 1000;
+}
 .toolbar-items {
   display: flex;
   flex-flow: row;

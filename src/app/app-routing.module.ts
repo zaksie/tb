@@ -64,9 +64,12 @@ const routes: Routes = [
 
   imports: [
     RouterModule.forRoot(routes, {
-      useHash: false,
+      scrollPositionRestoration: 'enabled',
       anchorScrolling: 'enabled',
       onSameUrlNavigation: 'reload',
+      scrollOffset: [0, 50],
+      // relativeLinkResolution: 'legacy',
+      useHash: false,
       bindToComponentInputs: true,
       paramsInheritanceStrategy: 'always'
     })

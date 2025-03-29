@@ -1,6 +1,6 @@
-<!--suppress HtmlUnknownAnchorTarget -->
+
 <div class="no-scroll" [class.example-is-mobile]="platform.isMobile()">
-  <mat-toolbar>
+  <mat-toolbar class="toolbar">
     <div class="toolbar-items">
       <span class="logo">
         <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
@@ -8,9 +8,9 @@
         <span routerLink="/" *ngIf="!platform.isMobile()">Battle Squire</span>
       </span>
       <span class="anchors">
-        <a routerLink="/" fragment="features">FEATURES</a>
-        <a routerLink="/" fragment="pricing">PRICING</a>
-        <a routerLink="/" fragment="contactus">CONTACT US</a>
+        <a routerLink="" fragment="features">FEATURES</a>
+        <a routerLink="" fragment="pricing">PRICING</a>
+        <a routerLink="" fragment="contactus">CONTACT US</a>
         <ng-container *ngIf="isAuthenticated$|async">
           <button mat-icon-button [matMenuTriggerFor]="menu">
             <mat-icon fontIcon="person"></mat-icon>
