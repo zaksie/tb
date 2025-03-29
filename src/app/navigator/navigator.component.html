@@ -27,7 +27,11 @@
 <ng-template #menuButtons let-node='node'>
   @if (node.icon) {
     <button mat-button [routerLink]="node.path" [disabled]="node.isDisabled()">
-      <mat-icon [ngStyle]="node.iconStyle">{{node.icon}}</mat-icon>
+      @if (node.svg) {
+        <mat-icon [ngStyle]="node.iconStyle" [svgIcon]="node.icon"></mat-icon>
+      } @else {
+        <mat-icon [ngStyle]="node.iconStyle">{{ node.icon }}</mat-icon>
+      }
       {{ node.name }}
     </button>
   } @else {

@@ -3,37 +3,47 @@
     <ng-template matStepLabel>Type of setup</ng-template>
     <ng-template matStepContent>
       <div class="container full-hw">
-        <div class="row header"></div>
-        <div class="row content bigger" [style.max-width]="'300px'">
-          <div>From template</div>
-          <br>
-          <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="troop config type" (change)="radioChange($event)">
-            @for (setupType of setupTypes; track setupType) {
-              <mat-chip-option [selected]="troopConfig.selectedSetupType === setupType.value" [value]="setupType.value">
-                {{ setupType.title }}
-                <button matChipRemove [matTooltip]="setupType.description">
-                  <mat-icon>help</mat-icon>
-                </button>
-              </mat-chip-option>
-            }
-          </mat-chip-listbox>
-
-          @if (savedConfigs.length > 0) {
+        <div class="row content content1">
+          <div>
+            <div>From template</div>
             <br>
-            <mat-divider></mat-divider>
-            <br>
-            <div>Saved setups</div>
-            <br>
-            <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="troop config type" (change)="radioChange($event)">
-              @for (savedConfig of savedConfigs; track savedConfig) {
-                <mat-chip-option [selected]="troopConfig.id === savedConfig.id" (removed)="removeSavedConfig(savedConfig)" [value]="savedConfig">
-                  {{ savedConfig.name }}
-                  <button matChipRemove aria-label="'remove template form' + keyword">
-                    <mat-icon>cancel</mat-icon>
+            <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="troop config type"
+                              (change)="radioChange($event)">
+              @for (setupType of setupTypes; track setupType) {
+                <mat-chip-option [selected]="troopConfig.selectedSetupType === setupType.value"
+                                 [value]="setupType.value">
+                  {{ setupType.title }}
+                  <button matChipRemove [matTooltip]="setupType.description">
+                    <mat-icon>help</mat-icon>
                   </button>
                 </mat-chip-option>
               }
             </mat-chip-listbox>
+          </div>
+          @if (savedConfigs.length > 0) {
+            @if(platform.isMobile()){
+              <div class="h-divider-container">
+              <mat-divider class="h-divider"></mat-divider>
+              </div>
+            }@else{
+              <mat-divider vertical class="v-divider"></mat-divider>
+            }
+            <div>
+              <div>Saved setups</div>
+              <br>
+              <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="troop config type"
+                                (change)="radioChange($event)">
+                @for (savedConfig of savedConfigs; track savedConfig) {
+                  <mat-chip-option [selected]="troopConfig.id === savedConfig.id"
+                                   (removed)="removeSavedConfig(savedConfig)" [value]="savedConfig">
+                    {{ savedConfig.name }}
+                    <button matChipRemove aria-label="'remove template form' + keyword">
+                      <mat-icon>cancel</mat-icon>
+                    </button>
+                  </mat-chip-option>
+                }
+              </mat-chip-listbox>
+            </div>
           }
         </div>
         <div class="row footer">
@@ -107,8 +117,8 @@
     <ng-template matStepContent>
       <div class="container full-hw">
         <div class="row header">Enter leadership and troop types</div>
-        <div class="row content in-column">
-          <form [formGroup]="fg">
+        <div class="row content background-container">
+          <form [formGroup]="fg" class="in-a-column">
             <mat-form-field appearance="outline">
               <mat-label>Leadership</mat-label>
               <input matInput type="number" name="leadership"
@@ -148,7 +158,7 @@
     <ng-template matStepContent>
       <div class="container full-hw">
         <div class="row header">Optimal stacking</div>
-        <div class="row content in-column">
+        <div class="row content background-container2">
           <mat-list class="troop-list-container">
             <mat-list-item *ngFor="let squad of troopList" class="troop-list-item">
           <span matListItemTitle class="troop-info">
@@ -164,7 +174,7 @@
             <mat-icon>arrow_back_ios_new</mat-icon>
             Back
           </button>
-          <button mat-button (click)="saveConfigToServer(true)" *ngIf="troopConfig.id>0">
+          <button mat-button (click)="saveConfigToServer(true)" [disabled]="troopConfig.id<=0">
             <mat-icon>save_as</mat-icon>
             Save As
           </button>

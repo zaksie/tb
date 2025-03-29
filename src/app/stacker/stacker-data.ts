@@ -66,7 +66,7 @@ flying:
 export const DEFAULT_TROOP_CONFIG = (setupType: SetupType=SetupType.FULLY_BALANCED) => {
   return {
     valid: {
-      bonus: false,
+      bonus: true,
       tier: false
     },
     name: 'New Setup',

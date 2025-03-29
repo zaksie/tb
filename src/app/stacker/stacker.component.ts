@@ -5,7 +5,7 @@ import {mercenaries, TroopColors, troops} from '../troops.data';
 import {calculateStack, SetupType} from "./stacker";
 import YAML from 'yaml'
 import {bonusConfigDefaults, DEFAULT_TROOP_CONFIG, setupTypes, TroopConfig} from "./stacker-data";
-import {debounceTime, filter, firstValueFrom, Subject, switchMap, tap} from "rxjs";
+import {debounceTime, filter, firstValueFrom, Observable, Subject, switchMap, tap} from "rxjs";
 import {flying, guardsman, melee, mounted, ranged, specialist} from "../models/troop-type";
 import {MatStepper} from "@angular/material/stepper";
 import {MatSnackBar, MatSnackBarRef} from "@angular/material/snack-bar";
@@ -18,6 +18,7 @@ import {AppGenericDialog} from "../common/app-generic-dialog/app-generic-dialog"
 import {catchError} from "rxjs/operators";
 import {DomSanitizer} from "@angular/platform-browser";
 import {MatIconRegistry} from "@angular/material/icon";
+import {PlatformService} from "../services/platform.service";
 
 const RESET_SETTINGS_SVG = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                  fill="#e3e3e3">
@@ -49,7 +50,7 @@ export class StackerComponent implements OnInit {
   protected readonly troopLevelSpecialists = ['S5', 'S6', 'S7', 'S8', 'S9']
   protected readonly troopLevelMonsters = ['M5', 'M6', 'M7', 'M8', 'M9']
   public readonly mercenaryList = mercenaries
-  troopConfig: TroopConfig = DEFAULT_TROOP_CONFIG()
+  readonly troopConfig: TroopConfig = DEFAULT_TROOP_CONFIG()
   readonly SetupType = SetupType
   public monacoLoaded = signal(false)
   @ViewChild(MatStepper) matStepperView!: MatStepper
@@ -59,6 +60,7 @@ export class StackerComponent implements OnInit {
   private backend = inject(BackendService)
   private auth = inject(AuthService)
   readonly dialog = inject(MatDialog);
+  readonly platform = inject(PlatformService);
 
   protected readonly setupTypes = setupTypes;
   readonly ERROR_MSG_01 = `⚠️ Either use 'army' or the 'guardsman/specialist' or the 'ranged/melee/mounted/flying' fields but don't mix them`
@@ -75,10 +77,6 @@ export class StackerComponent implements OnInit {
   constructor() {
     const iconRegistry = inject(MatIconRegistry);
     const sanitizer = inject(DomSanitizer);
-
-    // Note that we provide the icon here as a string literal here due to a limitation in
-    // Stackblitz. If you want to provide the icon from a URL, you can use:
-    // `iconRegistry.addSvgIcon('thumbs-up', sanitizer.bypassSecurityTrustResourceUrl('icon.svg'));`
     iconRegistry.addSvgIconLiteral('reset_settings', sanitizer.bypassSecurityTrustHtml(RESET_SETTINGS_SVG));
 
 
@@ -102,11 +100,17 @@ export class StackerComponent implements OnInit {
     ).subscribe(() => this.calculateStacks())
   }
 
-  fetch() {
+  assignTroopConfig(troopConfig: TroopConfig|undefined) {
+    Object.assign(this.troopConfig, troopConfig || DEFAULT_TROOP_CONFIG())
+  }
+
+  fetch(id: number | undefined = undefined): Observable<any> {
     return this.backend.getSavedTroopConfigs().pipe(
       tap(configs => {
         this.savedConfigs.length = 0
         this.savedConfigs.push(...configs)
+        if (id)
+          this.assignTroopConfig(configs.find(x => x.id === id))
       })
     )
   }
@@ -114,11 +118,12 @@ export class StackerComponent implements OnInit {
   ngOnInit(): void {
     const isFirstTime = localStorage.getItem("StackerComponent.exampleClicked") !== 'true';
 
-    const duration = isFirstTime ? 1000 * 9999999 : 1000 * 5
-    const snackBarRef = this._snackBar.open('See an example clan', 'GO', {duration});
-    snackBarRef.onAction().subscribe(() => {
-      this.router.navigate(['youtube'])
-    });
+    if(isFirstTime) {
+      const snackBarRef = this._snackBar.open('See our YouTube tutorial', 'GO', {duration: 1000 * 10});
+      snackBarRef.onAction().subscribe(() => {
+        this.router.navigate(['youtube'])
+      });
+    }
   }
 
   calculateStacks() {
@@ -140,9 +145,9 @@ export class StackerComponent implements OnInit {
   radioChange($event: any) {
     if (isNumber($event.value)) { // one of the 3 main options
       const t: SetupType = $event.value
-      Object.assign(this.troopConfig, DEFAULT_TROOP_CONFIG(t))
+      this.assignTroopConfig(DEFAULT_TROOP_CONFIG(t))
     } else { // this is a saved config
-      Object.assign(this.troopConfig, $event.value)
+      this.assignTroopConfig($event.value)
       this.troopConfig.selectedSetupType = SetupType.CUSTOM
     }
     this.fg.setValue({leadership: this.troopConfig.leadership, tiers: this.troopConfig.tiers})
@@ -195,7 +200,7 @@ export class StackerComponent implements OnInit {
   async saveConfigToServer(saveAs = false) {
     const isAuthenticated = await firstValueFrom(this.auth.isAuthenticated$)
     const obs$ = () => this.backend.saveTroopConfig(this.troopConfig).pipe(
-      switchMap(() => this.fetch()),
+      switchMap((res: any) => this.fetch(res.insertId)),
       catchError(err => {
         console.error(err)
         this._snackBar.open('❌ Failed to save config', 'Dismiss');

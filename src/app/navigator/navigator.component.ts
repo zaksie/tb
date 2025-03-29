@@ -1,4 +1,4 @@
-import {Component, signal} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {BackendService} from "../services/backend.service";
 import {ChestAgg} from "../models/clan-data.model";
 import {FeatureModel} from "../landing-page/feature/feature.model";
@@ -6,6 +6,8 @@ import features from '../../assets/features.json'
 import {AuthService} from "@auth0/auth0-angular";
 import {filter, tap} from "rxjs";
 import {MatTreeNestedDataSource} from "@angular/material/tree";
+import {MatIconRegistry} from "@angular/material/icon";
+import {DomSanitizer} from "@angular/platform-browser";
 
 
 @Component({
@@ -15,7 +17,7 @@ import {MatTreeNestedDataSource} from "@angular/material/tree";
   standalone: false
 })
 export class NavigatorComponent {
-  readonly features = features.filter(feature => feature.visible.includes('nav'))
+  readonly features: any[] = features.filter(feature => feature.visible.includes('nav'))
 
   childrenAccessor = (node: FeatureModel) => node.children ?? [];
   isAuthenticated = signal(false)
@@ -23,6 +25,12 @@ export class NavigatorComponent {
 
   constructor(public auth: AuthService,
               public backend: BackendService) {
+    const iconRegistry = inject(MatIconRegistry);
+    const sanitizer = inject(DomSanitizer);
+    this.features.filter(f => !!f.svg && !!f.icon).forEach(f => {
+        iconRegistry.addSvgIconLiteral(f.icon, sanitizer.bypassSecurityTrustHtml(f.svg))
+      }
+    )
     this.addDisabledFunc({children: this.features} as any as FeatureModel)
     this.dataSource.data = this.features
     this.backend.dashboards$

@@ -7,54 +7,10 @@
     "public": true
   },
   {
-    "name": "Demos",
-    "path": "",
-    "visible": ["nav"],
-    "public": true,
-    "children": [
-      {
-        "name": "Chest counter",
-        "path": "demo/chest-counter",
-        "public": true
-      },
-      {
-        "name": "Stack calculator",
-        "path": "demo/stacker",
-        "public": true
-      },
-      {
-        "name": "Auto-crypter",
-        "path": "demo/crypts",
-        "public": true
-      }
-    ]
-  },
-  {
-    "name": "View chest results",
-    "public": true,
-    "visible": ["nav"],
-
-    "path": "chests/view"
-  },
-  {
-    "name": "My chest counters",
-    "path": "chests/manage",
-    "visible": ["nav"]
-  },
-  {
-    "name": "Favorites",
-    "icon": "star",
-    "iconStyle": {
-      "color": "yellow"
-    },
-    "path": "chests/dashboards",
-    "children": [],
-    "visible": ["nav"]
-  },
-  {
     "name": "Stack Calculator",
     "image": "/assets/stack-calculator.jpg",
     "description": ["Optimize your hits using a calculator based on your army bonuses and leadership size"],
+    "icon": "calculate",
     "path": "stacker",
     "public": true,
     "visible": ["nav", "features"],
@@ -70,10 +26,38 @@
     ]
   },
   {
+    "name": "View chest results",
+    "public": true,
+    "icon": "featured_seasonal_and_gifts",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\" width=\"24px\" fill=\"#e3e3e3\"><path d=\"M160-80v-440H80v-240h208q-5-9-6.5-19t-1.5-21q0-50 35-85t85-35q23 0 43 8.5t37 23.5q17-16 37-24t43-8q50 0 85 35t35 85q0 11-2 20.5t-6 19.5h208v240h-80v440H160Zm400-760q-17 0-28.5 11.5T520-800q0 17 11.5 28.5T560-760q17 0 28.5-11.5T600-800q0-17-11.5-28.5T560-840Zm-200 40q0 17 11.5 28.5T400-760q17 0 28.5-11.5T440-800q0-17-11.5-28.5T400-840q-17 0-28.5 11.5T360-800ZM160-680v80h280v-80H160Zm280 520v-360H240v360h200Zm80 0h200v-360H520v360Zm280-440v-80H520v80h280Z\"/></svg>",
+    "visible": ["nav"],
+
+    "path": "chests/view"
+  },
+  {
+    "name": "My chest counters",
+    "icon": "diversity_3",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\" width=\"24px\" fill=\"#e3e3e3\"><path d=\"M40-160v-160q0-34 23.5-57t56.5-23h131q20 0 38 10t29 27q29 39 71.5 61t90.5 22q49 0 91.5-22t70.5-61q13-17 30.5-27t36.5-10h131q34 0 57 23t23 57v160H640v-91q-35 25-75.5 38T480-200q-43 0-84-13.5T320-252v92H40Zm440-160q-38 0-72-17.5T351-386q-17-25-42.5-39.5T253-440q22-37 93-58.5T480-520q63 0 134 21.5t93 58.5q-29 0-55 14.5T609-386q-22 32-56 49t-73 17ZM160-440q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T280-560q0 50-34.5 85T160-440Zm640 0q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T920-560q0 50-34.5 85T800-440ZM480-560q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-680q0 50-34.5 85T480-560Z\"/></svg>",
+    "path": "chests/manage",
+    "visible": ["nav"]
+  },
+  {
+    "name": "Favorites",
+    "icon": "star",
+    "iconStyle": {
+      "color": "yellow"
+    },
+    "path": "chests/dashboards",
+    "children": [],
+    "visible": ["nav"]
+  },
+
+  {
     "name": "Crypts",
     "image": "/assets/crypts.webp",
     "description": ["Let the squire crypt for you in the cloud while you sleep!", "Optimal crypting using Great Archeologist mode so you never have to worry about meeting the weekly quota!"],
     "path": "crypts",
+    "icon": "explore",
     "visible": ["nav", "features"],
     "actions": [
       {
@@ -105,10 +89,36 @@
     ]
   },
   {
-    "name": "CP Runs",
+    "name": "CP Forum",
     "disabled": true,
     "image": "assets/cp-runs.jpg",
+    "icon": "swords",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\" width=\"24px\" fill=\"#e3e3e3\"><path d=\"M762-96 645-212l-88 88-28-28q-23-23-23-57t23-57l169-169q23-23 57-23t57 23l28 28-88 88 116 117q12 12 12 28t-12 28l-50 50q-12 12-28 12t-28-12Zm118-628L426-270l5 4q23 23 23 57t-23 57l-28 28-88-88L198-96q-12 12-28 12t-28-12l-50-50q-12-12-12-28t12-28l116-117-88-88 28-28q23-23 57-23t57 23l4 5 454-454h160v160ZM334-583l24-23 23-24-23 24-24 23Zm-56 57L80-724v-160h160l198 198-57 56-174-174h-47v47l174 174-56 57Zm92 199 430-430v-47h-47L323-374l47 47Zm0 0-24-23-23-24 23 24 24 23Z\"/></svg>",
     "visible": ["nav", "features"],
     "description": ["Get help setting up CP runs to optimize results and reduce costs"]
+  },
+  {
+    "name": "Demos",
+    "path": "",
+    "icon": "info",
+    "visible": ["nav"],
+    "public": true,
+    "children": [
+      {
+        "name": "Chest counter",
+        "path": "demo/chest-counter",
+        "public": true
+      },
+      {
+        "name": "Stack calculator",
+        "path": "demo/stacker",
+        "public": true
+      },
+      {
+        "name": "Auto-crypter",
+        "path": "demo/crypts",
+        "public": true
+      }
+    ]
   }
 ]
