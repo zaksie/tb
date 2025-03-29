@@ -174,11 +174,11 @@
             <mat-icon>arrow_back_ios_new</mat-icon>
             Back
           </button>
-          <button mat-button (click)="saveConfigToServer(true)" [disabled]="troopConfig.id<=0">
+          <button mat-button (click)="saveConfigToServer(true)" >
             <mat-icon>save_as</mat-icon>
             Save As
           </button>
-          <button mat-button (click)="saveConfigToServer(troopConfig.id < 0)">
+          <button mat-button (click)="saveConfigToServer(false)" [disabled]="troopConfig.id<1">
             <mat-icon>save</mat-icon>
             Save
           </button>

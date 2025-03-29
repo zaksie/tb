@@ -119,10 +119,10 @@ export class StackerComponent implements OnInit {
     const isFirstTime = localStorage.getItem("StackerComponent.exampleClicked") !== 'true';
 
     if(isFirstTime) {
-      const snackBarRef = this._snackBar.open('See our YouTube tutorial', 'GO', {duration: 1000 * 10});
-      snackBarRef.onAction().subscribe(() => {
-        this.router.navigate(['youtube'])
-      });
+      // const snackBarRef = this._snackBar.open('See our YouTube tutorial', 'GO', {duration: 1000 * 10});
+      // snackBarRef.onAction().subscribe(() => {
+      //   this.router.navigate(['youtube'])
+      // });
     }
   }
 
