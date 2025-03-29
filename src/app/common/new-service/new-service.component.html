@@ -1,5 +1,6 @@
 <div mat-dialog-title class="dialog-header">
-  Chest Counter Setup
+  {{title}}
+  {{serviceName}}
   <button mat-icon-button aria-label="close dialog" mat-dialog-close>
     <mat-icon>close</mat-icon>
   </button>
@@ -48,9 +49,9 @@
 
     <mat-step label="Settings" [stepControl]="service.inputForm2" editable="true" class="step-container">
       <div class="form-content">
-        @if (serviceName === CHEST_COUNTER){
-        <ng-container *ngTemplateOutlet="ccForm2"></ng-container>
-        }@else if(serviceName === CRYPTS){
+        @if (serviceName === CHEST_COUNTER) {
+          <ng-container *ngTemplateOutlet="ccForm2"></ng-container>
+        } @else if (serviceName === CRYPTS) {
           <ng-container *ngTemplateOutlet="cryptsForm2"></ng-container>
         }
       </div>
@@ -60,10 +61,10 @@
         <button mat-button matStepperNext [disabled]="service.invalid2({taskSetup})">Next</button>
       </div>
     </mat-step>
-    <mat-step label="Points" class="step-container">
-      @if (serviceName === CHEST_COUNTER){
+    <mat-step [label]="step3" class="step-container">
+      @if (serviceName === CHEST_COUNTER) {
         <ng-container *ngTemplateOutlet="ccForm3"></ng-container>
-      }@else if(serviceName === CRYPTS){
+      } @else if (serviceName === CRYPTS) {
         <ng-container *ngTemplateOutlet="cryptsForm3"></ng-container>
       }
       <div class="actions">
@@ -84,24 +85,24 @@
 <ng-template #ccForm2>
   <form [formGroup]="service.inputForm2">
 
-  <mat-form-field appearance="outline">
-    <mat-label>Minimal score</mat-label>
-    <input matInput type="number" formControlName="minScore">
-  </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-label>Minimum epic crypts</mat-label>
-    <input matInput type="number" formControlName="minEpicCryptCount">
-  </mat-form-field>
-  <div>
-    @if (slider && +slider.value < 3 && +slider.value >= 0) {
-      <mat-label>Clan type: <b>{{ ChestCounterForm.levelMap[+slider.value].title}}</b>
-        <mat-icon [matTooltip]="ChestCounterForm.levelMap[+slider.value].subtitle">info</mat-icon>
-      </mat-label>
-    }
-    <mat-slider min="0" max="2" step="1" showTickMarks discrete [displayWith]="cc.formatLabel">
-      <input matSliderThumb formControlName="level" #slider>
-    </mat-slider>
-  </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Minimal score</mat-label>
+      <input matInput type="number" formControlName="minScore">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Minimum epic crypts</mat-label>
+      <input matInput type="number" formControlName="minEpicCryptCount">
+    </mat-form-field>
+    <div>
+      @if (slider && +slider.value < 3 && +slider.value >= 0) {
+        <mat-label>Clan type: <b>{{ ChestCounterForm.levelMap[+slider.value].title }}</b>
+          <mat-icon [matTooltip]="ChestCounterForm.levelMap[+slider.value].subtitle">info</mat-icon>
+        </mat-label>
+      }
+      <mat-slider min="0" max="2" step="1" showTickMarks discrete [displayWith]="cc.formatLabel">
+        <input matSliderThumb formControlName="level" #slider>
+      </mat-slider>
+    </div>
 
   </form>
   <mat-expansion-panel>
@@ -118,39 +119,42 @@
 
 <ng-template #ccForm3>
   <div class="point-system-container">
-  <div class="copy-button">
-    <button mat-mini-fab (click)="copyToClipboard(cc.pointSystemFormatted)">
-      <mat-icon>content_copy</mat-icon>
-    </button>
-  </div>
-  <textarea matInput class="point-system" [ngModel]="cc.pointSystemFormatted"
-            [disabled]="true"></textarea>
+    <div class="copy-button">
+      <button mat-mini-fab (click)="copyToClipboard(cc.pointSystemFormatted)">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </div>
+    <textarea matInput class="point-system" [ngModel]="cc.pointSystemFormatted"
+              [disabled]="true"></textarea>
   </div>
 </ng-template>
 <!----------------->
 <ng-template #cryptsForm2>
-<form [formGroup]="service.inputForm2" class="form-content">
-  <mat-form-field appearance="outline">
-    <mat-label>Requested crypt amount</mat-label>
-    <input matInput type="number" formControlName="total">
-  </mat-form-field>
-  <mat-label>Crypt types</mat-label>
-  <mat-action-list>
-    <mat-checkbox matListItemLine formControlName="common">Common</mat-checkbox>
-    <mat-checkbox matListItemLine formControlName="rare">Rare</mat-checkbox>
-    <mat-checkbox matListItemLine formControlName="epic">Epic</mat-checkbox>
-  </mat-action-list>
-  <mat-label>Crypt levels</mat-label>
-  <mat-slider min="0" max="35" step="5" showTickMarks discrete>
-    <input matSliderStartThumb formControlName="low">
-    <input matSliderEndThumb formControlName="high">
-  </mat-slider>
-  <mat-label>Schedule using timezone <b><u>{{ crypts.getTimezone() }}</u></b></mat-label>
-  <mat-slider min="0" max="24" step="1" showTickMarks discrete [displayWith]="crypts.formatHourLabel">
-    <input matSliderStartThumb formControlName="start">
-    <input matSliderEndThumb formControlName="end">
-  </mat-slider>
-</form>
+  <form [formGroup]="service.inputForm2" class="form-content">
+    <mat-form-field appearance="outline">
+      <mat-label>Requested crypt amount</mat-label>
+      <input matInput type="number" formControlName="total">
+    </mat-form-field>
+    <mat-label>Crypt types</mat-label>
+    <mat-action-list>
+      <mat-checkbox matListItemLine formControlName="common">Common</mat-checkbox>
+      <mat-checkbox matListItemLine formControlName="rare">Rare</mat-checkbox>
+      <mat-checkbox matListItemLine formControlName="epic">Epic</mat-checkbox>
+    </mat-action-list>
+    <mat-label>Crypt levels</mat-label>
+    <mat-slider min="0" max="35" step="5" showTickMarks discrete>
+      <input matSliderStartThumb formControlName="low">
+      <input matSliderEndThumb formControlName="high">
+    </mat-slider>
+    <mat-checkbox formControlName="scheduled">Schedule</mat-checkbox>
+    <ng-container *ngIf="crypts.isScheduled()">
+      <mat-label>Schedule using timezone <b><u>{{ crypts.getTimezone() }}</u></b></mat-label>
+      <mat-slider min="0" max="24" step="1" showTickMarks discrete [displayWith]="crypts.formatHourLabel">
+        <input matSliderStartThumb formControlName="start">
+        <input matSliderEndThumb formControlName="end">
+      </mat-slider>
+    </ng-container>
+  </form>
 </ng-template>
 
 <ng-template #cryptsForm3>

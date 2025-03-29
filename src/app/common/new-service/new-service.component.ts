@@ -11,7 +11,8 @@ import {ServiceName} from "../../services/service-interface";
 import {CryptsForm} from "./crypts.struct";
 import {CryptConfig} from "../../crypts/crypts.model";
 
-type DialogData = (ChestCounter | CryptConfig) & {serviceName: string}
+type DialogData = (ChestCounter | CryptConfig) & { serviceName: string }
+
 @Component({
   selector: 'app-new-service',
   standalone: false,
@@ -28,9 +29,13 @@ export class NewServiceComponent implements OnInit {
   @ViewChild(TaskSetupComponent) taskSetup!: TaskSetupComponent;
   cc: ChestCounterForm = new ChestCounterForm(this.data as ChestCounter, this.backend)
   crypts: CryptsForm = new CryptsForm(this.data as CryptConfig, this.backend)
-  get serviceName() {return this.data.serviceName}
-  get service(){
-    switch(this.serviceName){
+
+  get serviceName() {
+    return this.data.serviceName
+  }
+
+  get service() {
+    switch (this.serviceName) {
       case 'chest-counter':
         return this.cc
       case 'crypts':
@@ -39,10 +44,11 @@ export class NewServiceComponent implements OnInit {
         throw new Error(`Unknown service ${this.serviceName}`)
     }
   }
+
   isLoading: boolean = false
   isError: boolean = false
-  CHEST_COUNTER:ServiceName = 'chest-counter';
-  CRYPTS:ServiceName = 'crypts';
+  CHEST_COUNTER: ServiceName = 'chest-counter';
+  CRYPTS: ServiceName = 'crypts';
 
   ngOnInit(): void {
     this.service.onInit()
@@ -71,6 +77,23 @@ export class NewServiceComponent implements OnInit {
   }
 
   protected readonly ChestCounterForm = ChestCounterForm;
+  get title(): string{
+    if (this.serviceName == "chest-counter") {
+      return "Chest Counter Setup"
+    } else if (this.serviceName == "crypts") {
+      return "Auto-Crypt Setup"
+    }else {
+      return "Setup"
+    }
+  }
+
+  get step3(): string {
+    if (this.serviceName == "chest-counter") {
+      return "Points"
+    } else {
+      return 'Done'
+    }
+  }
 
   copyToClipboard(text: string) {
     navigator.clipboard.writeText(text).then()

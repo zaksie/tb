@@ -1,6 +1,7 @@
 import {ChestCounterStatus} from "../models/clan-data.model";
 
 export interface CryptConfig {
+  scheduled: boolean;
   status: ChestCounterStatus;
   username: string
   password: string

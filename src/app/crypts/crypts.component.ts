@@ -97,6 +97,7 @@ export class CryptsComponent implements AfterViewInit {
   }
 
   getSchedule(row: CryptConfig, withTimezone = true) {
+    if (!row.scheduled) return 'OFF'
     const startStr = row.start.toString().padStart(2, '0') + ':00'
     const endStr = row.end.toString().padStart(2, '0') + ':00'
     return startStr + '-' + endStr + (withTimezone ? ' ' + row.timezone: '')
