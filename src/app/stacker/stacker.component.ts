@@ -19,6 +19,7 @@ import {catchError} from "rxjs/operators";
 import {DomSanitizer} from "@angular/platform-browser";
 import {MatIconRegistry} from "@angular/material/icon";
 import {PlatformService} from "../services/platform.service";
+import {StepperSelectionEvent} from "@angular/cdk/stepper";
 
 const RESET_SETTINGS_SVG = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                  fill="#e3e3e3">
@@ -50,7 +51,7 @@ export class StackerComponent implements OnInit {
   protected readonly troopLevelSpecialists = ['S5', 'S6', 'S7', 'S8', 'S9']
   protected readonly troopLevelMonsters = ['M5', 'M6', 'M7', 'M8', 'M9']
   public readonly mercenaryList = mercenaries
-  readonly troopConfig: TroopConfig = DEFAULT_TROOP_CONFIG()
+  readonly troopConfig = signal<TroopConfig>(DEFAULT_TROOP_CONFIG())
   readonly SetupType = SetupType
   public monacoLoaded = signal(false)
   @ViewChild(MatStepper) matStepperView!: MatStepper
@@ -70,8 +71,8 @@ export class StackerComponent implements OnInit {
   readonly ERROR_MSG_05 = `⚠️ Missing types `
   savedConfigs: TroopConfig[] = []
   fg: FormGroup = new FormGroup({
-    leadership: new FormControl(this.troopConfig.leadership, [Validators.required, Validators.min(1)]),
-    tiers: new FormControl(this.troopConfig.tiers, [Validators.required, Validators.minLength(1)])
+    leadership: new FormControl(this.troopConfig().leadership, [Validators.required, Validators.min(1)]),
+    tiers: new FormControl(this.troopConfig().tiers, [Validators.required, Validators.minLength(1)])
   });
 
   constructor() {
@@ -100,17 +101,13 @@ export class StackerComponent implements OnInit {
     ).subscribe(() => this.calculateStacks())
   }
 
-  assignTroopConfig(troopConfig: TroopConfig|undefined) {
-    Object.assign(this.troopConfig, troopConfig || DEFAULT_TROOP_CONFIG())
-  }
-
   fetch(id: number | undefined = undefined): Observable<any> {
     return this.backend.getSavedTroopConfigs().pipe(
       tap(configs => {
         this.savedConfigs.length = 0
         this.savedConfigs.push(...configs)
         if (id)
-          this.assignTroopConfig(configs.find(x => x.id === id))
+          this.troopConfig.set(configs.find(x => x.id === id) || DEFAULT_TROOP_CONFIG())
       })
     )
   }
@@ -129,12 +126,13 @@ export class StackerComponent implements OnInit {
   calculateStacks() {
     console.log('in calculateStacks')
     this.troopList.length = 0
-    if (this.troopConfig.valid.bonus && this.troopConfig.valid.bonus) {
-      const bonusConfigObject = this.troopConfig.bonusConfigObject
+    const troopConfig = this.troopConfig()
+    if (troopConfig.valid.bonus && troopConfig.valid.bonus) {
+      const bonusConfigObject = troopConfig.bonusConfigObject
       console.log(bonusConfigObject)
-      const armyLevels = this.troopConfig.tiers.filter(x => x.startsWith('G') || x.startsWith('S'))
-      // const monsterLevels = this.troopConfig.selectedLevels.filter(x => x.startsWith('M'))
-      const armySquads = calculateStack(armyLevels, bonusConfigObject, this.troopConfig.leadership)
+      const armyLevels = troopConfig.tiers.filter(x => x.startsWith('G') || x.startsWith('S'))
+      // const monsterLevels = troopConfig.selectedLevels.filter(x => x.startsWith('M'))
+      const armySquads = calculateStack(armyLevels, bonusConfigObject, troopConfig.leadership)
       // const monsterSquads: Squad[] = []//calculateStack(monsterLevels, bonusesObj, this.dominance, this.attackType, armySquads[0])
       // this.tiersDict = groupBy([...armySquads, ...monsterSquads], x => x.troop.levelId)
       this.troopList.push(...armySquads.sort((a, b) => b.troop.strength - a.troop.strength))
@@ -145,12 +143,11 @@ export class StackerComponent implements OnInit {
   radioChange($event: any) {
     if (isNumber($event.value)) { // one of the 3 main options
       const t: SetupType = $event.value
-      this.assignTroopConfig(DEFAULT_TROOP_CONFIG(t))
+      this.troopConfig.set(DEFAULT_TROOP_CONFIG(t))
     } else { // this is a saved config
-      this.assignTroopConfig($event.value)
-      this.troopConfig.selectedSetupType = SetupType.CUSTOM
+      this.troopConfig.set({...$event.value, selectedSetupType: SetupType.CUSTOM})
     }
-    this.fg.setValue({leadership: this.troopConfig.leadership, tiers: this.troopConfig.tiers})
+    this.fg.setValue({leadership: this.troopConfig().leadership, tiers: this.troopConfig().tiers})
     this.validateTierConfig()
     this.validateBonusConfig()
   }
@@ -199,7 +196,7 @@ export class StackerComponent implements OnInit {
 
   async saveConfigToServer(saveAs = false) {
     const isAuthenticated = await firstValueFrom(this.auth.isAuthenticated$)
-    const obs$ = () => this.backend.saveTroopConfig(this.troopConfig).pipe(
+    const obs$ = () => this.backend.saveTroopConfig(this.troopConfig()).pipe(
       switchMap((res: any) => this.fetch(res.insertId)),
       catchError(err => {
         console.error(err)
@@ -216,7 +213,7 @@ export class StackerComponent implements OnInit {
           input: {
             type: 'text',
             icon: 'save',
-            value: this.troopConfig.name
+            value: this.troopConfig().name
           },
           action: 'return'
         }
@@ -225,8 +222,8 @@ export class StackerComponent implements OnInit {
           filter(res => !!res),
           switchMap(res => {
             console.log('dialog data', res)
-            this.troopConfig.name = res.input.value
-            this.troopConfig.id = -4
+            this.troopConfig().name = res.input.value
+            this.troopConfig().id = -4
             return obs$()
           })
         ).subscribe()
@@ -239,28 +236,30 @@ export class StackerComponent implements OnInit {
   }
 
   validateBonusConfig() {
+    const troopConfig = this.troopConfig()
     try {
-      const bonusConfig = YAML.parse(this.troopConfig.bonusConfig.toLowerCase())
+      const bonusConfig = YAML.parse(troopConfig.bonusConfig.toLowerCase())
       if (this.verifyBonuses(bonusConfig)) {
-        this.troopConfig.bonusConfigObject = bonusConfig
-        this.troopConfig.valid.bonus = true
-      } else this.troopConfig.valid.bonus = false
+        troopConfig.bonusConfigObject = bonusConfig
+        troopConfig.valid.bonus = true
+      } else troopConfig.valid.bonus = false
     } catch (e) {
       console.error(e)
-      this.troopConfig.valid.bonus = false
+      troopConfig.valid.bonus = false
       this.errors$.next(this.ERROR_MSG_04);
     }
-    return this.troopConfig.valid.bonus
+    return troopConfig.valid.bonus
   }
 
   validateTierConfig() {
-    this.troopConfig.valid.tier = this.troopConfig.leadership > 0 && this.troopConfig.tiers.length > 0;
+    const troopConfig = this.troopConfig()
+    troopConfig.valid.tier = troopConfig.leadership > 0 && troopConfig.tiers.length > 0;
     this.valuesChange$.next()
-    return this.troopConfig.valid.tier
+    return troopConfig.valid.tier
   }
 
   resetTo(setupType: SetupType) {
-    this.troopConfig.bonusConfig = bonusConfigDefaults.find(x => x.setupType === setupType)?.bonusConfig || this.troopConfig.bonusConfig
+    this.troopConfig().bonusConfig = bonusConfigDefaults.find(x => x.setupType === setupType)?.bonusConfig || this.troopConfig().bonusConfig
   }
 
   openExample() {
@@ -269,26 +268,22 @@ export class StackerComponent implements OnInit {
   }
 
   leaderhshipChange() {
-    this.troopConfig.leadership = this.fg.get('leadership')?.value
+    this.troopConfig().leadership = this.fg.get('leadership')?.value
     this.validateTierConfig()
   }
 
   tiersChange() {
-    this.troopConfig.tiers = this.fg.get('tiers')?.value
+    this.troopConfig().tiers = this.fg.get('tiers')?.value
     this.validateTierConfig()
   }
 
 
+  onStepChange($event: StepperSelectionEvent) {
+    if($event.selectedIndex===1){
+      console.log('resizing editor')
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 200)
+    }else if($event.selectedIndex===0) {
+      console.log(this.troopConfig(), this.setupTypes, this.savedConfigs)
+    }
+  }
 }
-
-/*
-epic:
-  strength: 7389
-guardsman:
-  health: 2550
-strength: 5342.5
-specialist:
-  health: 2550
-strength: 4676.5
-
-*/

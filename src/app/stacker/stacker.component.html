@@ -1,4 +1,4 @@
-<mat-stepper orientation="horizontal" class="stacker-container" #matStepperView>
+<mat-stepper orientation="horizontal" class="stacker-container" #matStepperView (selectionChange)="onStepChange($event)">
   <mat-step>
     <ng-template matStepLabel>Type of setup</ng-template>
     <ng-template matStepContent>
@@ -10,7 +10,7 @@
             <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="troop config type"
                               (change)="radioChange($event)">
               @for (setupType of setupTypes; track setupType) {
-                <mat-chip-option [selected]="troopConfig.selectedSetupType === setupType.value"
+                <mat-chip-option [selected]="troopConfig().id === setupType.id"
                                  [value]="setupType.value">
                   {{ setupType.title }}
                   <button matChipRemove [matTooltip]="setupType.description">
@@ -34,7 +34,7 @@
               <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="troop config type"
                                 (change)="radioChange($event)">
                 @for (savedConfig of savedConfigs; track savedConfig) {
-                  <mat-chip-option [selected]="troopConfig.id === savedConfig.id"
+                  <mat-chip-option [selected]="troopConfig().id === savedConfig.id"
                                    (removed)="removeSavedConfig(savedConfig)" [value]="savedConfig">
                     {{ savedConfig.name }}
                     <button matChipRemove aria-label="'remove template form' + keyword">
@@ -89,14 +89,14 @@
             <mat-menu #savedMenu="matMenu">
               @for (savedConfig of savedConfigs; track savedConfig) {
                 <button mat-menu-item
-                        (click)="troopConfig.bonusConfig = savedConfig.bonusConfig">{{ savedConfig.name }}
+                        (click)="troopConfig().bonusConfig = savedConfig.bonusConfig">{{ savedConfig.name }}
                 </button>
               }
             </mat-menu>
           </div>
           <ngx-monaco-editor [options]="editorOptions" (onInit)="monacoLoaded.set(true)"
-                             [(ngModel)]="troopConfig.bonusConfig" (ngModelChange)="valuesChange$.next()"
-                             class="editor">
+                             [(ngModel)]="troopConfig().bonusConfig" (ngModelChange)="valuesChange$.next()"
+                             class="editor" #editor >
 
           </ngx-monaco-editor>
         </div>
@@ -178,7 +178,7 @@
             <mat-icon>save_as</mat-icon>
             Save As
           </button>
-          <button mat-button (click)="saveConfigToServer(false)" [disabled]="troopConfig.id<1">
+          <button mat-button (click)="saveConfigToServer(false)" [disabled]="troopConfig().id<1">
             <mat-icon>save</mat-icon>
             Save
           </button>

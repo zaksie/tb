@@ -79,16 +79,19 @@ export const DEFAULT_TROOP_CONFIG = (setupType: SetupType=SetupType.FULLY_BALANC
 }
 export const setupTypes = [
   {
+    id: -SetupType.FULLY_BALANCED,
     title: 'Entire army',
     value: SetupType.FULLY_BALANCED,
     description: 'Fully researched army mod and monster mod, artifacts/enchantments/gems for entire army.'
   },
   {
+    id: -SetupType.GUARDSMAN_SPECIALIST_BALANCED,
     title: 'Guardsman/Specialist',
     value: SetupType.GUARDSMAN_SPECIALIST_BALANCED,
     description: 'Fully researched monster mod, balanced bonuses for guardsman and separately for specialists.'
   },
   {
+    id: -SetupType.NON_BALANCED,
     title: 'Other',
     value: SetupType.NON_BALANCED,
     description: "If you don't know what to choose, you can fill out the bonuses for each troop type (flying/melee/mounted/ranged)"
