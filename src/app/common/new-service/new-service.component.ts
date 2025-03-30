@@ -5,7 +5,7 @@ import {BackendService} from "../../services/backend.service";
 import {PlatformService} from "../../services/platform.service";
 import {TaskSetupComponent} from "../../chest-counter/manage-chest-counter/task-setup/task-setup.component";
 import {catchError} from "rxjs/operators";
-import {of} from "rxjs";
+import {of, tap} from "rxjs";
 import {ChestCounterForm} from "./chest-counter.struct";
 import {ServiceName} from "../../services/service-interface";
 import {CryptsForm} from "./crypts.struct";
@@ -46,7 +46,7 @@ export class NewServiceComponent implements OnInit {
   }
 
   isLoading: boolean = false
-  isError: boolean = false
+  errorMsg: string|undefined
   CHEST_COUNTER: ServiceName = 'chest-counter';
   CRYPTS: ServiceName = 'crypts';
 
@@ -62,11 +62,13 @@ export class NewServiceComponent implements OnInit {
 
   onSubmit() {
     this.isLoading = true
+    this.errorMsg = undefined
     this.service.submit({taskSetup: this.taskSetup}).pipe(
+      tap((res: any) => this.errorMsg = res.error),
       catchError(e => {
         console.error(e)
         this.isLoading = false
-        this.isError = true
+        this.errorMsg = e.toString()
         return of(false)
       })
     )

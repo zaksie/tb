@@ -4,10 +4,11 @@ import {AuthService} from "@auth0/auth0-angular";
 import features from '../../assets/features.json'
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {BackendService} from "../services/backend.service";
-import {ContactRequest} from "../models/clan-data.model";
+import {ContactRequest, ExtUser} from "../models/clan-data.model";
 import {Router} from "@angular/router";
 import {texts} from "../../environments/texts";
 import {PlatformService} from "../services/platform.service";
+import {filter, Observable, switchMap} from "rxjs";
 
 declare var document: any;
 @Component({
@@ -29,14 +30,15 @@ export class LandingPageComponent implements OnInit {
   messageSent: boolean = false;
   quickLinks = [
     {
-      title: 'Stack calculator',
-      path: 'stacker'
+      name: 'Stack calculator',
+      link: ['stacker']
     },
     {
-      title: 'View chest results',
-        path: 'chests/view'
+      name: 'View chest results',
+        link: ['chests/view']
     }
   ]
+  user$!: Observable<ExtUser>
 
 
   constructor(public auth: AuthService,
@@ -48,14 +50,10 @@ export class LandingPageComponent implements OnInit {
   ngOnInit() {
     this.renderer = this.rendererFactory.createRenderer(null, null);
     this.addStructuredData();
-    this.auth.user$.subscribe((user) => {
-      console.log(user)
-    })
-    this.auth.isAuthenticated$.subscribe((authenticated) => {
-      if (authenticated) {
-        console.log('authenticated')
-      }
-    });
+    this.user$ = this.auth.user$.pipe(
+      filter(x => !!x),
+      switchMap(user => this.backend.getUserDetails(user)),
+    )
   }
 
   addStructuredData() {
@@ -93,8 +91,8 @@ export class LandingPageComponent implements OnInit {
     })
   }
 
-  goTo(link: {path: string}) {
-    this.router.navigate([link.path]).then()
+  goTo(link: any[]) {
+    this.router.navigate(link).then()
   }
 
   scrollToBottom() {
@@ -106,5 +104,10 @@ export class LandingPageComponent implements OnInit {
         inline: "nearest"
       });
     }catch{}
+  }
+
+  removeQuickLink(e: any, list: any[]) {
+    const linkToRemove = list.splice(e.index, 1)
+    this.backend.deleteQuickLink(linkToRemove[0].name).subscribe()
   }
 }

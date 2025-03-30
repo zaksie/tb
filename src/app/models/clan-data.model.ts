@@ -1,4 +1,5 @@
 import {FeatureModel} from "../landing-page/feature/feature.model";
+import {User} from "@auth0/auth0-angular";
 
 export interface Clan {
   id: number
@@ -103,3 +104,5 @@ export interface ContactRequest {
   message?: string
   name: string
 }
+
+export interface ExtUser { server: any; auth0: User }

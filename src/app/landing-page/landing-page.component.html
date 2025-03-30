@@ -19,8 +19,18 @@
         }
         <div class="login-action">
           <mat-chip-listbox aria-label="quicklinks">
-            @for (link of quickLinks; track link.path) {
-              <mat-chip-option (click)="goTo(link)">{{ link.title }}</mat-chip-option>
+            @for (link of quickLinks; track link.name) {
+              <mat-chip-option (click)="goTo(link.link)">{{ link.name }}</mat-chip-option>
+            }
+            @if(user$|async; as user){
+              @for (link of user.server.quick_links; track link.name){
+                <mat-chip-option (click)="goTo(link.link)" (removed)="removeQuickLink($event, user.server.quick_links)">
+                  {{ link.name }}
+                <button matChipRemove aria-label="'remove template form' + keyword">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+                </mat-chip-option>
+              }
             }
           </mat-chip-listbox>
         </div>

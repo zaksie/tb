@@ -1,16 +1,15 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {
   ChestAgg,
   ChestCounter,
   ChestCounterResults,
-  Clan,
   ContactRequest,
   DashboardTasks,
   PointSystem
 } from "../models/clan-data.model";
-import {filter, map, mergeMap, Observable, Subject, switchMap, tap} from "rxjs";
+import {filter, map, mergeMap, Observable, of, Subject, switchMap, take, tap} from "rxjs";
 import {MercExchange} from "../merc-exchange/merc-exchange.model";
 import {CryptConfig} from "../crypts/crypts.model";
 import {ServiceName} from "./service-interface";
@@ -30,6 +29,9 @@ export class BackendService {
   }
 
   getChestViewByClanTag(clanTag: string): Observable<ChestCounterResults> {
+    clanTag = clanTag.toUpperCase().trim()
+    const params = {name: `${clanTag} chests`, link: ['chests/view', {tag: clanTag}]}
+    this.updateQuickLinks(params).subscribe()
     return this.httpClient.get<ChestCounterResults>(environment.backend + '/api/v1/chests/' + clanTag)
   }
 
@@ -115,21 +117,18 @@ export class BackendService {
     return this.httpClient.get<CryptConfig[]>(environment.backend + '/api/v1/crypts')
   }
 
-  searchForClanTag(term: string) {
-    return this.httpClient.get<Clan[]>(environment.backend + '/api/v1/chests/q', {params: new HttpParams().set('term', term)})
-  }
-
   getUserDetails(user: User) {
-    return this.httpClient.get<any[]>(environment.backend + '/api/v1/account').pipe(
-      map((res: any[]) => ({auth0: user, server: res[0]}))
+    return this.httpClient.get(environment.backend + '/api/v1/account').pipe(
+      map((res: any) => ({auth0: user, server: res[0]}))
     )
   }
 
   setPlan(plan: string) {
     return this.httpClient.post(environment.backend + '/api/v1/account/plan', {plan})
   }
+
   getPlan() {
-    return this.httpClient.get<{plan: string}>(environment.backend + '/api/v1/account/plan')
+    return this.httpClient.get<{ plan: string }>(environment.backend + '/api/v1/account/plan')
   }
 
   getReferral() {
@@ -170,4 +169,17 @@ export class BackendService {
   }
 
 
+  private updateQuickLinks(data: { name: string; link: any[] }) {
+    return this.auth.isAuthenticated$.pipe(take(1),
+      switchMap(isAuthenticated => {
+        if (isAuthenticated)
+          return this.httpClient.post(environment.backend + '/api/v1/account/quick-links', data)
+        else return of(new Error('ERROR 401 @ updateQuickLinks'))
+      })
+    )
+  }
+
+  deleteQuickLink(name: string) {
+    return this.httpClient.delete(environment.backend + '/api/v1/account/quick-links/' + btoa(name))
+  }
 }
