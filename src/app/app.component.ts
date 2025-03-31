@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, inject, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject, NgZone, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {AuthService} from "@auth0/auth0-angular";
 import features from '../assets/features.json'
@@ -27,6 +27,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   readonly dialog = inject(MatDialog);
   readonly _snackBar = inject(MatSnackBar)
   readonly platform = inject(PlatformService)
+  readonly ngZone = inject(NgZone);
+
   @ViewChild('snav') snav!: MatSidenav
 
 
@@ -81,9 +83,12 @@ export class AppComponent implements OnInit, AfterViewInit {
 
 
   jumpToSection(section: string | null) {
-    console.log({section})
-    if (section)
-      setTimeout(() => document.getElementById(section)?.scrollIntoView({behavior: 'smooth'}), 100)
+    if (section){
+      this.ngZone.runOutsideAngular(() => {
+        setTimeout(() => document.getElementById(section)?.scrollIntoView({behavior: 'smooth'}), 100)
+      });
+    }
+
   }
 
   logout() {

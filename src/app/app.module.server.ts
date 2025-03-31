@@ -3,7 +3,7 @@ import {ServerModule} from '@angular/platform-server';
 import {AppComponent} from './app.component';
 import {AppModule} from './app.module';
 import {AuthHttpInterceptor, AuthService} from "@auth0/auth0-angular";
-import {of} from "rxjs";
+import {EMPTY} from "rxjs";
 import {FlexLayoutServerModule} from "@angular/flex-layout/server";
 import {Socket} from "ngx-socket-io";
 
@@ -24,16 +24,16 @@ import {Socket} from "ngx-socket-io";
     {
       provide: AuthService,
       useValue: {
-        isAuthenticated$: of(false),
-        user$: of(null),
-        loginWithPopup: of(null)
+        isAuthenticated$: EMPTY,
+        user$:  EMPTY,
+        loginWithPopup:  EMPTY,
       }
     },
     {
       provide: Socket,
       useValue: {
-        emit: (_1: string, _2: string) => of(null),
-        fromEvent: (_: string) =>  of(null),
+        emit: (_1: string, _2: string) =>  EMPTY,
+        fromEvent: (_: string) =>   EMPTY,
       }
     }
   ],

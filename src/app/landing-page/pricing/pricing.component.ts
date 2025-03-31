@@ -175,7 +175,6 @@ export class PricingComponent implements AfterViewInit {
   context = {tiers:this.tiers, displayedColumns:this.displayedColumns}
 
   constructor(private backend: BackendService) {
-    console.log([this.context, this.contextMobile1, this.contextMobile2])
   }
 
   login(plan: Plan) {

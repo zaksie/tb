@@ -24,7 +24,9 @@ export class PlatformService implements OnDestroy {
     }
 
   }
-
+  get isServer(): boolean {
+    return !this._isBrowser;
+  }
   get isBrowser(): boolean {
     return this._isBrowser;
   }

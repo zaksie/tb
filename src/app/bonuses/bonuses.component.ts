@@ -35,7 +35,7 @@ export class BonusesComponent implements AfterViewInit {
             const s1 = s0.filter(x => x.trimStart().startsWith(COOKIE_BONUSES))
             const s2 = s1[0].substring(s1[0].indexOf(':') + 1).trim()
             const savedModel: Profiles = JSON.parse(s2)
-            console.log(savedModel)
+            console.log({savedModel})
             this.profiles = savedModel
             this.selectedProfile = Object.keys(this.profiles)[0]
             // this.model.forEach(b => b.assignFrom(savedModel))
@@ -80,7 +80,7 @@ export class BonusesComponent implements AfterViewInit {
 
     onSelectionChange($event: MatSelectChange) {
         this.selectedProfile = $event.value
-        console.log(this.profiles[this.selectedProfile])
+        console.log('selectedProfile:', this.profiles[this.selectedProfile])
     }
 
     addNewProfile() {

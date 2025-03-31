@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {
@@ -15,17 +15,20 @@ import {CryptConfig} from "../crypts/crypts.model";
 import {ServiceName} from "./service-interface";
 import {AuthService, User} from "@auth0/auth0-angular";
 import {TroopConfig} from "../stacker/stacker-data";
+import {PlatformService} from "./platform.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class BackendService {
   readonly dashboards$: Subject<ChestAgg[]> = new Subject<ChestAgg[]>();
+  platform = inject(PlatformService)
 
   constructor(private httpClient: HttpClient, private auth: AuthService) {
-    this.auth.isAuthenticated$.pipe(
-      filter(x => x),
-      switchMap(() => this.getTrackPlayersList())).subscribe()
+    if (this.platform.isBrowser)
+      this.auth.isAuthenticated$.pipe(
+        filter(x => x),
+        switchMap(() => this.getTrackPlayersList())).subscribe()
   }
 
   getChestViewByClanTag(clanTag: string): Observable<ChestCounterResults> {
@@ -137,9 +140,9 @@ export class BackendService {
     }[]>(environment.backend + '/api/v1/account/referral').pipe(map(x => x[0]))
   }
 
-  createReferral() {
-    return this.httpClient.post<{ referral_code: string }>(environment.backend + '/api/v1/account/referral', {})
-  }
+  // createReferral() {
+  //   return this.httpClient.post<{ referral_code: string }>(environment.backend + '/api/v1/account/referral', {})
+  // }
 
   isReferralLinked() {
     return this.httpClient.get<{

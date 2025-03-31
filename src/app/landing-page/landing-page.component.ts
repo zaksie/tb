@@ -85,8 +85,8 @@ export class LandingPageComponent implements OnInit {
 
   onSubmit() {
     console.log('sending...')
-    this.backend.createContactRequest(this.contactFormGroup.value as any as ContactRequest).subscribe(res => {
-      console.log(res)
+    this.backend.createContactRequest(this.contactFormGroup.value as any as ContactRequest).subscribe(contactReq => {
+      console.log({contactReq})
       this.messageSent = true
     })
   }

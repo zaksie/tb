@@ -38,7 +38,7 @@ export class ComingSoonComponent implements AfterViewInit {
     if (this.platform.isBrowser) {
       console.log('getting events from websocker')
       return this.websocket.fromEvent('api/v1/chests').pipe(
-        tap(data => console.log(data)),
+        tap(wsdata => console.log({wsdata})),
         map(data => data.msg)
       )
     } else

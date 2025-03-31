@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, signal, ViewChild} from '@angular/core';
+import {Component, inject, NgZone, OnInit, signal, ViewChild} from '@angular/core';
 import {BonusesObject, Squad} from "../models/troop.model";
 import {intersection, isNumber} from "lodash";
 import {mercenaries, TroopColors, troops} from '../troops.data';
@@ -62,6 +62,7 @@ export class StackerComponent implements OnInit {
   private auth = inject(AuthService)
   readonly dialog = inject(MatDialog);
   readonly platform = inject(PlatformService);
+  readonly ngZone = inject(NgZone)
 
   protected readonly setupTypes = setupTypes;
   readonly ERROR_MSG_01 = `⚠️ Either use 'army' or the 'guardsman/specialist' or the 'ranged/melee/mounted/flying' fields but don't mix them`
@@ -130,7 +131,7 @@ export class StackerComponent implements OnInit {
     const troopConfig = this.troopConfig()
     if (troopConfig.valid.bonus && troopConfig.valid.bonus) {
       const bonusConfigObject = troopConfig.bonusConfigObject
-      console.log(bonusConfigObject)
+      console.log({bonusConfigObject})
       const armyLevels = troopConfig.tiers.filter(x => x.startsWith('G') || x.startsWith('S'))
       // const monsterLevels = troopConfig.selectedLevels.filter(x => x.startsWith('M'))
       const armySquads = calculateStack(armyLevels, bonusConfigObject, troopConfig.leadership)
@@ -282,7 +283,9 @@ export class StackerComponent implements OnInit {
   onStepChange($event: StepperSelectionEvent) {
     if($event.selectedIndex===1){
       console.log('resizing editor')
-      setTimeout(() => window.dispatchEvent(new Event('resize')), 200)
+      this.ngZone.runOutsideAngular(() => {
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 200)
+      });
     }else if($event.selectedIndex===0) {
       console.log(this.troopConfig(), this.setupTypes, this.savedConfigs)
     }

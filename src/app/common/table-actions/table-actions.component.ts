@@ -46,7 +46,6 @@ export class TableActionsComponent {
 
 
   onEdit(mouseEvent: MouseEvent, row: ActionableRow) {
-    console.log(row)
     mouseEvent.stopImmediatePropagation()
     this.edit.emit(row)
   }

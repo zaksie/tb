@@ -22,7 +22,7 @@
     <mat-sidenav #snav [mode]="platform.isMobile() ? 'over' : 'side'"
                  [fixedInViewport]="platform.isMobile()" fixedTopGap="44" opened="true">
       <div class="sidenav">
-        <app-navigator></app-navigator>
+        <app-navigator ngSkipHydration></app-navigator>
         <div class="footer">
           <a href="https://t.me/battle_squire" target="_blank" rel="noopener noreferrer">
             <button mat-raised-button class="telegram-button">

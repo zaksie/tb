@@ -97,7 +97,6 @@ export class ManageChestCounterComponent implements AfterViewInit {
   }
 
   edit(row: ActionableRow) {
-    console.log(row)
     this.openDialog({...row, defaultPointSystem: this.defaultPointSystem})
   }
 

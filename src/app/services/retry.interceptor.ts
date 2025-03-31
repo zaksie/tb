@@ -1,12 +1,15 @@
 import {HttpErrorResponse, HttpInterceptorFn} from '@angular/common/http';
 import {retry, throwError, timer} from "rxjs";
 import {catchError} from "rxjs/operators";
+import {PlatformService} from "./platform.service";
+import {inject} from "@angular/core";
 
 const maxRetries = 5
 const retryDelay = 100
 
 export const retryInterceptor: HttpInterceptorFn = (request, next) => {
-  if (request.headers.has('X-Skip-Retry')) {
+  const platform = inject(PlatformService)
+  if (request.headers.has('X-Skip-Retry') || platform.isServer) {
     return next(request);
   }
 

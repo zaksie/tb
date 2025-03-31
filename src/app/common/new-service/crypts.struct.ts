@@ -40,7 +40,7 @@ export class CryptsForm extends CommonForm {
 
   onInit() {
     const scheduledField = this.inputForm2.get('scheduled')
-    console.log(scheduledField)
+    console.log({scheduledField})
     scheduledField?.valueChanges
       .subscribe((value) => {
         console.log('setting scheduled to ', value)

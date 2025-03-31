@@ -149,7 +149,7 @@ export class Squad {
 
     const featureBonus = this.troop.bonuses.filter(b => secondaryDivisions.includes(b.against))
         .map(b => b.bonus)
-        .reduce((x, acc) => acc += x)
+        .reduce((acc, x) => acc + x)
       / 4
     console.log(`for troop of type ${this.troop.name} total feature bonus is: ${featureBonus}`)
     this.troop.featureBonus = featureBonus
@@ -165,7 +165,6 @@ export class Squad {
       }
     })
 
-    console.log(this.troop.strengthBonus)
   }
 
   private adjustBonuses(bonuses: BonusesObject) {

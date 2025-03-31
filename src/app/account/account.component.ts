@@ -24,7 +24,7 @@ export class AccountDialog {
     this.user$ = this.authService.user$.pipe(
       filter(x => !!x),
       switchMap(user => this.backend.getUserDetails(user)),
-      tap(x => console.log(x))
+      tap(x => console.log('account', x))
     )
   }
 

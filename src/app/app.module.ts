@@ -1,5 +1,5 @@
 import {inject, NgModule} from '@angular/core';
-import {BrowserModule, DomSanitizer, provideClientHydration, withEventReplay} from '@angular/platform-browser';
+import {BrowserModule, DomSanitizer} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -186,7 +186,7 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
     }),
     provideHttpClient(withInterceptors([authHttpInterceptorFn, retryInterceptor]), withFetch()),
     BackendService,
-    provideClientHydration(withEventReplay()),
+    // provideClientHydration(withEventReplay(), withIncrementalHydration()),
     // {provide: APP_BASE_HREF, useValue: '/app'}
   ],
   bootstrap: [AppComponent]

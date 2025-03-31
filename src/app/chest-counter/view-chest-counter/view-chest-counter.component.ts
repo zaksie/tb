@@ -91,7 +91,7 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
         this.exampleClicked()
       });
     const paramTag = this.route.snapshot.params['tag']
-    console.log(paramTag)
+    console.log({paramTag})
     this.getByClanTag(paramTag)
     this.dataSource.sort = this.sort
     this.route.params.subscribe(
@@ -117,9 +117,9 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   }
 
   getByClanTag(clanTag: string) {
-    console.log('setting clantag', clanTag)
+    if (!clanTag || !this.platform.isBrowser) return
     this.currentClanTag = clanTag
-    if (!clanTag) return
+    console.log('getByClanTag ', clanTag)
     this.isLoading.set(true)
     this.backend.getChestViewByClanTag(clanTag).pipe(
       catchError(e => {
@@ -158,7 +158,6 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   }
 
   private _toggleTrackPlayerAuthenticated(row: ChestAgg) {
-    console.log(row)
     row.tracked = !row.tracked
     if (row.tracked)
       this.backend.trackPlayer(row).subscribe()

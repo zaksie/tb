@@ -45,7 +45,6 @@ export class CpClanRunsComponent {
     onSubmit() {
         console.log('submitted')
         this.result = this.calculateSquads()
-        console.log(this.result)
     }
 
     formatLabel(value: number): string {

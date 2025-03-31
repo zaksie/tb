@@ -4,7 +4,7 @@ import {ChestAgg} from "../models/clan-data.model";
 import {FeatureModel} from "../landing-page/feature/feature.model";
 import features from '../../assets/features.json'
 import {AuthService} from "@auth0/auth0-angular";
-import {filter, tap} from "rxjs";
+import {filter, switchMap, tap} from "rxjs";
 import {MatTreeNestedDataSource} from "@angular/material/tree";
 import {MatIconRegistry} from "@angular/material/icon";
 import {DomSanitizer} from "@angular/platform-browser";
@@ -34,11 +34,10 @@ export class NavigatorComponent {
     )
     this.addDisabledFunc({children: this.features} as any as FeatureModel)
     this.dataSource.data = this.features
-    this.backend.dashboards$
-      .pipe(tap(x => console.log('dashboard update', x)))
-      .subscribe(dashboards => this.updateTree(dashboards))
     this.auth.isAuthenticated$.pipe(
       filter(isAuthenticated => isAuthenticated),
+      switchMap(() => this.backend.dashboards$),
+        tap(dashboards => this.updateTree(dashboards))
     ).subscribe(() => this.isAuthenticated.set(true))
 
   }
