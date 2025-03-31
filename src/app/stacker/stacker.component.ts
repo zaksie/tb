@@ -113,14 +113,15 @@ export class StackerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const isFirstTime = localStorage.getItem("StackerComponent.exampleClicked") !== 'true';
+      const isFirstTime = this.platform.isBrowser ?
+        localStorage?.getItem("StackerComponent.exampleClicked") !== 'true' : false;
 
-    if(isFirstTime) {
-      // const snackBarRef = this._snackBar.open('See our YouTube tutorial', 'GO', {duration: 1000 * 10});
-      // snackBarRef.onAction().subscribe(() => {
-      //   this.router.navigate(['youtube'])
-      // });
-    }
+      if (isFirstTime) {
+        // const snackBarRef = this._snackBar.open('See our YouTube tutorial', 'GO', {duration: 1000 * 10});
+        // snackBarRef.onAction().subscribe(() => {
+        //   this.router.navigate(['youtube'])
+        // });
+      }
   }
 
   calculateStacks() {

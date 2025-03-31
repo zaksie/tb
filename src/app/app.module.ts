@@ -46,19 +46,18 @@ import {DashboardComponent} from './chest-counter/dashboard/dashboard.component'
 import {MatGridListModule} from '@angular/material/grid-list';
 import {NavigatorComponent} from './navigator/navigator.component';
 import {MatTreeModule} from '@angular/material/tree';
-import {
-  ManageChestCounterComponent
-} from "./chest-counter/manage-chest-counter/manage-chest-counter.component";
+import {ManageChestCounterComponent} from "./chest-counter/manage-chest-counter/manage-chest-counter.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {
   MatChip,
-  MatChipAvatar, MatChipGrid,
+  MatChipAvatar,
+  MatChipGrid,
   MatChipListbox,
   MatChipOption,
-  MatChipRemove, MatChipRow,
+  MatChipRemove,
+  MatChipRow,
   MatChipSet
 } from "@angular/material/chips";
-import {authenticationErrorInterceptor} from "./services/authentication-error.interceptor";
 import {MonacoEditorModule} from "ngx-monaco-editor-v2";
 import {MercExchangeComponent} from "./merc-exchange/merc-exchange.component";
 import {CryptsComponent} from "./crypts/crypts.component";
@@ -79,7 +78,7 @@ import {CollabComponent} from "./landing-page/collab/collab.component";
 import {ReferralLinkComponent} from "./landing-page/collab/referral-link/referral-link.component";
 import {retryInterceptor} from "./services/retry.interceptor";
 
-const authorizationParams = {
+export const authorizationParams = {
   scope: "openid profile email",
   audience: 'https://dev-5ag1lfabqyttq1lj.us.auth0.com/api/v2/',
   redirect_uri: environment.frontend,
@@ -184,7 +183,7 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
           '/api/v1/crypts*'].map(x => environment.backend + x)
       }
     }),
-    provideHttpClient(withInterceptors([authenticationErrorInterceptor, authHttpInterceptorFn, retryInterceptor]), withFetch()),
+    provideHttpClient(withInterceptors([authHttpInterceptorFn, retryInterceptor]), withFetch()),
     BackendService,
     provideClientHydration(withEventReplay()),
     // {provide: APP_BASE_HREF, useValue: '/app'}

@@ -13,6 +13,7 @@ import {AppGenericDialog} from "../../common/app-generic-dialog/app-generic-dial
 import {Socket} from "ngx-socket-io";
 import {v4 as uuidv4} from 'uuid';
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {PlatformService} from "../../services/platform.service";
 
 
 @Component({
@@ -28,7 +29,8 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   tasks: GenericTask[] = [];
   private _currentClanTag: string = '';
   private _currentClanTagSubscription!: Subscription
-  isFirstTime: boolean = localStorage.getItem("ViewChestCounterComponent.exampleClicked") !== 'true';
+  platform = inject(PlatformService)
+  isFirstTime: boolean = this.platform.isBrowser ? localStorage.getItem("ViewChestCounterComponent.exampleClicked") !== 'true' : false
 
   get currentClanTag(): string {
     return this._currentClanTag
@@ -216,7 +218,8 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   }
 
   exampleClicked() {
-    // localStorage.setItem("ViewChestCounterComponent.exampleClicked", 'true')
+    if(this.platform.isBrowser)
+      localStorage?.setItem("ViewChestCounterComponent.exampleClicked", 'true')
     this.router.navigate(['chests/view', {tag: 'FAR'}]).then(() => this.isFirstTime = false)
   }
 }
