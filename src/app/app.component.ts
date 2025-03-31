@@ -4,7 +4,7 @@ import {AuthService} from "@auth0/auth0-angular";
 import features from '../assets/features.json'
 import {FeatureModel} from "./landing-page/feature/feature.model";
 import {BackendService} from "./services/backend.service";
-import {filter, switchMap, take, tap} from "rxjs";
+import {filter, first, switchMap, take, tap} from "rxjs";
 import {MatSidenav} from "@angular/material/sidenav";
 import {MatDialog} from "@angular/material/dialog";
 import {AccountDialog} from "./account/account.component";
@@ -36,10 +36,11 @@ export class AppComponent implements OnInit, AfterViewInit {
               private meta: Meta, private titleService: Title, private activatedRoute: ActivatedRoute) {
 
     const appRef = inject(ApplicationRef)
-    appRef.isStable.subscribe(stable => {
+    appRef.isStable.pipe(
+      first(stable => stable)
+    ).subscribe(stable => {
       console.log('Application stable:', stable);
-      if (stable)
-        this.auth.isAuthenticated$.pipe(take(1), filter(x => !x)).subscribe(() => this.openSnackBar())
+      this.auth.isAuthenticated$.pipe(take(1), filter(x => !x)).subscribe(() => this.openSnackBar())
     });
   }
 
