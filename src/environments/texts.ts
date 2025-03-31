@@ -2,9 +2,22 @@ export const texts = {
   title: 'Battle Squire - TotalBattle Helper',
   description: 'Battle Squire offer chest counters for clans in the game as well as auto crypter, stack calculator against epic monsters.'
 }
+export const titles = {
+  demos: {
+    crypts: 'TotalBattle Auto-Crypter Demo',
+    chestCounter: 'TotalBattle Chest Counter Demo',
+    stacker: 'TotalBattle Calculator Demo'
+  },
+  stacker: 'TotalBattle Calculator',
+  comingSoon: 'Coming Soon',
+  landingPage: 'Home',
+  viewChests: 'View Chests for TotalBattle ',
+  crypts: 'Auto-Crypter Squire for TotalBattle at your service!',
+  chestCounter: 'Manage TotalBattle Chest Counter',
+  favorites: 'Player dashboard for TotalBattle',
+}
 
-
-export const telegramIcon = `<svg width="20" heigth="20" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+export const telegramIcon = `<svg width="20" height="20" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
                   <defs>
                     <linearGradient id="e" x1=".667" x2=".417" y1=".167" y2=".75">
                       <stop offset="0" stop-color="#37aee2"/>

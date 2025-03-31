@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, inject, OnDestroy, signal, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject, NgZone, OnDestroy, signal, ViewChild} from '@angular/core';
 import {MatSort} from "@angular/material/sort";
 import {BackendService} from "../../services/backend.service";
 import {ChestAgg, ChestCounter, ChestCounterResults, GenericTask} from "../../models/clan-data.model";
@@ -14,13 +14,16 @@ import {Socket} from "ngx-socket-io";
 import {v4 as uuidv4} from 'uuid';
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {PlatformService} from "../../services/platform.service";
+import {Title} from "@angular/platform-browser";
+import {titles} from "../../../environments/texts";
 
 
 @Component({
   selector: 'app-view-chest-counter',
   templateUrl: './view-chest-counter.component.html',
   styleUrl: './view-chest-counter.component.scss',
-  standalone: false
+  standalone: false,
+  //host: {ngSkipHydration: 'true'},
 })
 export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   public dataSource = new MatTableDataSource<ChestAgg>([]);
@@ -67,6 +70,8 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   websocket = inject(Socket)
 
   constructor(private router: Router, private route: ActivatedRoute, private backend: BackendService, private auth: AuthService) {
+    const titleService = inject(Title)
+    titleService.setTitle(titles.viewChests);
   }
 
   ngOnDestroy(): void {
@@ -82,18 +87,18 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   getOptionText: ((value: any) => string) | null = (value: any) => value ? ['K', value.kingdom, ' ', value.tag].join('') : ''
 
   private _snackBar = inject(MatSnackBar);
+  readonly ngZone = inject(NgZone)
 
 
   ngAfterViewInit() {
-      const duration = this.isFirstTime ? 1000* 9999999 : 1000 * 5
-      const snackBarRef = this._snackBar.open('See an example clan', 'GO', {duration});
-      snackBarRef.onAction().subscribe(() => {
-        this.exampleClicked()
-      });
+    const duration = this.isFirstTime ? 1000 * 9999999 : 1000 * 5
+    const snackBarRef = this._snackBar.open('See an example clan', 'GO', {duration});
+    snackBarRef.onAction().subscribe(() => {
+      this.exampleClicked()
+    });
     const paramTag = this.route.snapshot.params['tag']
     console.log({paramTag})
     this.getByClanTag(paramTag)
-    this.dataSource.sort = this.sort
     this.route.params.subscribe(
       params => {
         const tag = params['tag'];
@@ -101,14 +106,16 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
         this.getByClanTag(tag)
       }
     );
-    this.chestCounters$ = this.auth.isAuthenticated$.pipe(
-      filter(isAuthenticated => isAuthenticated),
-      switchMap(() => this.backend.getChestCounters()),
-      catchError(e => {
-        console.error(e)
-        return of([])
-      })
-    )
+    this.ngZone.runOutsideAngular(() => {
+      this.chestCounters$ = this.auth.isAuthenticated$.pipe(
+        filter(isAuthenticated => isAuthenticated),
+        switchMap(() => this.backend.getChestCounters()),
+        catchError(e => {
+          console.error(e)
+          return of([])
+        })
+      )
+    })
     // this.searchResults$ = this.clanTagControl.valueChanges.pipe(
     //   startWith(''),
     //   debounceTime(300),
@@ -217,7 +224,7 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
   }
 
   exampleClicked() {
-    if(this.platform.isBrowser)
+    if (this.platform.isBrowser)
       localStorage?.setItem("ViewChestCounterComponent.exampleClicked", 'true')
     this.router.navigate(['chests/view', {tag: 'FAR'}]).then(() => this.isFirstTime = false)
   }

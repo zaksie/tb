@@ -1,4 +1,4 @@
-import {inject, Injectable} from '@angular/core';
+import {inject, Injectable, NgZone} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {
@@ -23,12 +23,14 @@ import {PlatformService} from "./platform.service";
 export class BackendService {
   readonly dashboards$: Subject<ChestAgg[]> = new Subject<ChestAgg[]>();
   platform = inject(PlatformService)
+  readonly ngZone = inject(NgZone)
 
   constructor(private httpClient: HttpClient, private auth: AuthService) {
-    if (this.platform.isBrowser)
+    this.ngZone.runOutsideAngular(() => {
       this.auth.isAuthenticated$.pipe(
         filter(x => x),
         switchMap(() => this.getTrackPlayersList())).subscribe()
+    })
   }
 
   getChestViewByClanTag(clanTag: string): Observable<ChestCounterResults> {

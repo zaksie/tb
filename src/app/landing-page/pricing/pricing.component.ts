@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, inject} from '@angular/core';
+import {AfterViewInit, Component, inject, NgZone} from '@angular/core';
 import {AuthService} from "@auth0/auth0-angular";
 import {MatDialog} from "@angular/material/dialog";
 import {MatTableDataSource} from "@angular/material/table";
@@ -42,27 +42,31 @@ export interface Pricing {
   selector: 'app-pricing',
   standalone: false,
   templateUrl: './pricing.component.html',
-  styleUrl: './pricing.component.scss'
+  styleUrl: './pricing.component.scss',
+  // host: {ngSkipHydration: 'true'},
 })
 export class PricingComponent implements AfterViewInit {
   isAuthenticated: boolean = false
   selectedPlan: Plan = Plan.None;
+  readonly ngZone = inject(NgZone)
 
   ngAfterViewInit(): void {
-    this.auth.isAuthenticated$.pipe(
-      filter(x => x),
-      tap(() => {
-        this.isAuthenticated = true
-        console.log('getting plan...')
-      }),
-      switchMap(() => this.backend.getPlan()),
-      catchError(error => {
-        console.error("Error in PRICING", error)
-        return of ({plan: 'None'})
+    this.ngZone.runOutsideAngular(() => {
+      this.auth.isAuthenticated$.pipe(
+        filter(x => x),
+        tap(() => {
+          this.isAuthenticated = true
+          console.log('getting plan...')
+        }),
+        switchMap(() => this.backend.getPlan()),
+        catchError(error => {
+          console.error("Error in PRICING", error)
+          return of({plan: 'None'})
+        })
+      ).subscribe((res: { plan: string }) => {
+        if (res && res.plan)
+          this.selectedPlan = Plan[res.plan as keyof typeof Plan]
       })
-    ).subscribe((res: {plan: string}) => {
-      if (res && res.plan)
-      this.selectedPlan = Plan[res.plan as keyof typeof Plan]
     })
   }
 

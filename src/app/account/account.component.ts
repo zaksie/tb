@@ -8,7 +8,7 @@ import {BackendService} from "../services/backend.service";
   selector: 'app-account',
   standalone: false,
   templateUrl: './account.component.html',
-  styleUrl: './account.component.scss'
+  styleUrl: './account.component.scss',
 })
 export class AccountDialog {
   private backend = inject(BackendService);

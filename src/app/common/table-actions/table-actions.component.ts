@@ -6,7 +6,8 @@ import {ActionableRow, ServiceInterface, ServiceName} from "../../services/servi
   selector: 'app-table-actions',
   standalone: false,
   templateUrl: './table-actions.component.html',
-  styleUrl: './table-actions.component.scss'
+  styleUrl: './table-actions.component.scss',
+  //host: {ngSkipHydration: 'true'},
 })
 export class TableActionsComponent {
   protected readonly ServiceInterface = ServiceInterface;

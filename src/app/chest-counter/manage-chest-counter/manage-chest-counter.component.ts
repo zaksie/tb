@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, inject, model, signal, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject, model, NgZone, signal, ViewChild} from '@angular/core';
 import {MatPaginator} from "@angular/material/paginator";
 import {ChestCounter, PointSystem} from "../../models/clan-data.model";
 import {BackendService} from "../../services/backend.service";
@@ -10,13 +10,16 @@ import {catchError} from "rxjs/operators";
 import {AuthService} from "@auth0/auth0-angular";
 import {NewServiceComponent} from "../../common/new-service/new-service.component";
 import {ChestCounterForm} from "../../common/new-service/chest-counter.struct";
+import {Title} from "@angular/platform-browser";
+import {titles} from "../../../environments/texts";
 
 
 @Component({
   selector: 'app-manage-chest-counter',
   templateUrl: './manage-chest-counter.component.html',
   styleUrl: './manage-chest-counter.component.scss',
-  standalone: false
+  standalone: false,
+  //host: {ngSkipHydration: 'true'},
 })
 export class ManageChestCounterComponent implements AfterViewInit {
   protected readonly ServiceInterface = ServiceInterface;
@@ -36,6 +39,7 @@ export class ManageChestCounterComponent implements AfterViewInit {
   private defaultPointSystem!: PointSystem[];
   isLoading = signal(false);
   expandedRow: ChestCounter | null = null
+  readonly ngZone = inject(NgZone)
 
   isExpanded(row: ChestCounter) {
     return this.expandedRow === row;
@@ -47,6 +51,8 @@ export class ManageChestCounterComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(protected backend: BackendService, private auth: AuthService) {
+    const titleService = inject(Title)
+    titleService.setTitle(titles.chestCounter);
   }
 
 
@@ -82,9 +88,11 @@ export class ManageChestCounterComponent implements AfterViewInit {
 
 
   ngAfterViewInit() {
-    this.auth.isAuthenticated$.pipe(
-      filter(x => x)
-    ).subscribe(() => this.fetch())
+    this.ngZone.runOutsideAngular(() => {
+      this.auth.isAuthenticated$.pipe(
+        filter(x => x)
+      ).subscribe(() => this.fetch())
+    })
     this.dataSource.paginator = this.paginator;
   }
 

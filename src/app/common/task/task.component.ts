@@ -5,7 +5,8 @@ import {GenericTask} from "../../models/clan-data.model";
   selector: 'app-task',
   standalone: false,
   templateUrl: './task.component.html',
-  styleUrl: './task.component.scss'
+  styleUrl: './task.component.scss',
+  //host: {ngSkipHydration: 'true'},
 })
 export class TaskComponent {
   @Input() task!: GenericTask

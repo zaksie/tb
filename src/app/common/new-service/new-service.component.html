@@ -50,9 +50,9 @@
     <mat-step label="Settings" [stepControl]="service.inputForm2" editable="true" class="step-container">
       <div class="form-content">
         @if (serviceName === CHEST_COUNTER) {
-          <ng-container *ngTemplateOutlet="ccForm2"></ng-container>
+          <ng-container  *ngTemplateOutlet="ccForm2"></ng-container>
         } @else if (serviceName === CRYPTS) {
-          <ng-container *ngTemplateOutlet="cryptsForm2"></ng-container>
+          <ng-container  *ngTemplateOutlet="cryptsForm2"></ng-container>
         }
       </div>
       <div class="actions">
@@ -63,9 +63,9 @@
     </mat-step>
     <mat-step [label]="step3" class="step-container">
       @if (serviceName === CHEST_COUNTER) {
-        <ng-container *ngTemplateOutlet="ccForm3"></ng-container>
+        <ng-container  *ngTemplateOutlet="ccForm3"></ng-container>
       } @else if (serviceName === CRYPTS) {
-        <ng-container *ngTemplateOutlet="cryptsForm3"></ng-container>
+        <ng-container  *ngTemplateOutlet="cryptsForm3"></ng-container>
       }
       <div class="actions">
         <button mat-button mat-dialog-close>Cancel</button>

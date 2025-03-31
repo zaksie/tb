@@ -6,6 +6,8 @@ import {AuthHttpInterceptor, AuthService} from "@auth0/auth0-angular";
 import {EMPTY} from "rxjs";
 import {FlexLayoutServerModule} from "@angular/flex-layout/server";
 import {Socket} from "ngx-socket-io";
+import {retryInterceptor} from "./services/retry.interceptor";
+import {BackendService} from "./services/backend.service";
 
 @NgModule({
   imports: [
@@ -16,24 +18,31 @@ import {Socket} from "ngx-socket-io";
   bootstrap: [AppComponent],
   providers: [
     {
-      provide:  AuthHttpInterceptor,
+      provide: AuthHttpInterceptor,
       useValue: {
         intercept: (req: any, next: any) => next.handle(req)
-      }
+      },
+    }, {
+      provide: retryInterceptor,
+      useFactory: (req: any, next: any) => next.handle(req)
+    },
+    {
+      provide: BackendService,
+      useValue: {}
     },
     {
       provide: AuthService,
       useValue: {
         isAuthenticated$: EMPTY,
-        user$:  EMPTY,
-        loginWithPopup:  EMPTY,
+        user$: EMPTY,
+        loginWithPopup: EMPTY,
       }
     },
     {
       provide: Socket,
       useValue: {
-        emit: (_1: string, _2: string) =>  EMPTY,
-        fromEvent: (_: string) =>   EMPTY,
+        emit: (_1: string, _2: string) => EMPTY,
+        fromEvent: (_: string) => EMPTY,
       }
     }
   ],

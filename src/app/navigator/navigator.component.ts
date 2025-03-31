@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, inject, NgZone, signal} from '@angular/core';
 import {BackendService} from "../services/backend.service";
 import {ChestAgg} from "../models/clan-data.model";
 import {FeatureModel} from "../landing-page/feature/feature.model";
@@ -15,7 +15,8 @@ import {Router} from "@angular/router";
   selector: 'app-navigator',
   templateUrl: './navigator.component.html',
   styleUrl: './navigator.component.scss',
-  standalone: false
+  standalone: false,
+  //host: {ngSkipHydration: 'true'},
 })
 export class NavigatorComponent {
   readonly features: any[] = features.filter(feature => feature.visible.includes('nav'))
@@ -24,6 +25,8 @@ export class NavigatorComponent {
   isAuthenticated = signal(false)
   dataSource = new MatTreeNestedDataSource<any>();
   router = inject(Router)
+  readonly ngZone = inject(NgZone)
+
   constructor(public auth: AuthService,
               public backend: BackendService) {
     const iconRegistry = inject(MatIconRegistry);
@@ -34,12 +37,14 @@ export class NavigatorComponent {
     )
     this.addDisabledFunc({children: this.features} as any as FeatureModel)
     this.dataSource.data = this.features
-    this.auth.isAuthenticated$.pipe(
-      filter(isAuthenticated => isAuthenticated),
-      switchMap(() => this.backend.dashboards$),
+    this.updateTree([])
+    this.ngZone.runOutsideAngular(() => {
+      this.auth.isAuthenticated$.pipe(
+        filter(isAuthenticated => isAuthenticated),
+        switchMap(() => this.backend.dashboards$),
         tap(dashboards => this.updateTree(dashboards))
-    ).subscribe(() => this.isAuthenticated.set(true))
-
+      ).subscribe(() => this.isAuthenticated.set(true))
+    })
   }
 
   addDisabledFunc(feature: FeatureModel) {

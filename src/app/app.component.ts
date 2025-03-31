@@ -1,10 +1,10 @@
-import {AfterViewInit, Component, inject, NgZone, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ApplicationRef, Component, inject, NgZone, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {AuthService} from "@auth0/auth0-angular";
 import features from '../assets/features.json'
 import {FeatureModel} from "./landing-page/feature/feature.model";
 import {BackendService} from "./services/backend.service";
-import {filter, Observable, switchMap, tap} from "rxjs";
+import {filter, switchMap, take, tap} from "rxjs";
 import {MatSidenav} from "@angular/material/sidenav";
 import {MatDialog} from "@angular/material/dialog";
 import {AccountDialog} from "./account/account.component";
@@ -22,7 +22,6 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 })
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'Battle Squire';
-  isAuthenticated$: Observable<boolean>;
   features: FeatureModel[] = features;
   readonly dialog = inject(MatDialog);
   readonly _snackBar = inject(MatSnackBar)
@@ -30,12 +29,18 @@ export class AppComponent implements OnInit, AfterViewInit {
   readonly ngZone = inject(NgZone);
 
   @ViewChild('snav') snav!: MatSidenav
+  isAuthenticated: boolean = false;
 
 
-  constructor(public router: Router, public authService: AuthService, public backend: BackendService,
+  constructor(public router: Router, public auth: AuthService, public backend: BackendService,
               private meta: Meta, private titleService: Title, private activatedRoute: ActivatedRoute) {
 
-    this.isAuthenticated$ = this.authService.isAuthenticated$
+    const appRef = inject(ApplicationRef)
+    appRef.isStable.subscribe(stable => {
+      console.log('Application stable:', stable);
+      if (stable)
+        this.auth.isAuthenticated$.pipe(take(1), filter(x => !x)).subscribe(() => this.openSnackBar())
+    });
   }
 
   updateMetaTags() {
@@ -45,7 +50,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.meta.addTag({name: 'description', content: texts.description});
     this.meta.addTag({
       name: 'keywords',
-      content: 'Chest counter, Chest tracker, epic monsters, totalbattle math, totalbattle, total battle, stack calculator, autocrypter, automatic crypting, autocrypting, automation for crypts'
+      content: 'Chest counter, Chest tracker, epic monsters, totalbattle math, totalbattle, total battle, stack calculator, totalbattle calculator, total battle calculator, autocrypter, automatic crypting, autocrypting, automation for crypts'
     });
 
     // Open Graph Meta Tags
@@ -56,14 +61,18 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.updateMetaTags();
-    const snackBarRef = this.openSnackBar()
-    this.isAuthenticated$.pipe(
-      filter(x => x),
-      tap(() => snackBarRef.dismiss()),
-      switchMap(() => this.backend.isReferralLinked()),
-      filter(x => !x)
+
+    this.ngZone.runOutsideAngular(() => {
+      this.auth.isAuthenticated$.pipe(
+        filter(x => x),
+        tap(() => {
+          this.isAuthenticated = true
+        }),
+        switchMap(() => this.backend.isReferralLinked()),
+        filter(x => !x)
       )
-      .subscribe(() => this.openReferralDialog())
+        .subscribe(() => this.openReferralDialog())
+    })
   }
 
 
@@ -83,7 +92,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
 
   jumpToSection(section: string | null) {
-    if (section){
+    if (section) {
       this.ngZone.runOutsideAngular(() => {
         setTimeout(() => document.getElementById(section)?.scrollIntoView({behavior: 'smooth'}), 100)
       });
@@ -92,7 +101,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   logout() {
-    this.authService.logout();
+    this.auth.logout();
   }
 
 
@@ -111,9 +120,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private openSnackBar() {
-    const duration =  1000 * 9999999
+    const duration = 1000 * 10
     const snackBarRef = this._snackBar.open('Register or log in now!', 'LOGIN', {duration});
-    snackBarRef.onAction().pipe(switchMap(() => this.authService.loginWithPopup())).subscribe()
+    snackBarRef.onAction().pipe(switchMap(() => this.auth.loginWithPopup())).subscribe()
     return snackBarRef
   }
 }

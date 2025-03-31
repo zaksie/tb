@@ -16,10 +16,11 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
 import {AppGenericDialog} from "../common/app-generic-dialog/app-generic-dialog";
 import {catchError} from "rxjs/operators";
-import {DomSanitizer} from "@angular/platform-browser";
+import {DomSanitizer, Title} from "@angular/platform-browser";
 import {MatIconRegistry} from "@angular/material/icon";
 import {PlatformService} from "../services/platform.service";
 import {StepperSelectionEvent} from "@angular/cdk/stepper";
+import {titles} from "../../environments/texts";
 
 const RESET_SETTINGS_SVG = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                  fill="#e3e3e3">
@@ -31,7 +32,7 @@ const RESET_SETTINGS_SVG = `<svg xmlns="http://www.w3.org/2000/svg" height="24px
   selector: 'app-stacker',
   templateUrl: './stacker.component.html',
   styleUrls: ['./stacker.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class StackerComponent implements OnInit {
   protected readonly troops: Squad[] = troops.map(t => new Squad(t, true));
@@ -77,15 +78,19 @@ export class StackerComponent implements OnInit {
   });
 
   constructor() {
+    const titleService = inject(Title)
+    titleService.setTitle(titles.stacker);
     const iconRegistry = inject(MatIconRegistry);
     const sanitizer = inject(DomSanitizer);
     iconRegistry.addSvgIconLiteral('reset_settings', sanitizer.bypassSecurityTrustHtml(RESET_SETTINGS_SVG));
 
+    this.ngZone.runOutsideAngular(() => {
+      this.auth.isAuthenticated$.pipe(
+        filter(x => x),
+        switchMap(() => this.fetch())
+      ).subscribe()
+    })
 
-    this.auth.isAuthenticated$.pipe(
-      filter(x => x),
-      switchMap(() => this.fetch())
-    ).subscribe()
     let snackBarRef: MatSnackBarRef<any>
     this.errors$.pipe(
       tap(error => {
@@ -114,6 +119,7 @@ export class StackerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
       const isFirstTime = this.platform.isBrowser ?
         localStorage?.getItem("StackerComponent.exampleClicked") !== 'true' : false;
 

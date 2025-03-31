@@ -6,6 +6,8 @@ import {AuthService} from "@auth0/auth0-angular";
 import {BackendService} from "../../services/backend.service";
 import {of, switchMap, tap} from "rxjs";
 import {ChestAgg, DashboardTasks} from "../../models/clan-data.model";
+import {Title} from "@angular/platform-browser";
+import {titles} from "../../../environments/texts";
 
 export enum DashboardView {
   TASKS = 1
@@ -15,7 +17,8 @@ export enum DashboardView {
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
-  standalone: false
+  standalone: false,
+  //host: {ngSkipHydration: 'true'},
 })
 export class DashboardComponent implements OnInit {
   public _playerName!: string | null
@@ -37,7 +40,8 @@ export class DashboardComponent implements OnInit {
   private breakpointObserver = inject(BreakpointObserver);
 
   constructor(private route: ActivatedRoute, private authService: AuthService, private backend: BackendService) {
-
+    const titleService = inject(Title)
+    titleService.setTitle(titles.favorites);
   }
 
   ngOnInit(): void {

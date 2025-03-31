@@ -15,7 +15,8 @@ declare var document: any;
   selector: 'app-landing-page',
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.scss'],
-  standalone: false
+  standalone: false,
+  //host: {ngSkipHydration: 'true'},
 })
 export class LandingPageComponent implements OnInit {
   private renderer = inject(Renderer2)

@@ -22,7 +22,8 @@ export interface AppGenericDialogData {
   selector: 'app-generic-dialog',
   standalone: false,
   templateUrl: './app-generic-dialog.html',
-  styleUrl: './app-generic-dialog.scss'
+  styleUrl: './app-generic-dialog.scss',
+  //host: {ngSkipHydration: 'true'},
 })
 export class AppGenericDialog implements AfterViewInit, OnInit {
   readonly defaultData = {

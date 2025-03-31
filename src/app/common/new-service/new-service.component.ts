@@ -17,7 +17,8 @@ type DialogData = (ChestCounter | CryptConfig) & { serviceName: string }
   selector: 'app-new-service',
   standalone: false,
   templateUrl: './new-service.component.html',
-  styleUrl: './new-service.component.scss'
+  styleUrl: './new-service.component.scss',
+  // host: {ngSkipHydration: 'true'},
 })
 export class NewServiceComponent implements OnInit {
 

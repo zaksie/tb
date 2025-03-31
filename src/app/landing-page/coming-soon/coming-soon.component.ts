@@ -2,14 +2,17 @@ import {AfterViewInit, Component, inject} from '@angular/core';
 import {Location} from "@angular/common";
 import {HttpClient} from "@angular/common/http";
 import {Socket} from "ngx-socket-io";
-import {map, of, tap} from "rxjs";
+import {map, tap} from "rxjs";
 import {PlatformService} from "../../services/platform.service";
+import {Title} from "@angular/platform-browser";
+import {titles} from "../../../environments/texts";
 
 @Component({
   selector: 'app-coming-soon',
   standalone: false,
   templateUrl: './coming-soon.component.html',
-  styleUrl: './coming-soon.component.scss'
+  styleUrl: './coming-soon.component.scss',
+  //host: {ngSkipHydration: 'true'},
 })
 export class ComingSoonComponent implements AfterViewInit {
 
@@ -18,6 +21,10 @@ export class ComingSoonComponent implements AfterViewInit {
   websocket = inject(Socket)
   platform = inject(PlatformService)
 
+  constructor() {
+    const titleService = inject(Title)
+    titleService.setTitle(titles.comingSoon);
+  }
   back() {
     this._location.back()
   }
@@ -28,21 +35,17 @@ export class ComingSoonComponent implements AfterViewInit {
   }
 
   sendMessage(msg: string) {
-    if (this.platform.isBrowser) {
       this.websocket.emit('message', msg);
       this.websocket.emit('identity', msg);
-    }
   }
 
   getMessage() {
-    if (this.platform.isBrowser) {
+
       console.log('getting events from websocker')
       return this.websocket.fromEvent('api/v1/chests').pipe(
         tap(wsdata => console.log({wsdata})),
         map(data => data.msg)
       )
-    } else
-      return of('')
   }
 
 }

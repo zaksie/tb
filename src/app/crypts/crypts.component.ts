@@ -1,4 +1,13 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, inject, model, signal, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  model,
+  NgZone,
+  signal,
+  ViewChild
+} from '@angular/core';
 import {MatPaginator} from "@angular/material/paginator";
 import {BackendService} from "../services/backend.service";
 import {MatDialog} from "@angular/material/dialog";
@@ -10,6 +19,8 @@ import {catchError} from "rxjs/operators";
 import {AuthService} from "@auth0/auth0-angular";
 import {ChestCounter} from "../models/clan-data.model";
 import {NewServiceComponent} from "../common/new-service/new-service.component";
+import {Title} from "@angular/platform-browser";
+import {titles} from "../../environments/texts";
 
 
 @Component({
@@ -18,7 +29,7 @@ import {NewServiceComponent} from "../common/new-service/new-service.component";
   styleUrl: './crypts.component.scss',
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
-
+  //host: {ngSkipHydration: 'true'},
 })
 export class CryptsComponent implements AfterViewInit {
   readonly columnsMobile: string[] = ['username', 'progress', 'status', 'expand'];
@@ -29,6 +40,7 @@ export class CryptsComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   readonly isLoading = signal(false);
   expandedRow: ChestCounter | null = null
+  readonly ngZone = inject(NgZone)
 
   isExpanded(row: ChestCounter) {
     return this.expandedRow === row;
@@ -39,6 +51,8 @@ export class CryptsComponent implements AfterViewInit {
   }
 
   constructor(protected backend: BackendService, private auth: AuthService) {
+    const titleService = inject(Title)
+    titleService.setTitle(titles.crypts);
   }
 
   openDialog(data: any = {low: 1, high: 35, start: 1, end: 6}): void {
@@ -69,10 +83,12 @@ export class CryptsComponent implements AfterViewInit {
 
 
   ngAfterViewInit() {
-    this.auth.isAuthenticated$.pipe(
-      filter(x => x)
-    ).subscribe(() => this.fetch())
-    this.dataSource.paginator = this.paginator;
+    this.ngZone.runOutsideAngular(() => {
+      this.auth.isAuthenticated$.pipe(
+        filter(x => x)
+      ).subscribe(() => this.fetch())
+      this.dataSource.paginator = this.paginator;
+    })
   }
 
   populateData(data: CryptConfig[]) {
