@@ -45,11 +45,6 @@
   </mat-toolbar>
   <br>
   <div class="table-container mat-elevation-z8">
-    <ng-template #loading>
-      <div class="example-loading-shade">
-        <mat-spinner [diameter]="40"></mat-spinner>
-      </div>
-    </ng-template>
     <div class="example-loading-shade" *ngIf="isLoading()">
       <mat-spinner [diameter]="40"></mat-spinner>
     </div>

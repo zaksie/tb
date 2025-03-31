@@ -77,6 +77,7 @@ import {ClanNameValidatorDirective} from "./common/new-service/clan-name-validat
 import {NewServiceComponent} from "./common/new-service/new-service.component";
 import {CollabComponent} from "./landing-page/collab/collab.component";
 import {ReferralLinkComponent} from "./landing-page/collab/referral-link/referral-link.component";
+import {retryInterceptor} from "./services/retry.interceptor";
 
 const authorizationParams = {
   scope: "openid profile email",
@@ -183,7 +184,7 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
           '/api/v1/crypts*'].map(x => environment.backend + x)
       }
     }),
-    provideHttpClient(withInterceptors([authenticationErrorInterceptor, authHttpInterceptorFn]), withFetch()),
+    provideHttpClient(withInterceptors([authenticationErrorInterceptor, authHttpInterceptorFn, retryInterceptor]), withFetch()),
     BackendService,
     provideClientHydration(withEventReplay()),
     // {provide: APP_BASE_HREF, useValue: '/app'}

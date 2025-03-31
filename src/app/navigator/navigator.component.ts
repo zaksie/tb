@@ -8,6 +8,7 @@ import {filter, tap} from "rxjs";
 import {MatTreeNestedDataSource} from "@angular/material/tree";
 import {MatIconRegistry} from "@angular/material/icon";
 import {DomSanitizer} from "@angular/platform-browser";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -22,7 +23,7 @@ export class NavigatorComponent {
   childrenAccessor = (node: FeatureModel) => node.children ?? [];
   isAuthenticated = signal(false)
   dataSource = new MatTreeNestedDataSource<any>();
-
+  router = inject(Router)
   constructor(public auth: AuthService,
               public backend: BackendService) {
     const iconRegistry = inject(MatIconRegistry);
@@ -77,5 +78,10 @@ export class NavigatorComponent {
     const step2 = {...step1, ...ps}
     this.addDisabledFunc(step2)
     return step2
+  }
+
+  navigateTo(node: any) {
+    if (node.children && node.children.length > 0) return;
+    this.router.navigate([node.path])
   }
 }

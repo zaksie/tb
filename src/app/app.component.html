@@ -19,7 +19,6 @@
       </span>
     </div>
   </mat-toolbar>
-  @if (platform.isBrowser){
   <mat-sidenav-container class="example-sidenav-container">
     <mat-sidenav #snav [mode]="platform.isMobile() ? 'over' : 'side'"
                  [fixedInViewport]="platform.isMobile()" fixedTopGap="44" opened="true">
@@ -27,7 +26,7 @@
         <app-navigator></app-navigator>
         <div class="footer">
           <p>&copy; 2025 Battle Squire | <a href="assets/terms.html">Terms and Conditions</a> | Contact: <a
-            href="mailto:zak@afiloo.io">zak&commat;afiloo.io</a></p>
+            href="mailto:support@battle-squire.com">support&commat;battle-squire.com</a></p>
         </div>
       </div>
     </mat-sidenav>
@@ -36,7 +35,6 @@
       <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
-  }
   <mat-menu #menu="matMenu">
     <button mat-menu-item
             (click)="openAcountDialog()">

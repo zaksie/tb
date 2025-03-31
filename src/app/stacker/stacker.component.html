@@ -5,7 +5,7 @@
       <div class="container full-hw">
         <div class="row content content1">
           <div>
-            <div>From template</div>
+            <div class="subtitle">From template</div>
             <br>
             <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="troop config type"
                               (change)="radioChange($event)">
@@ -29,7 +29,7 @@
               <mat-divider vertical class="v-divider"></mat-divider>
             }
             <div>
-              <div>Saved setups</div>
+              <div class="subtitle">Saved setups</div>
               <br>
               <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="troop config type"
                                 (change)="radioChange($event)">
@@ -115,9 +115,9 @@
   <mat-step>
     <ng-template matStepLabel>Leadership size</ng-template>
     <ng-template matStepContent>
-      <div class="container full-hw">
-        <div class="row header">Enter leadership and troop types</div>
-        <div class="row content background-container">
+      <div class="container full-hw background-container">
+        <div class="row header subtitle">Leadership and tiers</div>
+        <div class="row content">
           <form [formGroup]="fg" class="in-a-column">
             <mat-form-field appearance="outline">
               <mat-label>Leadership</mat-label>
@@ -156,9 +156,9 @@
   <mat-step>
     <ng-template matStepLabel>Recommended stack</ng-template>
     <ng-template matStepContent>
-      <div class="container full-hw">
-        <div class="row header">Optimal stacking</div>
-        <div class="row content background-container2">
+      <div class="container full-hw background-container2">
+        <div class="row header subtitle">Optimal stacking</div>
+        <div class="row content">
           <mat-list class="troop-list-container">
             <mat-list-item *ngFor="let squad of troopList" class="troop-list-item">
           <span matListItemTitle class="troop-info">
