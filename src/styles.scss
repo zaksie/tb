@@ -119,3 +119,20 @@ section.center{
   width: 100%;
   margin-bottom: 64px
 }
+.telegram-link {
+  font-weight: 100;
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #0088cc;
+  color:white ;
+  border-radius: 5px;
+}
+.telegram-button{
+  //background-color: 0088cc !important;
+  //color: white;
+    @include mat.button-overrides((
+      filled-container-color: #0088cc !important,
+      filled-label-text-color: white !important,
+    ));
+}

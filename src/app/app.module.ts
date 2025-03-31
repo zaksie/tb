@@ -1,5 +1,5 @@
-import {NgModule} from '@angular/core';
-import {BrowserModule, provideClientHydration, withEventReplay} from '@angular/platform-browser';
+import {inject, NgModule} from '@angular/core';
+import {BrowserModule, DomSanitizer, provideClientHydration, withEventReplay} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -13,7 +13,7 @@ import {StoreModule} from '@ngrx/store';
 import {appReducer} from "./store/state.reducer";
 import {MatListModule} from "@angular/material/list";
 import {MatCheckboxModule} from "@angular/material/checkbox";
-import {MatIconModule} from "@angular/material/icon";
+import {MatIconModule, MatIconRegistry} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {MatTabsModule} from "@angular/material/tabs";
 import {BonusesComponent} from './bonuses/bonuses.component';
@@ -77,6 +77,7 @@ import {NewServiceComponent} from "./common/new-service/new-service.component";
 import {CollabComponent} from "./landing-page/collab/collab.component";
 import {ReferralLinkComponent} from "./landing-page/collab/referral-link/referral-link.component";
 import {retryInterceptor} from "./services/retry.interceptor";
+import {telegramIcon} from "../environments/texts";
 
 export const authorizationParams = {
   scope: "openid profile email",
@@ -191,4 +192,10 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
   bootstrap: [AppComponent]
 })
 export class AppModule {
+
+  constructor() {
+    const iconRegistry = inject(MatIconRegistry)
+    const sanitizer = inject(DomSanitizer)
+    iconRegistry.addSvgIconLiteral('telegram', sanitizer.bypassSecurityTrustHtml(telegramIcon))
+  }
 }

@@ -11,7 +11,7 @@
         @if (!(auth.isAuthenticated$ | async)) {
           @if (platform.isMobile()) {
             <div class="h-divider-container">
-            <mat-divider class="h-divider"></mat-divider>
+              <mat-divider class="h-divider"></mat-divider>
             </div>
           } @else {
             <mat-divider vertical class="v-divider"></mat-divider>
@@ -22,13 +22,13 @@
             @for (link of quickLinks; track link.name) {
               <mat-chip-option (click)="goTo(link.link)">{{ link.name }}</mat-chip-option>
             }
-            @if(user$|async; as user){
-              @for (link of user.server.quick_links; track link.name){
+            @if (user$|async; as user) {
+              @for (link of user.server.quick_links; track link.name) {
                 <mat-chip-option (click)="goTo(link.link)" (removed)="removeQuickLink($event, user.server.quick_links)">
                   {{ link.name }}
-                <button matChipRemove aria-label="'remove template form' + keyword">
-                  <mat-icon>cancel</mat-icon>
-                </button>
+                  <button matChipRemove aria-label="'remove template form' + keyword">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
                 </mat-chip-option>
               }
             }
@@ -75,6 +75,13 @@
             <h1>Thank you!</h1>
             <h5>We will contact you shortly</h5>
           </ng-template>
+          <mat-divider class="h-divider2"></mat-divider>
+          <a href="https://t.me/battle_squire" target="_blank" rel="noopener noreferrer">
+            <button mat-raised-button class="telegram-button">
+              <mat-icon svgIcon="telegram"></mat-icon>
+              Contact us on Telegram
+            </button>
+          </a>
         </mat-card-content>
       </mat-card>
     </div>
