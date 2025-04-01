@@ -15,6 +15,7 @@ import {DemoCryptsComponent} from "./landing-page/demo-crypts/demo-crypts.compon
 
 const routes: Routes = [
   {path: '', component: LandingPageComponent},
+  {path: 'home', component: LandingPageComponent},
   {path: 'stacker', component: StackerComponent},
   {path: 'crypts', component: CryptsComponent},
   {path: 'merc-exchange', component: MercExchangeComponent},
@@ -56,8 +57,7 @@ const routes: Routes = [
         component: DashboardComponent, // child route component that the router renders
       }
     ]
-  }
-
+  },
 ];
 
 @NgModule({
