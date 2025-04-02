@@ -40,6 +40,7 @@
                          aria-label="Cryptocurrency"
                          matInput
                          formControlName="currency"
+                         placeholder="Select cryptocurrency"
                          [matAutocomplete]="auto">
                   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCurrencySelected($event)">
                     @for (currency of filteredOptions | async; track currency) {

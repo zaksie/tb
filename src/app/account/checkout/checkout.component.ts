@@ -26,7 +26,7 @@ export class CheckoutComponent implements AfterViewInit, OnInit {
   paymentStatus = 'pending';
   @Output() done = new EventEmitter();
   formGroup = new FormGroup({
-    currency: new FormControl('LTC Litecoin', Validators.required),
+    currency: new FormControl(null, Validators.required),
     planOption: new FormControl('1 month', Validators.required),
   })
   planOptions: PlanPricing[] = []
