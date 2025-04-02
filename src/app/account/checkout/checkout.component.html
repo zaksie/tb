@@ -1,0 +1,98 @@
+<mat-card class="mat-elevation-z20 account-page">
+  <div class="breadcrumb">
+    <a routerLink="/account">Account</a>
+    <mat-icon>chevron_right</mat-icon>
+    <span>Checkout</span>
+  </div>
+  <mat-card-content class="account-page-content">
+    <div class="example-loading-shade" *ngIf="isLoading(); else loaded">
+      <mat-spinner [diameter]="40"></mat-spinner>
+    </div>
+    <ng-template #loaded>
+      <div class="grid">
+        <div class="grid-child" *ngIf="paymentStatus !== 'finished'">
+          <div *ngIf="!paymentData">
+            <h5>{{ plan }} Plan</h5>
+            <form (ngSubmit)="initiatePayment()" [formGroup]="formGroup">
+              <div class="plan-options">
+                <mat-chip-listbox class="mat-mdc-chip-set-stacked" formControlName="planOption"
+                                  (change)="onPlanOptionChange($event)">
+                  @for (option of planOptions; track option.name) {
+                    <mat-chip-option [matBadge]="option.discount + '% OFF'" class="plan-option" [value]="option.name"
+                                     [selected]="option.name === selectedPlanOption()">
+                      <span class="var1">{{ option.name }}</span>
+                      <span class="var2">{{ option.price }}$</span>
+                    </mat-chip-option>
+                  }
+
+                </mat-chip-listbox>
+                <br>
+                <mat-form-field>
+                  <mat-label>Cryptocurrency</mat-label>
+                  @if (currency && currency.logo) {
+                    <mat-icon [svgIcon]="currency.code" matIconPrefix></mat-icon>
+                  } @else if (currency) {
+                    <img [ngSrc]="currency.logo_full_url" width="20" height="20" matIconPrefix>
+                  } @else {
+                    <mat-icon matIconPrefix>attach_money</mat-icon>
+                  }
+                  <input type="text" class="cryptocurrency"
+                         aria-label="Cryptocurrency"
+                         matInput
+                         formControlName="currency"
+                         [matAutocomplete]="auto">
+                  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCurrencySelected($event)">
+                    @for (currency of filteredOptions | async; track currency) {
+                      <mat-option [value]="currency.fullname">
+                        <div class="center">
+                          @if (currency && currency.logo) {
+                            <mat-icon [svgIcon]="currency.code" matIconPrefix></mat-icon>
+                          } @else {
+                            <img [ngSrc]="currency.logo_full_url" width="20" height="20" matIconPrefix>
+                          }
+                          <span>{{ currency.fullname }}</span>
+                        </div>
+                      </mat-option>
+                    }
+                  </mat-autocomplete>
+                  <mat-error *ngIf="formGroup.get('currency')?.errors">Invalid currency</mat-error>
+                </mat-form-field>
+              </div>
+              <div class="form-actions">
+                <button mat-flat-button type="submit" [disabled]="formGroup.invalid">Pay</button>
+              </div>
+            </form>
+          </div>
+          <div *ngIf="paymentData">
+            <button mat-raised-button (click)="cancelOrder()">NEW PAYMENT</button>
+          </div>
+        </div>
+        <div class="grid-child" [class.background-container]="!paymentData">
+          <div *ngIf="paymentData && paymentStatus !== 'finished'" class="grid-child-content">
+            <p>Scan to pay:</p>
+            <div class="center">
+              <qrcode [qrdata]="paymentData.pay_address" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+            </div>
+            <p>Send {{ paymentData.pay_amount }} {{ paymentData.pay_currency }} to:</p>
+            <div class="center">
+              <button mat-mini-fab (click)="copy()">
+                <mat-icon>content_copy</mat-icon>
+              </button>
+              <span>{{ paymentData.pay_address }}</span>
+            </div>
+            <p>Status: {{ paymentStatus }}</p>
+            <u><a class="cancel" (click)="cancelOrder()">Cancel order</a></u>
+          </div>
+          <div *ngIf="paymentData && paymentStatus === 'finished'" class="grid-child-content">
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+              <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+              <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+            <div class="thankyou">Thank you!</div>
+            <div class="center"><a routerLink="/home">HOME</a></div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </mat-card-content>
+</mat-card>

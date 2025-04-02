@@ -73,7 +73,7 @@ import {TableActionsComponent} from "./common/table-actions/table-actions.compon
 import {TaskSetupComponent} from "./chest-counter/manage-chest-counter/task-setup/task-setup.component";
 import {PricingComponent} from "./landing-page/pricing/pricing.component";
 import {AppGenericDialog} from "./common/app-generic-dialog/app-generic-dialog";
-import {AccountDialog} from "./account/account.component";
+import {AccountComponent} from "./account/account.component";
 import {ComingSoonComponent} from "./landing-page/coming-soon/coming-soon.component";
 import {SocketIoConfig, SocketIoModule} from "ngx-socket-io";
 import {MatBadgeModule} from "@angular/material/badge";
@@ -84,7 +84,12 @@ import {CollabComponent} from "./landing-page/collab/collab.component";
 import {ReferralLinkComponent} from "./landing-page/collab/referral-link/referral-link.component";
 import {retryInterceptor} from "./services/retry.interceptor";
 import {telegramIcon} from "../environments/texts";
-
+import {QRCodeComponent} from "angularx-qrcode";
+import {PaymentService} from "./services/payment.service";
+import {StringListValidator} from "./services/string-list-validator.directive";
+import {NgOptimizedImage} from "@angular/common";
+import {CheckoutComponent} from "./account/checkout/checkout.component";
+import {PricingContainerComponent} from "./account/pricing-container/pricing-container.component";
 export const authorizationParams = {
   scope: "openid profile email",
   audience: 'https://dev-5ag1lfabqyttq1lj.us.auth0.com/api/v2/',
@@ -93,7 +98,6 @@ export const authorizationParams = {
 
 const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} };
 
-////
 
 @NgModule({
   declarations: [
@@ -113,6 +117,7 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
     ManageChestCounterComponent,
     NewServiceComponent,
     ClanNameValidatorDirective,
+    StringListValidator,
     MercExchangeComponent,
     CryptsComponent,
     TaskComponent,
@@ -120,10 +125,12 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
     TaskSetupComponent,
     AppGenericDialog,
     PricingComponent,
-    AccountDialog,
+    AccountComponent,
     ComingSoonComponent,
     CollabComponent,
-    ReferralLinkComponent
+    ReferralLinkComponent,
+    CheckoutComponent,
+    PricingContainerComponent
   ],
   imports: [
     SocketIoModule.forRoot(socketIOConfig),
@@ -173,6 +180,8 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
     MatChipRemove,
     MatChipRow,
     MatChipGrid,
+    QRCodeComponent,
+    NgOptimizedImage
   ],
   providers: [
     provideAuth0({
@@ -187,12 +196,14 @@ const socketIOConfig: SocketIoConfig = { url: environment.backend, options: {} }
           '/api/v1/source-rule*',
           '/api/v1/subscriptions*',
           '/api/v1/account*',
+          '/api/v1/payment*',
           '/api/v1/crypts*'].map(x => environment.backend + x)
       }
     }),
     provideHttpClient(withInterceptors([authHttpInterceptorFn, retryInterceptor]), withFetch()),
     BackendService,
-    provideClientHydration(withIncrementalHydration()),
+    PaymentService,
+    // provideClientHydration(withIncrementalHydration()),
     // {provide: APP_BASE_HREF, useValue: '/app'}
   ],
   bootstrap: [AppComponent]

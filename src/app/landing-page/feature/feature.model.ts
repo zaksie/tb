@@ -3,6 +3,7 @@ export interface FeatureAction {
   path: string
 }
 export interface FeatureModel {
+  isAccount?: boolean;
   name: string
   image?: string
   description?: string[]

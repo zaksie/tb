@@ -13,6 +13,10 @@
     </button>
     <ng-container [ngTemplateOutlet]="menuButtons" [ngTemplateOutletContext]="{node}"></ng-container>
   </mat-tree-node>
+  <mat-tree-node *matTreeNodeDef="let node;when: isAccount" matTreeNodePadding>
+    <button mat-icon-button disabled></button>
+    <ng-container [ngTemplateOutlet]="menuButtons" [ngTemplateOutletContext]="{node}"></ng-container>
+  </mat-tree-node>
 </mat-tree>
 <ng-container *ngIf="!isAuthenticated()">
   <div class="not-authenticated">
@@ -23,6 +27,7 @@
 
 <ng-template #menuButtons let-node='node'>
   @if (node.icon) {
+
     <button mat-button (click)="navigateTo(node)" [disabled]="node.isDisabled()">
       @if (node.svg) {
         <mat-icon [ngStyle]="node.iconStyle" [svgIcon]="node.icon"></mat-icon>

@@ -18,11 +18,11 @@
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
-            <ng-container *ngFor="let tier of tiers" [matColumnDef]="Plan[tier]">
-                <th mat-header-cell *matHeaderCellDef [ngClass]="{deluxe: tier === Plan.DELUXE}" class="columns">
-                    {{ Plan[tier].toLowerCase() | titlecase }}
+            <ng-container *ngFor="let tier of tiers" [matColumnDef]="tier">
+                <th mat-header-cell *matHeaderCellDef [ngClass]="{premium: tier === Plan.PREMIUM}" class="columns">
+                    {{ tier.toLowerCase() | titlecase }}
                 </th>
-                <td mat-cell *matCellDef="let row" class="row columns" [ngClass]="{deluxe: tier === Plan.DELUXE}">
+                <td mat-cell *matCellDef="let row" class="row columns" [ngClass]="{premium: tier === Plan.PREMIUM}">
                     <span class="cell" [matBadge]="getBadge(tier, row)">{{ getTableValue(tier, row) }}</span>
                 </td>
                 <td mat-footer-cell *matFooterCellDef class="columns">
@@ -41,4 +41,7 @@
             <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
         </table>
     </ng-template>
+  <footer class="footer">
+    * per month
+  </footer>
 </div>

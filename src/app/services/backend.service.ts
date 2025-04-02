@@ -16,6 +16,7 @@ import {ServiceName} from "./service-interface";
 import {AuthService, User} from "@auth0/auth0-angular";
 import {TroopConfig} from "../stacker/stacker-data";
 import {PlatformService} from "./platform.service";
+import {ExtUser, ServerUser} from "../account/account.model";
 
 @Injectable({
   providedIn: 'root'
@@ -123,8 +124,11 @@ export class BackendService {
   }
 
   getUserDetails(user: User) {
-    return this.httpClient.get(environment.backend + '/api/v1/account').pipe(
-      map((res: any) => ({auth0: user, server: res[0]}))
+    return this.httpClient.get<ServerUser>(environment.backend + '/api/v1/account').pipe(
+      map((server: ServerUser) => {
+
+        return {auth0: user, server}
+      })
     )
   }
 

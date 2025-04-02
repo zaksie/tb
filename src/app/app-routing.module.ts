@@ -12,10 +12,30 @@ import {CryptsComponent} from "./crypts/crypts.component";
 import {DemoChestCounterComponent} from "./landing-page/demo-chest-counter/demo-chest-counter.component";
 import {DemoStackerComponent} from "./landing-page/demo-stacker/demo-stacker.component";
 import {DemoCryptsComponent} from "./landing-page/demo-crypts/demo-crypts.component";
+import {CheckoutComponent} from "./account/checkout/checkout.component";
+import {AccountComponent} from "./account/account.component";
+import {PricingContainerComponent} from "./account/pricing-container/pricing-container.component";
 
 const routes: Routes = [
   {path: '', component: LandingPageComponent},
   {path: 'home', component: LandingPageComponent},
+  {
+    path: 'account',
+    children: [
+      {
+        path: '',
+        component: AccountComponent,
+      },
+      {
+        path: 'payment/:plan',
+        component: CheckoutComponent
+      },
+      {
+        path: 'plan/:plan',
+        component: PricingContainerComponent
+      }
+    ]
+  },
   {path: 'stacker', component: StackerComponent},
   {path: 'crypts', component: CryptsComponent},
   {path: 'merc-exchange', component: MercExchangeComponent},
@@ -78,3 +98,4 @@ const routes: Routes = [
 })
 export class AppRoutingModule {
 }
+

@@ -1,9 +1,11 @@
 :host {
-  width:100%
+  width:100%;
+  max-width:800px
+
 }
 .pricing-v2-container {
 
-  .deluxe {
+  .premium {
     background: #8C730C;
   }
 
@@ -52,4 +54,8 @@
 table{
   table-layout:fixed;
   width:100%;
+}
+.footer{
+  font-size:small;
+  font-weight: 200;
 }

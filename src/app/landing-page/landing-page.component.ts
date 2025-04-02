@@ -4,11 +4,12 @@ import {AuthService} from "@auth0/auth0-angular";
 import features from '../../assets/features.json'
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {BackendService} from "../services/backend.service";
-import {ContactRequest, ExtUser} from "../models/clan-data.model";
+import {ContactRequest} from "../models/clan-data.model";
 import {Router} from "@angular/router";
 import {texts} from "../../environments/texts";
 import {PlatformService} from "../services/platform.service";
 import {filter, Observable, switchMap} from "rxjs";
+import {ExtUser} from "../account/account.model";
 
 declare var document: any;
 @Component({
@@ -40,7 +41,6 @@ export class LandingPageComponent implements OnInit {
     }
   ]
   user$!: Observable<ExtUser>
-
 
   constructor(public auth: AuthService,
               private backend: BackendService,

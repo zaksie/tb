@@ -7,7 +7,6 @@ import {BackendService} from "./services/backend.service";
 import {filter, first, switchMap, take, tap} from "rxjs";
 import {MatSidenav} from "@angular/material/sidenav";
 import {MatDialog} from "@angular/material/dialog";
-import {AccountDialog} from "./account/account.component";
 import {texts} from "../environments/texts";
 import {Meta, Title} from "@angular/platform-browser";
 import {PlatformService} from "./services/platform.service";
@@ -105,12 +104,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.auth.logout();
   }
 
-
-  openAcountDialog() {
-    this.dialog.open(AccountDialog,
-      {data: {}}
-    );
-  }
 
   private openReferralDialog() {
     this.dialog.open(ReferralLinkComponent, {

@@ -102,7 +102,10 @@ body {
 .in-a-column {
   display: flex;
   flex-flow: column nowrap;
-
+}
+.in-a-row{
+  display: flex;
+  flex-flow: row;
 }
 section.center{
     display: flex;
@@ -135,4 +138,22 @@ section.center{
       filled-container-color: #0088cc !important,
       filled-label-text-color: white !important,
     ));
+}
+.breadcrumb{
+  font-size: small;
+  font-weight: 200;
+  display: flex;
+  flex-flow: row;
+  max-height: 32px;
+  min-height: 32px;
+  align-items: center;
+}
+.blink_me {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }

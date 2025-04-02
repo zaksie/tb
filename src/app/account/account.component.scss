@@ -1,0 +1,56 @@
+.account-page {
+  padding: 16px;
+  height: calc(100% - 16px);
+  overflow: scroll;
+
+  .account-page-content {
+    height: 100%;
+    max-width: 100%;
+  }
+}
+
+.main-cards {
+  margin-top: 20px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+
+  mat-card {
+    margin: 24px;
+    width: 280px;
+    height: 200px;
+
+    mat-card-header {
+      font-weight: 100;
+    }
+
+    mat-card-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      font-size: xx-large;
+    }
+
+    mat-card-actions {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
+
+.contact-support {
+  width: 200px;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.state-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+

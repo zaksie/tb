@@ -1,13 +1,78 @@
-<h2 mat-dialog-title>Account Settings</h2>
-<mat-dialog-content>
-  @if (user$|async; as user) {
-    <p>Hey {{ user.auth0.name }},</p>
-    <p>We hope you're enjoying Battle Squire
-      You have {{ getDays(user.server) }} left in trial mode.</p>
-    <p>If you have any question click below to open a contact request and we'll contact you shortly.</p>
-  }
-</mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-stroked-button (click)="contactRequest()">OPEN A CONTACT REQUEST</button>
-  <button mat-button cdkFocusInitial (click)="dialogRef.close()">CLOSE</button>
-</mat-dialog-actions>
+<mat-card class="account-page">
+  <div class="breadcrumb">
+    <span>Account</span>
+  </div>
+  <mat-card-content class="account-page-content">
+    @if (user$|async; as user) {
+      <p>Hey {{ user.auth0.name }},
+        We hope you're enjoying Battle Squire
+      </p>
+
+      <span class="contact-support">
+      Contact support
+      <a href="https://t.me/battle_squire" target="_blank" rel="noopener noreferrer">
+        <button mat-icon-button class="telegram-button">
+          <mat-icon svgIcon="telegram"></mat-icon>
+        </button>
+      </a>
+      <a (click)="contactRequest()">
+        <button mat-icon-button>
+          <mat-icon>email</mat-icon>
+        </button>
+      </a>
+    </span>
+      <div class="main-cards">
+        <mat-card appearance="outlined">
+          <mat-card-header>
+            Plan
+          </mat-card-header>
+          <mat-card-content>
+            {{ user.server.plan }}
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-flat-button [routerLink]="['/account/plan', user.server.plan]">CHANGE</button>
+          </mat-card-actions>
+        </mat-card>
+        <mat-card appearance="outlined">
+          <mat-card-header>
+            Days left
+          </mat-card-header>
+          <mat-card-content>
+            {{ user.server.days_left }}
+          </mat-card-content>
+          <mat-card-actions>
+            @if(!user.server.hasPending){
+            <button mat-flat-button [routerLink]="['/account/payment', user.server.plan]">TOP UP</button>
+            }@else {
+            <button mat-button [routerLink]="['/account/payment',user.server.plan]">
+              PENDING ORDER
+            </button>
+            }
+          </mat-card-actions>
+        </mat-card>
+        <mat-card appearance="outlined">
+          <mat-card-header>
+            Credit
+          </mat-card-header>
+          <mat-card-content>
+            <span class="credit">{{ user.server.credit }}$</span>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-button (click)="useCredit()" [disabled]="!user.server.hasCredit">USE CREDIT</button>
+          </mat-card-actions>
+        </mat-card>
+        <mat-card appearance="outlined">
+          <mat-card-header>
+            Crypts
+          </mat-card-header>
+          <mat-card-content>
+            <span [class.blink_me]="user.server.cryptCount > user.server.cryptQuota">{{ user.server.cryptCount }}</span>/{{ user.server.cryptQuota }}
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-flat-button (click)="topUpCrypts()">TOP UP</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    }
+  </mat-card-content>
+</mat-card>

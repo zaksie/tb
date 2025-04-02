@@ -1,26 +1,27 @@
-import {Component, inject} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {Component, inject, OnInit, signal, ViewChild} from '@angular/core';
 import {AuthService, User} from "@auth0/auth0-angular";
-import {filter, Observable, switchMap, tap} from "rxjs";
+import {filter, Observable, switchMap, take, tap} from "rxjs";
 import {BackendService} from "../services/backend.service";
+import {ExtUser, Plan} from "./account.model";
 
+type State = 'changePlan' | 'topUpPlan' | 'topUpCrypts' | undefined
 @Component({
   selector: 'app-account',
   standalone: false,
   templateUrl: './account.component.html',
   styleUrl: './account.component.scss',
 })
-export class AccountDialog {
+export class AccountComponent implements OnInit{
   private backend = inject(BackendService);
-  readonly defaultData = {
-    title: 'This feature requires login',
-    content: ['Do you want to proceed to login?']
-  }
-  readonly dialogRef = inject(MatDialogRef<AccountDialog>);
-  readonly data = inject<{}>(MAT_DIALOG_DATA);
-  user$: Observable<{ auth0: User, server: any }>;
-
+  user$!: Observable<ExtUser>;
+  state = signal<State>(undefined)
   constructor(private authService: AuthService) {
+  }
+
+  ngOnInit(): void {
+        this.initUser()
+    }
+  initUser(){
     this.user$ = this.authService.user$.pipe(
       filter(x => !!x),
       switchMap(user => this.backend.getUserDetails(user)),
@@ -28,24 +29,29 @@ export class AccountDialog {
     )
   }
 
-  ngAfterViewInit(): void {
-  }
-
   contactRequest() {
-    this.authService.user$.pipe(
-      filter(x => !!x),
+    this.user$.pipe(
+      take(1),
       switchMap(user => {
-        const cr = {name: user.name || '', cityCoords: user.email || ''}
+        const cr = {name: user.auth0.name || '', cityCoords: user.auth0.email || ''}
         return this.backend.createContactRequest(cr)
       })
-    ).subscribe(() => this.dialogRef.close())
+    ).subscribe()
   }
 
-  getDays(server: any) {
-    const date1 = new Date(server.creationDate);
-    const date2 = new Date();
-    const diff = date2.getTime() - date1.getTime()
-    console.log(server.creationDate, server.trialLengthDays, diff)
-    return server.trialLengthDays - Math.floor(diff / (1000 * 60 * 60 * 24))
+  onChange() {
+    this.state.set('changePlan')
+  }
+
+  useCredit() {
+
+  }
+
+  topUpCrypts() {
+
+  }
+
+  onTopUpPlanDone($event: any) {
+
   }
 }

@@ -26,7 +26,6 @@ export class NavigatorComponent {
   dataSource = new MatTreeNestedDataSource<any>();
   router = inject(Router)
   readonly ngZone = inject(NgZone)
-
   constructor(public auth: AuthService,
               public backend: BackendService) {
     const iconRegistry = inject(MatIconRegistry);
@@ -55,6 +54,7 @@ export class NavigatorComponent {
   }
 
   hasChild = (_: number, node: FeatureModel) => !!node.children && node.children.length > 0;
+  isAccount = (_: number, node: FeatureModel) => node.isAccount
 
   private updateTree(res: ChestAgg[]) {
     const res2 = res.map(r => this.enrichWithFeature(r))

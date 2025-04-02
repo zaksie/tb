@@ -105,4 +105,3 @@ export interface ContactRequest {
   name: string
 }
 
-export interface ExtUser { server: any; auth0: User }

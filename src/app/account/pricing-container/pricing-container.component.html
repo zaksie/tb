@@ -1,0 +1,15 @@
+<mat-card class="mat-elevation-z20 account-page">
+  <div class="breadcrumb">
+    <a routerLink="/account">Account</a>
+    <mat-icon>chevron_right</mat-icon>
+    <span>Plan</span>
+  </div>
+  <mat-card-content class="checkout-content">
+    <div class="example-loading-shade" *ngIf="isLoading(); else loaded">
+      <mat-spinner [diameter]="40"></mat-spinner>
+    </div>
+    <ng-template #loaded>
+      <app-pricing [plan]="plan" (planchange)="onPlanChange()"></app-pricing>
+    </ng-template>
+  </mat-card-content>
+</mat-card>

@@ -73,7 +73,7 @@
 
   {
     "name": "Chest Counter",
-    "image": "/assets/chest-counter.jpg",
+    "image": "/assets/chest-counter.png",
     "description": ["Track clan member chest output, analyze contribution and set caps based on various sources of chests"],
     "path": "chests",
     "visible": ["features"],
@@ -120,5 +120,13 @@
         "public": true
       }
     ]
+  },
+  {
+    "isAccount": true,
+    "name": "Account",
+    "icon": "person",
+    "path": "account",
+    "visible": ["nav"],
+    "public": true
   }
 ]
