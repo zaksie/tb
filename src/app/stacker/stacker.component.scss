@@ -6,10 +6,45 @@
   max-width: 420px;
 }
 
+.center {
+  align-items: center;
+  justify-content: center;
+}
+
+.bg1 {
+  background-image: radial-gradient(
+      circle at left, /* Starts from top-right corner */
+      transparent 0%, /* Fully transparent at the center of the circle */
+      rgba(16, 20, 20, 0.8) 10%, /* Gradually fades to semi-transparent black */
+      rgba(16, 20, 20, 1) 30% /* Fully opaque black at the edges */
+  ), url('/assets/bg-stacker.png');
+  width: 100%;
+  height: 100%;
+  /* Replace with your background image URL */
+  background-size: contain;
+  position: relative;
+  background-repeat: no-repeat;
+  background-position: left;
+}
+
+.bg2 {
+  background-image: radial-gradient(
+      circle at bottom right, /* Starts from top-right corner */
+      transparent 0%, /* Fully transparent at the center of the circle */
+      rgba(16, 20, 20, 0.5) 20%, /* Gradually fades to semi-transparent black */
+      rgba(16, 20, 20, 1) 50% /* Fully opaque black at the edges */
+  ), url('/assets/bg-stacker2.jpg');
+  width: 100%;
+  height: 100%;
+  /* Replace with your background image URL */
+  background-size: cover;
+  position: relative;
+  background-repeat: no-repeat;
+}
 .stacker-container {
-  height: calc(100% - 44px);
+  height: calc(100% - 72px);
   min-height: 400px;
-  margin-bottom: 64px;
+  padding-bottom: 64px;
 
   .scrollable {
     overflow: auto;
@@ -19,7 +54,7 @@
     max-width: 350px;
 
     .troop-list-item {
-      height: 48px;
+      height: 68px;
     }
 
     .troop-info {
@@ -28,8 +63,8 @@
       align-items: center;
 
       .troop-image {
-        width: 48px;
-        height: 48px;
+        width: 64px;
+        height: 64px;
         margin-right: 16px;
       }
 
@@ -56,64 +91,27 @@
     height: 80px; /* Fixed height for the first row */
     flex: 0 0 auto; /* No grow, no shrink, fixed size */
   }
-.subtitle {
-  color: lightgray;
-  font-weight: 100;
-}
+
+  .subtitle {
+    color: lightgray;
+    font-weight: 100;
+  }
+
   .content {
     display: flex;
     overflow: auto;
     flex: 1 1 auto;
     flex-flow: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .background-container {
-    background-image: radial-gradient(
-        circle at left,  /* Starts from top-right corner */
-        transparent 0%,      /* Fully transparent at the center of the circle */
-        rgba(16, 20, 20, 0.8) 10%, /* Gradually fades to semi-transparent black */
-        rgba(16, 20, 20, 1) 30%   /* Fully opaque black at the edges */
-    ), url('/assets/bg-stacker.png') ;
-    width: 100%;
-    height: 100%;
-    /* Replace with your background image URL */
-    background-size: contain;
-    position: relative;
-    background-repeat: no-repeat;
-    background-position: left;
-  }
-  .background-container2 {
-    background-image: radial-gradient(
-        circle at bottom right,  /* Starts from top-right corner */
-        transparent 0%,      /* Fully transparent at the center of the circle */
-        rgba(16, 20, 20, 0.5) 20%, /* Gradually fades to semi-transparent black */
-        rgba(16, 20, 20, 1) 50%   /* Fully opaque black at the edges */
-    ), url('/assets/bg-stacker2.jpg') ;
-    width: 100%;
-    height: 100%;
-    /* Replace with your background image URL */
-    background-size: cover;
-    position: relative;
-    background-repeat: no-repeat;
-  }
-
-  /* Overlay for the circular fade effect */
-  .background-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* Radial gradient for circular fade starting from top-right */
 
   }
+
+
   .content1 {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+
     .mat-mdc-chip-set-stacked {
       max-width: 290px;
     }
@@ -133,7 +131,7 @@
 
     .mat-horizontal-content-container {
       height: 100%;
-      padding:12px
+      padding: 12px
     }
 
     .mat-horizontal-stepper-content-current {

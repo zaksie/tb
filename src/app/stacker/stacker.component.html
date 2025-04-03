@@ -1,4 +1,5 @@
-<mat-stepper orientation="horizontal" class="stacker-container" #matStepperView (selectionChange)="onStepChange($event)">
+<mat-stepper orientation="horizontal" class="stacker-container" #matStepperView
+             (selectionChange)="onStepChange($event)" [ngClass]="{'bg1':matStepperView.selectedIndex===2, 'bg2':matStepperView.selectedIndex===3}">
   <mat-step>
     <ng-template matStepLabel>Type of setup</ng-template>
     <ng-template matStepContent>
@@ -21,11 +22,11 @@
             </mat-chip-listbox>
           </div>
           @if (savedConfigs.length > 0) {
-            @if(platform.isMobile()){
+            @if (platform.isMobile()) {
               <div class="h-divider-container">
-              <mat-divider class="h-divider"></mat-divider>
+                <mat-divider class="h-divider"></mat-divider>
               </div>
-            }@else{
+            } @else {
               <mat-divider vertical class="v-divider"></mat-divider>
             }
             <div>
@@ -96,7 +97,7 @@
           </div>
           <ngx-monaco-editor [options]="editorOptions" (onInit)="monacoLoaded.set(true)"
                              [(ngModel)]="troopConfig().bonusConfig" (ngModelChange)="valuesChange$.next()"
-                             class="editor" #editor >
+                             class="editor" #editor>
 
           </ngx-monaco-editor>
         </div>
@@ -115,9 +116,9 @@
   <mat-step>
     <ng-template matStepLabel>Leadership size</ng-template>
     <ng-template matStepContent>
-      <div class="container full-hw background-container">
+      <div class="container full-hw">
         <div class="row header subtitle">Leadership and tiers</div>
-        <div class="row content">
+        <div class="row content center">
           <form [formGroup]="fg" class="in-a-column">
             <mat-form-field appearance="outline">
               <mat-label>Leadership</mat-label>
@@ -156,14 +157,14 @@
   <mat-step>
     <ng-template matStepLabel>Recommended stack</ng-template>
     <ng-template matStepContent>
-      <div class="container full-hw background-container2">
+      <div class="container full-hw">
         <div class="row header subtitle">Optimal stacking</div>
         <div class="row content">
           <mat-list class="troop-list-container">
             <mat-list-item *ngFor="let squad of troopList" class="troop-list-item">
           <span matListItemTitle class="troop-info">
             <img [src]="squad.image" [alt]="squad.name" class="troop-image">
-            <div class="troop-count">{{ squad.count }}</div>
+            <div class="troop-count">{{ squad.count | number }}</div>
           </span>
               <span matListItemMeta>{{ squad.name }}</span>
             </mat-list-item>
@@ -174,7 +175,7 @@
             <mat-icon>arrow_back_ios_new</mat-icon>
             Back
           </button>
-          <button mat-button (click)="saveConfigToServer(true)" >
+          <button mat-button (click)="saveConfigToServer(true)">
             <mat-icon>save_as</mat-icon>
             Save As
           </button>

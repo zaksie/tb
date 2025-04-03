@@ -143,7 +143,7 @@ export class StackerComponent implements OnInit {
       const armySquads = calculateStack(armyLevels, bonusConfigObject, troopConfig.leadership)
       // const monsterSquads: Squad[] = []//calculateStack(monsterLevels, bonusesObj, this.dominance, this.attackType, armySquads[0])
       // this.tiersDict = groupBy([...armySquads, ...monsterSquads], x => x.troop.levelId)
-      this.troopList.push(...armySquads.sort((a, b) => b.troop.strength - a.troop.strength))
+      this.troopList.push(...armySquads.sort((a, b) => b.troop.health - a.troop.health))
     }
   }
 
