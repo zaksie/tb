@@ -1,8 +1,9 @@
-import {Component, inject, OnInit, signal, ViewChild} from '@angular/core';
-import {AuthService, User} from "@auth0/auth0-angular";
+import {Component, inject, OnInit, signal} from '@angular/core';
+import {AuthService} from "@auth0/auth0-angular";
 import {filter, Observable, switchMap, take, tap} from "rxjs";
 import {BackendService} from "../services/backend.service";
-import {ExtUser, Plan} from "./account.model";
+import {ExtUser} from "../models/clan-data.model";
+import {PaymentService} from "../services/payment.service";
 
 type State = 'changePlan' | 'topUpPlan' | 'topUpCrypts' | undefined
 @Component({
@@ -15,6 +16,7 @@ export class AccountComponent implements OnInit{
   private backend = inject(BackendService);
   user$!: Observable<ExtUser>;
   state = signal<State>(undefined)
+  private paymentService= inject(PaymentService)
   constructor(private authService: AuthService) {
   }
 
@@ -44,6 +46,11 @@ export class AccountComponent implements OnInit{
   }
 
   useCredit() {
+    this.user$ = this.paymentService.useCredit().pipe(
+      switchMap(() => this.authService.user$),
+      filter(x => !!x),
+      switchMap(user => this.backend.getUserDetails(user))
+    )
 
   }
 

@@ -27,11 +27,11 @@ const routes: Routes = [
         component: AccountComponent,
       },
       {
-        path: 'payment/:plan',
+        path: 'payment',
         component: CheckoutComponent
       },
       {
-        path: 'plan/:plan',
+        path: 'plan',
         component: PricingContainerComponent
       }
     ]

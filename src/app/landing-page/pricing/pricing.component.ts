@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, EventEmitter, inject, Input, NgZone, OnInit, Output} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, inject, NgZone, OnInit, Output} from '@angular/core';
 import {AuthService} from "@auth0/auth0-angular";
 import {MatDialog} from "@angular/material/dialog";
 import {MatTableDataSource} from "@angular/material/table";
@@ -6,7 +6,8 @@ import {PlatformService} from "../../services/platform.service";
 import {BackendService} from "../../services/backend.service";
 import {filter, of, switchMap, take, tap} from "rxjs";
 import {catchError} from "rxjs/operators";
-import {Plan, pricing, Pricing, PricingContext} from '../../account/account.model';
+import {Plan, PlanDuration, PlanId, pricing, Pricing, PricingContext} from '../../account/account.model';
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -18,15 +19,14 @@ import {Plan, pricing, Pricing, PricingContext} from '../../account/account.mode
 })
 export class PricingComponent implements AfterViewInit, OnInit {
   isAuthenticated: boolean = false
-  selectedPlan: Plan = Plan.None;
   readonly ngZone = inject(NgZone)
-  @Output() planchange = new EventEmitter<{ plan: Plan }>()
-  @Input() plan!: string;
+  @Output() planchange = new EventEmitter<PlanId>()
+  planId!: PlanId | undefined;
 
   private readonly auth = inject(AuthService)
   readonly platform = inject(PlatformService)
   readonly dialog = inject(MatDialog);
-
+  readonly router: Router = inject(Router)
   readonly tiers: Plan[] = [Plan.FREE, Plan.BASIC, Plan.PRO, Plan.CLAN, Plan.PREMIUM]
   readonly tiersMobile1: Plan[] = [Plan.FREE, Plan.BASIC, Plan.PRO]
   readonly tiersMobile2: Plan[] = [Plan.CLAN, Plan.PREMIUM]
@@ -44,56 +44,40 @@ export class PricingComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit(): void {
-    // this.ngZone.runOutsideAngular(() => {
-    if (!this.plan)
-      this.auth.isAuthenticated$.pipe(
-        filter(x => x),
-        tap(() => {
-          this.isAuthenticated = true
-          console.log('getting plan...')
-        }),
-        switchMap(() => this.backend.getPlan()),
-        catchError(error => {
-          console.error("Error in PRICING", error)
-          return of({plan: 'None'})
-        })
-      ).subscribe((res: { plan: string }) => {
-        console.log(res)
-        if (res && res.plan)
-          this.selectedPlan = Plan[res.plan as keyof typeof Plan]
+    this.auth.isAuthenticated$.pipe(
+      filter(x => x),
+      tap(() => {
+        this.isAuthenticated = true
+        console.log('getting plan...')
+      }),
+      switchMap(() => this.backend.getPlan()),
+      catchError(error => {
+        console.error("Error in PRICING", error)
+        return of({plan: 'None'})
       })
-    // })
+    ).subscribe((res: any) => {
+      console.log('assigning planId in pricing component', res)
+      this.planId = res
+    })
   }
 
   ngOnInit(): void {
-    if (this.plan) {
-      this.selectedPlan = this.plan as Plan
-    }
   }
 
-  login(plan: Plan) {
-    // const dialogRef = this.dialog.open(AppGenericDialog,
-    //   {
-    //     height: '400px',
-    //     width: '600px',
-    //     data: {
-    //       title: 'Terms & Conditions',
-    //       iframeUrl: '/assets/terms.html',
-    //     }
-    //   }
-    // );
-
-    // dialogRef.afterClosed().subscribe(yes => {
-    //   if (yes)
-    //     ....
-    // })
+  login(planId: PlanId) {
     this.auth.isAuthenticated$.pipe(
       take(1),
       switchMap(isAuthenticated => isAuthenticated ? of(null) : this.auth.loginWithPopup()),
-      switchMap(() => this.backend.setPlan(Plan[plan]))
-    ).subscribe(() => {
-      this.selectedPlan = plan
-      this.planchange.emit({plan})
+      switchMap(() => this.backend.setPlan(planId).pipe(
+        catchError(err => of({error: 'NOT_ENOUGH_CREDITS'}))
+      ))
+    ).subscribe((res: any) => {
+      if (res?.error === 'NOT_ENOUGH_CREDITS')
+        this.router.navigate(['/account/payment', {planId: JSON.stringify(planId)}])
+      else {
+        this.planId = planId
+        this.planchange.emit(planId)
+      }
     })
   }
 
@@ -113,13 +97,7 @@ export class PricingComponent implements AfterViewInit, OnInit {
     return undefined
   }
 
-  getTierAction(tier: Plan) {
-    return {
-      title: 'START',
-      tier,
-      onclick: () => this.login(tier),
-    }
-  }
 
   protected readonly Plan = Plan;
+  protected readonly PlanDuration = PlanDuration;
 }

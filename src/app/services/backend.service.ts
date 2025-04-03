@@ -16,7 +16,7 @@ import {ServiceName} from "./service-interface";
 import {AuthService, User} from "@auth0/auth0-angular";
 import {TroopConfig} from "../stacker/stacker-data";
 import {PlatformService} from "./platform.service";
-import {ServerUser} from "../account/account.model";
+import {PlanId, ServerUser} from "../account/account.model";
 
 @Injectable({
   providedIn: 'root'
@@ -132,12 +132,13 @@ export class BackendService {
     )
   }
 
-  setPlan(plan: string) {
-    return this.httpClient.post(environment.backend + '/api/v1/account/plan', {plan})
+  setPlan(planId: PlanId) {
+    return this.httpClient.post(environment.backend + '/api/v1/account/plan', planId)
   }
 
-  getPlan() {
-    return this.httpClient.get<{ plan: string }>(environment.backend + '/api/v1/account/plan')
+  getPlan(useForcedPlanIdInstead: string|undefined = undefined) {
+    if (useForcedPlanIdInstead) return of(JSON.parse(useForcedPlanIdInstead) as PlanId)
+    return this.httpClient.get<PlanId>(environment.backend + '/api/v1/account/plan')
   }
 
   getReferral() {

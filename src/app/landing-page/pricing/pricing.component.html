@@ -1,4 +1,4 @@
-<div class="pricing-v2-container">
+<mat-card class="pricing-v2-container mat-elevation-z14" appearance="raised">
     @if (platform.isMobile()) {
         <ng-container  *ngTemplateOutlet="view; context: contextMobile1"></ng-container>
         <br/>
@@ -15,7 +15,7 @@
                     Feature
                 </th>
                 <td mat-cell *matCellDef="let row" [ngClass]="{bold: row.bold}"> {{ row.name }}</td>
-                <td mat-footer-cell *matFooterCellDef></td>
+              <td mat-footer-cell *matFooterCellDef><span style="color: gray">* per month</span></td>
             </ng-container>
 
             <ng-container *ngFor="let tier of tiers" [matColumnDef]="tier">
@@ -26,22 +26,31 @@
                     <span class="cell" [matBadge]="getBadge(tier, row)">{{ getTableValue(tier, row) }}</span>
                 </td>
                 <td mat-footer-cell *matFooterCellDef class="columns">
-                    @if (getTierAction(tier); as action) {
                       <div class="actions">
-                        <mat-chip-option (click)="action.onclick()"
-                                         [selected]="selectedPlan === tier">{{ action.title }}
+                        @if(tier === 'FREE'){
+                          <mat-chip-option (click)="login({plan: tier})"
+                                           [selected]="planId?.plan === tier">{{ 'FREE' }}
+                          </mat-chip-option>
+                        }@else {
+                        <mat-chip-option [matMenuTriggerFor]="menu" (click)="$event.stopImmediatePropagation()"
+                                         [selected]="planId?.plan === tier">{{ planId?.plan === tier ? planId?.duration : 'START' }}
                         </mat-chip-option>
+                        <mat-menu #menu="matMenu" xPosition="before">
+                          <button mat-menu-item (click)="login({plan: tier, duration: PlanDuration.mo1})">1 month</button>
+                          <button mat-menu-item (click)="login({plan: tier, duration: PlanDuration.mo3})">3 month</button>
+                          <button mat-menu-item (click)="login({plan: tier, duration: PlanDuration.mo12})">12 month</button>
+                        </mat-menu>
+                        }
                       </div>
-                    }
+
                 </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+
+
         </table>
     </ng-template>
-  <footer class="footer">
-    * per month
-  </footer>
-</div>
+</mat-card>

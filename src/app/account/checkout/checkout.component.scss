@@ -27,16 +27,15 @@
     overflow-wrap: anywhere;
   }
 }
-@media only screen and (max-width: 600px){
+@media only screen and (max-width: 1250px){
   .grid{
     height: 100%;
     display: flex;
-    flex-flow: column;
+    flex-flow: column-reverse;
   }
   .grid > .grid-child{
     width: 100%;
     min-width: 300px;
-
   }
 }
 .plan-options {
@@ -65,15 +64,6 @@
   font-weight: 100;
   cursor: pointer;
 
-}
-.center {
-  display: flex;
-  flex-flow: row;
-  align-items: center;
-  justify-content: center;
-  button {
-    margin-right: 8px;
-  }
 }
 .form-actions{
   width: 100%;

@@ -48,6 +48,10 @@ export class PaymentService {
   cancelPayment(paymentId: string) {
     return this.http.delete(this.apiUrl + `/status/${paymentId}`)
   }
+
+  useCredit() {
+    return this.http.post(this.apiUrl + `/use-credit`, {})
+  }
 }
 
 

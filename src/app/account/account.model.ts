@@ -1,4 +1,42 @@
-import {User} from "@auth0/auth0-angular";
+
+export function findPricingByPlanId(planId: PlanId) {
+  return pricingUSD.find(x => x.name === planId.plan && x.period === planId.duration);
+}
+
+export interface PlanId {
+  plan: Plan
+  duration?: PlanDuration
+}
+
+export interface Currency {
+  logo_full_url: string;
+  name: string
+  code: string
+  logo_url: string
+  network: string
+  fullname: string
+}
+
+export interface Credit {
+  credit: number
+  hasCredit: boolean
+  log: SuccessfulPayment[]
+}
+
+export interface SuccessfulPayment {
+  days_left: number;
+  days_cancel_to_end: number
+  days_start_to_end: number
+  credit: number
+  original_price: number
+  payment_id: number
+  username: string
+  startDate: string
+  endDate: string
+  discount: number
+  price: number
+  cancelDate: string
+}
 
 export enum Feature {
   FREE_TRIAL,
@@ -8,6 +46,7 @@ export enum Feature {
   AUTO_CRYPTER,
   CHEST_COUNTER,
   PRICE_MONTHLY,
+  PRICE_QUARTERLY,
   PRICE_YEARLY,
 }
 
@@ -18,6 +57,13 @@ export enum Plan {
   CLAN = 'CLAN',
   PREMIUM = 'PREMIUM',
   None = 'None',
+}
+
+export enum PlanDuration {
+  mo1 = '1 month',
+  mo3 = '3 month',
+  mo12 = '12 months',
+  inf = '∞'
 }
 
 
@@ -41,61 +87,171 @@ export interface Order {
 
 export interface ServerUser {
   credit: number;
+  days_left: number;
+  isTrialActive: boolean;
   paymentsObj: { [key: string]: Order }
   hasCredit: boolean;
   hasPending: boolean;
+  credit_usd: number;
   cryptQuota: number;
   cryptCount: number;
   quick_links: any[];
   trialLengthDays: number;
   creationDate: string;
   trialDaysLeft: number
-  isTrialActive: boolean
-  days_left: number
-  plan: string
+  daysLeft: number
+  planId: PlanId
   username: string
 }
 
-export interface ExtUser {
-  server: ServerUser;
-  auth0: User
-}
-
 export interface PlanPricing {
-  period_in_days?: number;
+  total_price: number;
+  period: PlanDuration;
+  id: string
   name: string
   price: number
-  discount: number
+  discount: number,
+  period_in_days: number
+  total_price_per_mo: number
+}
+
+export interface PlanPricingBase {
+  name: string
+  price: number
+  discounts: {
+    discount: number,
+    period: PlanDuration
+  } []
 }
 
 export const DOLLAR = ' $ '
-export const pricingUSD: PlanPricing[] = [
+export const pricingBase: PlanPricingBase[] = [
   {
     name: Plan[Plan.FREE],
     price: 0,
-    discount: 0
+    discounts: [
+      {
+        period: PlanDuration.inf,
+        discount: 0
+      }
+    ]
   },
   {
     name: Plan[Plan.BASIC],
     price: 15,
-    discount: 15
+    discounts: [
+      {
+        period: PlanDuration.mo1,
+        discount: 0
+      },
+      {
+        period: PlanDuration.mo3,
+        discount: 5
+      },
+      {
+        period: PlanDuration.mo12,
+        discount: 15
+      }
+    ]
   },
   {
     name: Plan[Plan.PRO],
     price: 29,
-    discount: 25
+    discounts: [
+      {
+        period: PlanDuration.mo1,
+        discount: 0
+      },
+      {
+        period: PlanDuration.mo3,
+        discount: 10
+      },
+      {
+        period: PlanDuration.mo12,
+        discount: 25
+      }
+    ]
   },
   {
     name: Plan[Plan.CLAN],
     price: 38,
-    discount: 40
+    discounts: [
+      {
+        period: PlanDuration.mo1,
+        discount: 0
+      },
+      {
+        period: PlanDuration.mo3,
+        discount: 20
+      },
+      {
+        period: PlanDuration.mo12,
+        discount: 40
+      }
+    ]
   },
   {
     name: Plan[Plan.PREMIUM],
     price: 45,
-    discount: 40
+    discounts: [
+      {
+        period: PlanDuration.mo1,
+        discount: 0
+      },
+      {
+        period: PlanDuration.mo3,
+        discount: 20
+      },
+      {
+        period: PlanDuration.mo12,
+        discount: 40
+      }
+    ]
   }
 ]
+export const pricingUSD: PlanPricing[] = pricingBase.flatMap(p => p.discounts.map(d => {
+  const period_in_days = planDurationToMonth(d.period) * 31
+  const total_price_per_mo = p.price * (1 - d.discount / 100)
+  return {
+    name: p.name,
+    id: p.name + d.period,
+    price: p.price,
+    total_price: period_in_days * total_price_per_mo / 31,
+    period_in_days,
+    total_price_per_mo,
+    discount: d.discount,
+    period: d.period
+  }
+}))
+
+function planDurationToMonth(planDuration: PlanDuration) {
+  switch (planDuration) {
+    case PlanDuration.mo1:
+      return 1
+    case PlanDuration.mo3:
+      return 3
+    case PlanDuration.mo12:
+      return 12
+    default:
+      return 99
+    // throw new Error(`Unknown planDuration: ${planDuration}`)
+  }
+}
+
+function getRemarks(planDuration: PlanDuration) {
+  return pricingUSD.reduce((acc: any, x) => {
+    acc[x.name] = (Math.floor(x.price * planDurationToMonth(planDuration) * (1 - x.discount/100)) + DOLLAR).padStart(DOLLAR.length + 3, ' ')
+    return acc
+  }, {})
+}
+//TODO: is there an issue here?
+function getDiscounts(planDuration: PlanDuration) {
+  return pricingUSD.slice(1).reduce((acc: any, x) => {
+    acc[x.name] = -x.discount + '%'
+    return acc
+  }, {})
+}
+
 export const pricing: Pricing[] = [
   {
     type: Feature.FREE_TRIAL,
@@ -144,20 +300,21 @@ export const pricing: Pricing[] = [
     }, {})
   },
   {
+    type: Feature.PRICE_QUARTERLY,
+    name: 'Price (quarterly)',
+    bold: true,
+    plans: [Plan.FREE, Plan.BASIC, Plan.PRO, Plan.CLAN, Plan.PREMIUM],
+    remarks: getRemarks(PlanDuration.mo3),
+    discounts: getDiscounts(PlanDuration.mo3),
+  },
+  {
     type: Feature.PRICE_YEARLY,
     name: 'Price (yearly)',
     bold: true,
     plans: [Plan.FREE, Plan.BASIC, Plan.PRO, Plan.CLAN, Plan.PREMIUM],
-    remarks: pricingUSD.reduce((acc: any, x) => {
-      acc[x.name] = (Math.floor(x.price * 12 * (1 - x.discount / 100)) + DOLLAR).padStart(DOLLAR.length + 3, ' ')
-      return acc
-    }, {}),
-    discounts: pricingUSD.slice(1).reduce((acc: any, x) => {
-      acc[x.name] = -x.discount + '%'
-      return acc
-    }, {})
+    remarks: getRemarks(PlanDuration.mo12),
+    discounts: getDiscounts(PlanDuration.mo12),
   }
-
 ]
 
 

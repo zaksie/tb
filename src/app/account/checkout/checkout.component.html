@@ -12,16 +12,16 @@
       <div class="grid">
         <div class="grid-child" *ngIf="paymentStatus !== 'finished'">
           <div *ngIf="!paymentData">
-            <h5>{{ plan }} Plan</h5>
+              <h4>{{ planId?.plan }} Plan</h4>
             <form (ngSubmit)="initiatePayment()" [formGroup]="formGroup">
               <div class="plan-options">
                 <mat-chip-listbox class="mat-mdc-chip-set-stacked" formControlName="planOption"
                                   (change)="onPlanOptionChange($event)">
-                  @for (option of planOptions; track option.name) {
-                    <mat-chip-option [matBadge]="option.discount + '% OFF'" class="plan-option" [value]="option.name"
-                                     [selected]="option.name === selectedPlanOption()">
-                      <span class="var1">{{ option.name }}</span>
-                      <span class="var2">{{ option.price }}$</span>
+                  @for (option of planOptions; track option.period) {
+                    <mat-chip-option [matBadge]="option.discount + '% OFF'" class="plan-option" [value]="option.period"
+                                     [selected]="option.period === selectedPlanOption()">
+                      <span class="var1">{{ option.period }}</span>
+                      <span class="var2">{{ option.total_price |currency: 'USD'}}</span>
                     </mat-chip-option>
                   }
 

@@ -127,6 +127,6 @@
     "icon": "person",
     "path": "account",
     "visible": ["nav"],
-    "public": true
+    "public": false
   }
 ]

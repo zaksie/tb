@@ -11,8 +11,9 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {MatIconRegistry} from "@angular/material/icon";
 import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
 import {PaymentService} from "../../services/payment.service";
-import {Plan, PlanPricing, pricingUSD} from "../account.model";
+import {PlanId, PlanPricing, pricingUSD} from "../account.model";
 import {StringListValidator} from "../../services/string-list-validator.directive";
+import {BackendService} from "../../services/backend.service";
 
 @Component({
   selector: 'app-checkout',
@@ -33,11 +34,13 @@ export class CheckoutComponent implements AfterViewInit, OnInit {
   selectedPlanOption = signal('')
   private _snackBar = inject(MatSnackBar)
   isLoading = signal(false);
-  plan: Plan = Plan.None;
+  planId: PlanId | undefined
   currency: Currency | undefined;
   readonly ngZone = inject(NgZone)
+  forcedPlanId: PlanId|undefined
 
   constructor(private paymentService: PaymentService,
+              private backend: BackendService,
               private auth: AuthService,
               private route: ActivatedRoute,
               private iconRegistry: MatIconRegistry, private sanitizer: DomSanitizer) {
@@ -47,41 +50,10 @@ export class CheckoutComponent implements AfterViewInit, OnInit {
   filteredOptions!: Observable<Currency[]>;
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      this.plan = params['plan'];
-      const planPricing = pricingUSD.find(x => x.name === this.plan)
-      if (planPricing) {
-        const m3Discount = Math.floor(planPricing.discount / 4)
-        const m12Discount = planPricing.discount
-        const planOptions = [
-          {
-            name: '1 month',
-            price: planPricing.price,
-            discount: 0,
-            period_in_days: 31,
-          },
-          {
-            name: '3 month',
-            price: Math.floor(planPricing.price * 3 * (1 - m3Discount / 100)),
-            discount: m3Discount,
-            period_in_days: 31*3,
-          },
-          {
-            name: '12 month',
-            price: Math.floor(planPricing.price * 12 * (1 - m12Discount / 100)),
-            discount: m12Discount,
-            period_in_days: 31*12,
-          }
-        ]
-        this.selectedPlanOption.set(planOptions[0].name)
-        this.planOptions.push(...planOptions)
-      }
-    });
     this.filteredOptions = this.formGroup.get('currency')?.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || '')),
     ) as Observable<Currency[]>;
-
   }
 
   private _filter(value: string): Currency[] {
@@ -91,45 +63,49 @@ export class CheckoutComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit(): void {
     this.isLoading.set(true)
-    // this.ngZone.runOutsideAngular(() => {
-      this.auth.isAuthenticated$.pipe(
-        filter(x => x),
-        take(1),
-        switchMap(() => combineLatest([this.paymentService.getCurrencies(), this.paymentService.getPendingOrders()]))
-      ).subscribe(async ([currencies, order]) => {
-        currencies.forEach(c => {
-          if (c.code in this.paymentService.iconCached) return;
-          try {
-            if (c.logo) {
-              this.iconRegistry.addSvgIconLiteral(c.code, this.sanitizer.bypassSecurityTrustHtml(c.logo))
-              this.paymentService.iconCached[c.code] = true
-            } else
-              console.warn(`${c.code} has non-svg image`)
-          } catch (e) {
-            console.warn(`Failed to load ${c.code}`)
-          }
-        })
-        this.currencies = currencies
-        this.formGroup.get('currency')?.addAsyncValidators(StringListValidator.create(this.currencies.map(c => c.fullname)))
-        this.paymentData = order
-        if (this.paymentData?.payment_id)
-          this.pollPaymentStatus(this.paymentData.payment_id);
-        this.isLoading.set(false)
+    this.auth.isAuthenticated$.pipe(
+      filter(x => x),
+      take(1),
+      switchMap(() => combineLatest([this.backend.getPlan(this.route.snapshot.params['planId']), this.paymentService.getCurrencies(), this.paymentService.getPendingOrders()]))
+    ).subscribe(async ([planId, currencies, order]) => {
+      console.log('planId', planId)
+      this.planId = planId
+      const planOptions = pricingUSD.filter(x => x.name === planId.plan)
+      this.selectedPlanOption.set(planOptions.find(x => x.period === planId.duration)?.period || '')
+      this.planOptions.push(...planOptions)
+      currencies.forEach(c => {
+        if (c.code in this.paymentService.iconCached) return;
+        try {
+          if (c.logo) {
+            this.iconRegistry.addSvgIconLiteral(c.code, this.sanitizer.bypassSecurityTrustHtml(c.logo))
+            this.paymentService.iconCached[c.code] = true
+          } else
+            console.warn(`${c.code} has non-svg image`)
+        } catch (e) {
+          console.warn(`Failed to load ${c.code}`)
+        }
       })
-    // })
+      this.currencies = currencies
+      this.formGroup.get('currency')?.addAsyncValidators(StringListValidator.create(this.currencies.map(c => c.fullname)))
+      this.paymentData = order
+      if (this.paymentData?.payment_id)
+        this.pollPaymentStatus(this.paymentData.payment_id);
+      this.isLoading.set(false)
+    })
   }
 
 
   initiatePayment() {
     const data = this.formGroup.getRawValue()
-    const planOption = this.planOptions.find(x => x.name === this.selectedPlanOption())
+    const planOption = this.planOptions.find(x => x.period === this.selectedPlanOption())
     console.log('data', data, planOption)
     if (!this.currency || !planOption) return alert('invalid values');
     this.isLoading.set(true)
     const payload = {
-      price: planOption.price,
-      period_in_days: planOption.period_in_days,
-      discount: planOption.discount,
+      planId: {
+        plan: planOption.name,
+        duration: planOption.period
+      },
       currency: this.currency.code,
     }
     this.paymentService.createPayment(payload).pipe(
@@ -149,13 +125,13 @@ export class CheckoutComponent implements AfterViewInit, OnInit {
   }
 
   pollPaymentStatus(paymentId: string) {
-      this.paymentService.wssGetPaymentStatus(paymentId).subscribe(
-        (data) => {
-          console.log({data})
-          if (data.error) return;
-          this.paymentStatus = data.payment_status;
-          // if (status.payment_status === 'finished' || status.payment_status === 'expired') {}
-        });
+    this.paymentService.wssGetPaymentStatus(paymentId).subscribe(
+      (data) => {
+        console.log({data})
+        if (data.error) return;
+        this.paymentStatus = data.payment_status;
+        // if (status.payment_status === 'finished' || status.payment_status === 'expired') {}
+      });
   }
 
   onPlanOptionChange($event: MatChipListboxChange) {

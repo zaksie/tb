@@ -27,10 +27,13 @@
             Plan
           </mat-card-header>
           <mat-card-content>
-            {{ user.server.plan }}
+            <div class="plan-text-container">
+            {{ user.server.planId.plan }}
+            <span class="trial" *ngIf="user.server.isTrialActive">PREMIUM TRIAL</span>
+            </div>
           </mat-card-content>
           <mat-card-actions>
-            <button mat-flat-button [routerLink]="['/account/plan', user.server.plan]">CHANGE</button>
+            <button mat-flat-button [routerLink]="['/account/plan']">CHANGE</button>
           </mat-card-actions>
         </mat-card>
         <mat-card appearance="outlined">
@@ -38,13 +41,15 @@
             Days left
           </mat-card-header>
           <mat-card-content>
-            {{ user.server.days_left }}
+            {{ user.server.days_left + user.server.trialDaysLeft }}
           </mat-card-content>
-          <mat-card-actions>
+          <mat-card-actions [matTooltip]="user.server.planId.plan === 'FREE' ? 'Can\'t add funds for the FREE plan': 'Add funds to your account'">
             @if(!user.server.hasPending){
-            <button mat-flat-button [routerLink]="['/account/payment', user.server.plan]">TOP UP</button>
+            <button mat-flat-button [routerLink]="['/account/payment']"
+                    [disabled]="user.server.planId.plan === 'FREE'">
+            TOP UP</button>
             }@else {
-            <button mat-button [routerLink]="['/account/payment',user.server.plan]">
+            <button mat-button [routerLink]="['/account/payment']">
               PENDING ORDER
             </button>
             }
@@ -57,8 +62,10 @@
           <mat-card-content>
             <span class="credit">{{ user.server.credit }}$</span>
           </mat-card-content>
-          <mat-card-actions>
-            <button mat-button (click)="useCredit()" [disabled]="!user.server.hasCredit">USE CREDIT</button>
+          <mat-card-actions [matTooltip]="user.server.planId.plan === 'FREE' ? 'Can\'t use credits for the FREE plan': 'Invite friends to get credits!'">
+            <button mat-button (click)="useCredit()"
+                    [disabled]="!user.server.hasCredit || user.server.planId.plan === 'FREE'">
+              USE CREDIT</button>
           </mat-card-actions>
         </mat-card>
         <mat-card appearance="outlined">
@@ -69,7 +76,7 @@
             <span [class.blink_me]="user.server.cryptCount > user.server.cryptQuota">{{ user.server.cryptCount }}</span>/{{ user.server.cryptQuota }}
           </mat-card-content>
           <mat-card-actions>
-            <button mat-flat-button (click)="topUpCrypts()">TOP UP</button>
+            <button mat-flat-button (click)="topUpCrypts()" [disabled]="true" *ngIf="user.server.cryptCount > user.server.cryptQuota">UPGRADE PLAN</button>
           </mat-card-actions>
         </mat-card>
       </div>
