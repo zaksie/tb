@@ -46,6 +46,7 @@ export class ManageChestCounterComponent implements AfterViewInit {
   }
 
   toggle(row: ChestCounter) {
+    console.log('in toggle', row)
     this.expandedRow = this.isExpanded(row) ? null : row;
   }
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -88,11 +89,11 @@ export class ManageChestCounterComponent implements AfterViewInit {
 
 
   ngAfterViewInit() {
-    this.ngZone.runOutsideAngular(() => {
+    // this.ngZone.runOutsideAngular(() => {
       this.auth.isAuthenticated$.pipe(
         filter(x => x)
       ).subscribe(() => this.fetch())
-    })
+    // })
     this.dataSource.paginator = this.paginator;
   }
 

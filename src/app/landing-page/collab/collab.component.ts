@@ -17,12 +17,12 @@ export class CollabComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.ngZone.runOutsideAngular(() => {
+    // this.ngZone.runOutsideAngular(() => {
       this.auth.isAuthenticated$.pipe(
         filter(x => x),
         switchMap(() => this.backend.getReferral()),
       ).subscribe(data => this.referral = data?.referral_code)
-    })
+    // })
   }
 
   async createReferral() {

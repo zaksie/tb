@@ -106,7 +106,7 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
         this.getByClanTag(tag)
       }
     );
-    this.ngZone.runOutsideAngular(() => {
+    // this.ngZone.runOutsideAngular(() => {
       this.chestCounters$ = this.auth.isAuthenticated$.pipe(
         filter(isAuthenticated => isAuthenticated),
         switchMap(() => this.backend.getChestCounters()),
@@ -115,7 +115,7 @@ export class ViewChestCounterComponent implements AfterViewInit, OnDestroy {
           return of([])
         })
       )
-    })
+    // })
     // this.searchResults$ = this.clanTagControl.valueChanges.pipe(
     //   startWith(''),
     //   debounceTime(300),

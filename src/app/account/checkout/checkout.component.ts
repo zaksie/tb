@@ -91,7 +91,7 @@ export class CheckoutComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit(): void {
     this.isLoading.set(true)
-    this.ngZone.runOutsideAngular(() => {
+    // this.ngZone.runOutsideAngular(() => {
       this.auth.isAuthenticated$.pipe(
         filter(x => x),
         take(1),
@@ -116,7 +116,7 @@ export class CheckoutComponent implements AfterViewInit, OnInit {
           this.pollPaymentStatus(this.paymentData.payment_id);
         this.isLoading.set(false)
       })
-    })
+    // })
   }
 
 

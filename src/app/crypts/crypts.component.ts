@@ -83,12 +83,12 @@ export class CryptsComponent implements AfterViewInit {
 
 
   ngAfterViewInit() {
-    this.ngZone.runOutsideAngular(() => {
+    // this.ngZone.runOutsideAngular(() => {
       this.auth.isAuthenticated$.pipe(
         filter(x => x)
       ).subscribe(() => this.fetch())
       this.dataSource.paginator = this.paginator;
-    })
+    // })
   }
 
   populateData(data: CryptConfig[]) {

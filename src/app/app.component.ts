@@ -62,7 +62,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.updateMetaTags();
 
-    this.ngZone.runOutsideAngular(() => {
+    // this.ngZone.runOutsideAngular(() => {
       this.auth.isAuthenticated$.pipe(
         filter(x => x),
         tap(() => {
@@ -72,7 +72,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         filter(x => !x)
       )
         .subscribe(() => this.openReferralDialog())
-    })
+    // })
   }
 
 
@@ -93,9 +93,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   jumpToSection(section: string | null) {
     if (section) {
-      this.ngZone.runOutsideAngular(() => {
+      // this.ngZone.runOutsideAngular(() => {
         setTimeout(() => document.getElementById(section)?.scrollIntoView({behavior: 'smooth'}), 100)
-      });
+      // });
     }
 
   }

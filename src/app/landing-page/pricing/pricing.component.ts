@@ -6,7 +6,7 @@ import {PlatformService} from "../../services/platform.service";
 import {BackendService} from "../../services/backend.service";
 import {filter, of, switchMap, take, tap} from "rxjs";
 import {catchError} from "rxjs/operators";
-import {Feature, Plan, pricing, Pricing, PricingContext} from '../../account/account.model';
+import {Plan, pricing, Pricing, PricingContext} from '../../account/account.model';
 
 
 @Component({
@@ -44,25 +44,25 @@ export class PricingComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit(): void {
+    // this.ngZone.runOutsideAngular(() => {
     if (!this.plan)
-      this.ngZone.runOutsideAngular(() => {
-        this.auth.isAuthenticated$.pipe(
-          filter(x => x),
-          tap(() => {
-            this.isAuthenticated = true
-            console.log('getting plan...')
-          }),
-          switchMap(() => this.backend.getPlan()),
-          catchError(error => {
-            console.error("Error in PRICING", error)
-            return of({plan: 'None'})
-          })
-        ).subscribe((res: { plan: string }) => {
-          console.log(res)
-          if (res && res.plan)
-            this.selectedPlan = Plan[res.plan as keyof typeof Plan]
+      this.auth.isAuthenticated$.pipe(
+        filter(x => x),
+        tap(() => {
+          this.isAuthenticated = true
+          console.log('getting plan...')
+        }),
+        switchMap(() => this.backend.getPlan()),
+        catchError(error => {
+          console.error("Error in PRICING", error)
+          return of({plan: 'None'})
         })
+      ).subscribe((res: { plan: string }) => {
+        console.log(res)
+        if (res && res.plan)
+          this.selectedPlan = Plan[res.plan as keyof typeof Plan]
       })
+    // })
   }
 
   ngOnInit(): void {

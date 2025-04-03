@@ -16,7 +16,7 @@ import {ServiceName} from "./service-interface";
 import {AuthService, User} from "@auth0/auth0-angular";
 import {TroopConfig} from "../stacker/stacker-data";
 import {PlatformService} from "./platform.service";
-import {ExtUser, ServerUser} from "../account/account.model";
+import {ServerUser} from "../account/account.model";
 
 @Injectable({
   providedIn: 'root'
@@ -27,11 +27,11 @@ export class BackendService {
   readonly ngZone = inject(NgZone)
 
   constructor(private httpClient: HttpClient, private auth: AuthService) {
-    this.ngZone.runOutsideAngular(() => {
+    // this.ngZone.runOutsideAngular(() => {
       this.auth.isAuthenticated$.pipe(
         filter(x => x),
         switchMap(() => this.getTrackPlayersList())).subscribe()
-    })
+    // })
   }
 
   getChestViewByClanTag(clanTag: string): Observable<ChestCounterResults> {

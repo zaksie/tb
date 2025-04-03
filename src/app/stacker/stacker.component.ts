@@ -84,12 +84,12 @@ export class StackerComponent implements OnInit {
     const sanitizer = inject(DomSanitizer);
     iconRegistry.addSvgIconLiteral('reset_settings', sanitizer.bypassSecurityTrustHtml(RESET_SETTINGS_SVG));
 
-    this.ngZone.runOutsideAngular(() => {
+    // this.ngZone.runOutsideAngular(() => {
       this.auth.isAuthenticated$.pipe(
         filter(x => x),
         switchMap(() => this.fetch())
       ).subscribe()
-    })
+    // })
 
     let snackBarRef: MatSnackBarRef<any>
     this.errors$.pipe(
@@ -289,9 +289,9 @@ export class StackerComponent implements OnInit {
   onStepChange($event: StepperSelectionEvent) {
     if($event.selectedIndex===1){
       console.log('resizing editor')
-      this.ngZone.runOutsideAngular(() => {
+      // this.ngZone.runOutsideAngular(() => {
         setTimeout(() => window.dispatchEvent(new Event('resize')), 200)
-      });
+      // });
     }else if($event.selectedIndex===0) {
       console.log(this.troopConfig(), this.setupTypes, this.savedConfigs)
     }

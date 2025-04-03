@@ -37,13 +37,13 @@ export class NavigatorComponent {
     this.addDisabledFunc({children: this.features} as any as FeatureModel)
     this.dataSource.data = this.features
     this.updateTree([])
-    this.ngZone.runOutsideAngular(() => {
+    // this.ngZone.runOutsideAngular(() => {
       this.auth.isAuthenticated$.pipe(
         filter(isAuthenticated => isAuthenticated),
         switchMap(() => this.backend.dashboards$),
         tap(dashboards => this.updateTree(dashboards))
       ).subscribe(() => this.isAuthenticated.set(true))
-    })
+    // })
   }
 
   addDisabledFunc(feature: FeatureModel) {

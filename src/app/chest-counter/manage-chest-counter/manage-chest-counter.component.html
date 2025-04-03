@@ -95,6 +95,7 @@
             mat-icon-button
             aria-label="expand row"
             class="example-toggle-button"
+            (click)="toggle(element)"
             [class.example-toggle-button-expanded]="isExpanded(element)">
             <mat-icon>keyboard_arrow_down</mat-icon>
           </button>
@@ -105,8 +106,7 @@
       <!--      <tr mat-row *matRowDef="let row; columns: columnsMobile;"  (click)="editRow($event, row)"></tr>-->
       <tr mat-row *matRowDef="let element; columns: columnsMobile;"
           class="example-element-row"
-          [class.example-expanded-row]="isExpanded(element)"
-          (click)="toggle(element)">
+          [class.example-expanded-row]="isExpanded(element)">
       </tr>
       <tr mat-row *matRowDef="let row; columns: columnsExtra" class="example-detail-row"
           [class.example-detail-row-expanded]="isExpanded(row)"></tr>
