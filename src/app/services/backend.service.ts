@@ -192,4 +192,8 @@ export class BackendService {
   deleteQuickLink(name: string) {
     return this.httpClient.delete(environment.backend + '/api/v1/account/quick-links/' + btoa(name))
   }
+
+  checkCreds(rawValue: any) {
+    return this.httpClient.post(environment.backend + '/api/v1/chest-counter/check-creds', rawValue)
+  }
 }
